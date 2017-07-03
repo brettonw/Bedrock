@@ -103,14 +103,14 @@ public class SerializerTest {
 
         // add a few other simple serializations...
         BagObject anotherBagObject = Serializer.toBagObject (bagObject);
-        BagTest.report (Serializer.fromBagObject (anotherBagObject), bagObject, "Serializer test reconstituting a bag object");
+        BagTest.report (Serializer.fromBagObject (anotherBagObject), bagObject, "Serializer test reconstituting a bedrock object");
     }
 
     @Test
     public void testBagArray() {
         BagArray    bagArray = new BagArray (2).add (1).add (7.0);
         BagObject anotherBagObject = Serializer.toBagObject (bagArray);
-        BagTest.report (Serializer.fromBagObject (anotherBagObject), bagArray, "Serializer test reconstituting a bag array");
+        BagTest.report (Serializer.fromBagObject (anotherBagObject), bagArray, "Serializer test reconstituting a bedrock array");
         log.info ("got here");
     }
 

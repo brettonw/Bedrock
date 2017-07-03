@@ -20,10 +20,10 @@ public class HandlerObjectFromPairsArray implements Handler {
 
     @Override
     public Object getEntry (String input) {
-        // read the bag array of the input, and check for success
+        // read the bedrock array of the input, and check for success
         BagArray bagArray = (BagArray) arrayHandler.getEntry (input);
         if (bagArray != null) {
-            // create a bag object from the array of pairs
+            // create a bedrock object from the array of pairs
             BagObject bagObject = new BagObject (bagArray.getCount ());
             bagArray.forEach (object -> {
                 BagArray pair = (BagArray) object;

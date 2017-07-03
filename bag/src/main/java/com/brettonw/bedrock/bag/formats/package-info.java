@@ -1,5 +1,5 @@
 /**
- * Provides FormatReader and FormatWriter classes in support of the bag package. JSON and
+ * Provides FormatReader and FormatWriter classes in support of the bedrock package. JSON and
  * some basic formats might be facilitated by a registered file mime-type association, but
  * you can add your own association to a reader (and its configuration) by using something
  * like this:

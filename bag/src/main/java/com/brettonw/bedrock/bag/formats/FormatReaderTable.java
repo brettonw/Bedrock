@@ -41,7 +41,7 @@ public class FormatReaderTable extends FormatReader implements ArrayFormatReader
                 BagArray titlesArray = (this.titlesArray != null) ? this.titlesArray : (BagArray) bagArray.dequeue ();
                 final int count = titlesArray.getCount ();
 
-                // map each entry to a new bag object using the titles array
+                // map each entry to a new bedrock object using the titles array
                 BagArray mappedBagArray = new BagArray (bagArray.getCount ());
                 bagArray.forEach (object -> {
                     BagArray entryArray = (BagArray) object;

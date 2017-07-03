@@ -17,7 +17,7 @@ public class HandlerCollector implements Handler {
 
     @Override
     public Object getEntry (String input) {
-        // read the bag array of the input, and check for success
+        // read the bedrock array of the input, and check for success
         BagArray bagArray = (BagArray) arrayHandler.getEntry (input);
         if (bagArray != null) {
             int count = bagArray.getCount () / collectCount;

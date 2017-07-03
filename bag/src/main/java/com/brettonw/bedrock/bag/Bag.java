@@ -38,7 +38,7 @@ abstract public class Bag {
                     if (type.isEnum ()) {
                         return ((Enum)value).name ();
                     }
-                    // no other type should be stored in the bag classes
+                    // no other type should be stored in the bedrock classes
                     //log.error ("Unhandled type: " + typeName);
                     throw new UnsupportedTypeException (type);
             }

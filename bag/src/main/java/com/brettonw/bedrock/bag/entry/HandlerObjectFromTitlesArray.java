@@ -14,10 +14,10 @@ public class HandlerObjectFromTitlesArray implements Handler {
 
     @Override
     public Object getEntry (String input) {
-        // read the bag array of the input, and check for success
+        // read the bedrock array of the input, and check for success
         BagArray bagArray = (BagArray) arrayHandler.getEntry (input);
         if (bagArray != null) {
-            // create a bag object from the array of entries using the titles array
+            // create a bedrock object from the array of entries using the titles array
             int count = titlesArray.getCount ();
             if (count == bagArray.getCount ()) {
                 BagObject bagObject = new BagObject (count);

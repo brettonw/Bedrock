@@ -135,9 +135,9 @@ public class BagObjectTest {
             BagTest.report (recon, testObject, "BagObject complex object equals");
             BagTest.report (reconString, testString, "BagObject complex reconsititution");
 
-            BagTest.report (recon.getBoolean ("Married"), true, "BagObject complex bag/bool extraction");
-            BagTest.report (recon.getDouble ("Weight"), 220.5, "BagObject complex bag/double extraction");
-            BagTest.report (recon.getBagObject ("DOB").getInteger ("Year"), 2015, "BagObject complex bag/int extraction");
+            BagTest.report (recon.getBoolean ("Married"), true, "BagObject complex bedrock/bool extraction");
+            BagTest.report (recon.getDouble ("Weight"), 220.5, "BagObject complex bedrock/double extraction");
+            BagTest.report (recon.getBagObject ("DOB").getInteger ("Year"), 2015, "BagObject complex bedrock/int extraction");
 
             BagTest.report (recon.getBoolean ("DOB"), null, "BagObject simple bad type request (should be null)");
             BagTest.report (recon.getString ("Joseph"), null, "BagObject simple bad key request (should be null)");
@@ -176,14 +176,14 @@ public class BagObjectTest {
     @Test
     public void testHierarchical() {
         // hierarchical values
-        BagObject bagObject = BagObject.open  ("com/brettonw/bag/name", "test");
+        BagObject bagObject = BagObject.open  ("com/brettonw/bedrock/name", "test");
         BagTest.report (bagObject.has ("com/brettonw/test"), false, "BagObject - test that an incorrect path returns false");
-        BagTest.report (bagObject.has ("com/brettonw/bag/name/xxx"), false, "BagObject - test that a longer incorrect path returns false");
-        BagTest.report (bagObject.has ("com/brettonw/bag/name"), true, "BagObject - test that a correct path returns true");
-        BagTest.report (bagObject.getString ("com/brettonw/bag/name"), "test", "BagObject - test that a hierarchical fetch yields the correct result");
-        BagTest.report (bagObject.getBagObject ("com/bretton/bag"), null, "BagObject - test that an incorrect hierarchical fetch yields null");
-        bagObject.remove ("com/brettonw/bag");
-        BagTest.report (bagObject.has ("com/brettonw/bag/name"), false, "BagObject - test that a path is correctly removed");
+        BagTest.report (bagObject.has ("com/brettonw/bedrock/name/xxx"), false, "BagObject - test that a longer incorrect path returns false");
+        BagTest.report (bagObject.has ("com/brettonw/bedrock/name"), true, "BagObject - test that a correct path returns true");
+        BagTest.report (bagObject.getString ("com/brettonw/bedrock/name"), "test", "BagObject - test that a hierarchical fetch yields the correct result");
+        BagTest.report (bagObject.getBagObject ("com/bretton/bedrock"), null, "BagObject - test that an incorrect hierarchical fetch yields null");
+        bagObject.remove ("com/brettonw/bedrock");
+        BagTest.report (bagObject.has ("com/brettonw/bedrock/name"), false, "BagObject - test that a path is correctly removed");
     }
 
     @Test
@@ -343,10 +343,10 @@ public class BagObjectTest {
         BagObject bagObject2 = BagObject.open ("x", "y" );
         BagObject bagObject3 = BagObject.open ("x", "x" );
         BagTest.report (bagObject.equals (bagObject), true, "BagObject should be equal to itself" );
-        BagTest.report (bagObject.equals (bagObject2), true, "BagObject should be equal to an equivalent bag" );
-        BagTest.report (bagObject.equals (bagObject3), false, "BagObject should not be equal to a different bag" );
+        BagTest.report (bagObject.equals (bagObject2), true, "BagObject should be equal to an equivalent bedrock" );
+        BagTest.report (bagObject.equals (bagObject3), false, "BagObject should not be equal to a different bedrock" );
         BagTest.report (bagObject.equals (null), false, "BagObject should not be equal to null" );
-        BagTest.report (bagObject.equals (new Integer (5)), false, "BagObject should not be equal to a non-bag object" );
+        BagTest.report (bagObject.equals (new Integer (5)), false, "BagObject should not be equal to a non-bedrock object" );
     }
 
     @Test

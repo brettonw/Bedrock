@@ -126,7 +126,7 @@ public class Base extends HttpServlet {
             log.warn ("'Content-Type' is not set by the requestor, using default (" + mimeType + ")");
         }
 
-        // extract the bag data that's been posted, we do it this roundabout way because
+        // extract the bedrock data that's been posted, we do it this roundabout way because
         // we don't know a priori if it's an object or array
         SourceAdapter sourceAdapter = new SourceAdapterReader(request.getInputStream (), mimeType);
         String requestString = sourceAdapter.getStringData ();

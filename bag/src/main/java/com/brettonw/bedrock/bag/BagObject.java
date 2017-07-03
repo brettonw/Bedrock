@@ -135,14 +135,14 @@ public class BagObject extends Bag implements Selectable<BagObject> {
 
     /**
      * Return an object stored at the requested key value. The key may be a simple name, or it may
-     * be a path (with keys separated by "/") to create a hierarchical "bag-of-bags" that is indexed
+     * be a path (with keys separated by "/") to create a hierarchical "bedrock-of-bags" that is indexed
      * recursively.
      * <p>
      * Using a binary search of the underlying store, finds where the first component of the path
      * should be and returns it.
      *
      * @param key A string value used to index the element, using "/" as separators, for example:
-     *             "com/brettonw/bag/key".
+     *             "com/brettonw/bedrock/key".
      * @return The indexed element (if found), or null
      */
     @Override
@@ -164,7 +164,7 @@ public class BagObject extends Bag implements Selectable<BagObject> {
 
     /**
      * Store an object at the requested key value. The key may be a simple name, or it may be a path
-     * (with keys separated by "/") to create a hierarchical "bag-of-bags" that is indexed
+     * (with keys separated by "/") to create a hierarchical "bedrock-of-bags" that is indexed
      * recursively.
      * <p>
      * Using a binary search of the underlying store, finds where the first component of the path
@@ -178,7 +178,7 @@ public class BagObject extends Bag implements Selectable<BagObject> {
      * store will NOT contain the path after an attempt to add a null value.
      *
      * @param key A string value used to index the element, using "/" as separators, for example:
-     *             "com/brettonw/bag/key".
+     *             "com/brettonw/bedrock/key".
      * @param object The element to store.
      * @return The BagObject, so that operations can be chained together.
      */
@@ -211,9 +211,9 @@ public class BagObject extends Bag implements Selectable<BagObject> {
     /**
      * Create a new BagObject and "put" the object using its key value. The key may be a
      * simple name, or it may be a path (with keys separated by "/") to create a
-     * hierarchical "bag-of-bags" that is indexed recursively.
+     * hierarchical "bedrock-of-bags" that is indexed recursively.
      * @param key A string value used to index the element, using "/" as separators, for example:
-     *             "com/brettonw/bag/key".
+     *             "com/brettonw/bedrock/key".
      * @param object The element to store.
      * @return The newly created BagObject.
      */
@@ -223,7 +223,7 @@ public class BagObject extends Bag implements Selectable<BagObject> {
 
     /**
      * Add an object to a BagArray stored at the requested key. The key may be a simple name, or it may be a path
-     * (with keys separated by "/") to create a hierarchical "bag-of-bags" that is indexed
+     * (with keys separated by "/") to create a hierarchical "bedrock-of-bags" that is indexed
      * recursively. If the key does not already exist a non-null value will be stored as a bare
      * value, just as if "put" had been called. If it does exist, and is not already an array or the
      * stored value is null, then a new array will be created to store any existing values and the
@@ -237,7 +237,7 @@ public class BagObject extends Bag implements Selectable<BagObject> {
      * Note that null values for the BagArray ARE stored per the design decision for arrays.
      *
      * @param key A string value used to index the element, using "/" as separators, for example:
-     *             "com/brettonw/bag/key".
+     *             "com/brettonw/bedrock/key".
      * @param object The element to store.
      * @return The BagObject, so that operations can be chained together.
      */
@@ -296,7 +296,7 @@ public class BagObject extends Bag implements Selectable<BagObject> {
 
     /**
      * Remove an object stored at the requested key. The key may be a simple name, or it may be a
-     * path (with keys separated by "/") to create a hierarchical "bag-of-bags" that is indexed
+     * path (with keys separated by "/") to create a hierarchical "bedrock-of-bags" that is indexed
      * recursively.
      * <p>
      * Using a binary search of the underlying store, finds where the element mapped to the key
@@ -305,7 +305,7 @@ public class BagObject extends Bag implements Selectable<BagObject> {
      * removing elements will never cause the underlying store to shrink.
      *
      * @param key A string value used to index the element, using "/" as separators, for example:
-     *             "com/brettonw/bag/key".
+     *             "com/brettonw/bedrock/key".
      * @return The BagObject, so that operations can be chained together.
      */
     public BagObject remove (String key) {
@@ -326,10 +326,10 @@ public class BagObject extends Bag implements Selectable<BagObject> {
 
     /**
      * Return whether or not the requested key or path is present in the BagObject or hierarchical
-     * "bag-of-bags"
+     * "bedrock-of-bags"
      *
      * @param key A string value used to index the element, using "/" as separators, for example:
-     *             "com/brettonw/bag/key".
+     *             "com/brettonw/bedrock/key".
      * @return A boolean value, true if the key is present in the underlying store. Note that null
      * values are not stored (design decision), so this equivalent to checking for null.
      */

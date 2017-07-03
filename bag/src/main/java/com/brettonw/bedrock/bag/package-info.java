@@ -12,17 +12,17 @@
  * <p>
  * <strong>Low-Level Containers and String Formats</strong><br>
  * This package implements two low-level container classes for text-based storage of primitive types
- * (or their boxed analog), strings, and other bag types. The containers provide array or string-
+ * (or their boxed analog), strings, and other bedrock types. The containers provide array or string-
  * keyed map design idioms, as BagArray and BagObject, respectively. They can be converted to JSON
  * formatted strings, and reconstructed from a superset of that standard file format (i.e. the
- * format that bag-types produce can be round-tripped as input).
+ * format that bedrock-types produce can be round-tripped as input).
  * <p>
  * <strong>Serializer</strong><br>
- * A means of serializing objects to and from a BagObject is provided. Where the bag types are
+ * A means of serializing objects to and from a BagObject is provided. Where the bedrock types are
  * constrained to primitives, more complex types can be stored using the Serializer.
  * <p>
  * <strong>Managing Types</strong><br>
- * In the bag types, type assignment is performed lazily on extraction. The design presumes the end
+ * In the bedrock types, type assignment is performed lazily on extraction. The design presumes the end
  * user knows what they are expecting to get.
  * <p>
  * <strong>Storing Strings</strong><br>

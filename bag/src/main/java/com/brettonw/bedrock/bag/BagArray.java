@@ -262,7 +262,7 @@ public class BagArray extends Bag implements Selectable<BagArray>, Iterable<Obje
      * Return an object stored at the requested key value. The key may be a simple number, or a
      * special keyword indicating the #first or #last element in the array, #add for putting at the
      * end of the array, or it may be a path (with keys separated by "/") to create a hierarchical
-     * "bag-of-bags" that is indexed recursively.
+     * "bedrock-of-bags" that is indexed recursively.
      * <p>
      *
      * @param key A string value used to index the element, using "/" as separators, for example:

@@ -138,7 +138,7 @@ public class Serializer {
     }
 
     private static BagObject serializeJavaObjectType (Object object, Class type) {
-        // this bag object will hold the value(s) of the fields
+        // this bedrock object will hold the value(s) of the fields
         BagObject bagObject = new BagObject ();
 
         // gather all of the fields declared; public, private, static, etc., then loop over them
@@ -210,7 +210,7 @@ public class Serializer {
     }
 
     static Object serialize (Object object) {
-        // fill out the header of the encapsulating bag
+        // fill out the header of the encapsulating bedrock
         Class type = object.getClass ();
 
         // the next step depends on the actual type of what's being serialized
@@ -334,7 +334,7 @@ public class Serializer {
                 } else {
                     // warn about skipping a non-static field
                     if (! Modifier.isStatic (field.getModifiers ())) {
-                        log.warn ("Skipping non-static field initializer (" + field.getName () + "), not in source bag object");
+                        log.warn ("Skipping non-static field initializer (" + field.getName () + "), not in source bedrock object");
                     }
                 }
             }

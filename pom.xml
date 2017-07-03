@@ -67,6 +67,7 @@
         <module>bag</module>
         <module>servlet-tester</module>
         <module>service-base</module>
+        <module>test-server</module>
     </modules>
 
     <build>

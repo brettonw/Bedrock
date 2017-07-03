@@ -13,10 +13,10 @@ public class KeyTest {
         new Key ();
 
         // hierarchical values
-        BagObject bagObject = BagObject.open  ("com/brettonw/bag/name", "test");
+        BagObject bagObject = BagObject.open  ("com/brettonw/bedrock/name", "test");
         String com = "com";
         String brettonw = "brettonw";
-        String bag = "bag";
+        String bag = "bedrock";
         String name = "name";
 
         String key = Key.cat (com, brettonw);

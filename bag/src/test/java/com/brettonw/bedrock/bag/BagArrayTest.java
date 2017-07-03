@@ -33,7 +33,7 @@ public class BagArrayTest {
         bagArray.insert (10, 456789);
         assertEquals ("Check size", 11, bagArray.getCount ());
 
-        // convert that bag to a string
+        // convert that bedrock to a string
         String bagArrayAsString = bagArray.toString ();
         BagArray reconBagArray = BagArrayFrom.string (bagArrayAsString);
         BagTest.report (reconBagArray.toString (), bagArrayAsString, "BagArray - simple round trip with null values");
@@ -107,13 +107,13 @@ public class BagArrayTest {
         BagTest.report (reconString, testString, "BagArray complex reconstitution");
 
         BagTest.report (reconArray.getString (2), "Wade", "BagArray simple string extraction after insert");
-        BagTest.report (reconArray.getBagObject (1).getInteger ("Year"), 2015, "BagArray complex bag/int extraction");
+        BagTest.report (reconArray.getBagObject (1).getInteger ("Year"), 2015, "BagArray complex bedrock/int extraction");
 
         // a couple of invalid retrievals
         BagTest.report (reconArray.getString (1), null, "BagArray simple invalid type extraction as String");
         BagTest.report (reconArray.getBagArray (1), null, "BagArray simple invalid type extraction as BagArray");
 
-        // put a bag array in the bag array
+        // put a bedrock array in the bedrock array
         BagArray childArray = BagArray.open ("hello").add ("world");
         reconArray.replace (1, childArray);
         BagTest.report (reconArray.getBagArray (1), childArray, "BagArray store and retrieve a BagArray");
