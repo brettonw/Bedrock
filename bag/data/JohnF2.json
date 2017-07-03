@@ -1,0 +1,64 @@
+{
+   "hyp_opts": [
+      {
+         "name": "smamin",
+         "value": "40000",
+         "type": "double",
+         "description": "CAR Minimum SMA [km]"
+      },
+      {
+         "name": "smamax",
+         "value": "44000",
+         "type": "double",
+         "description": "CAR Maximum SMA [km]"
+      },
+      {
+         "name": "eccmin",
+         "value": "0.0",
+         "type": "double",
+         "description": "CAR Minimum Eccentricity"
+      },
+      {
+         "name": "eccmax",
+         "value": "0.05",
+         "type": "double",
+         "description": "CAR Maximum Eccentricity"
+      },
+      {
+         "name": "delr",
+         "value": "100",
+         "type": "double",
+         "description": "CAR Range Stepsize [km]"
+      },
+      {
+         "name": "delrr",
+         "value": "0.05",
+         "type": "double",
+         "description": "CAR Range-Rate Stepsize [km/s]"
+      },
+      {
+         "name": "cramrmin",
+         "value": "0.01",
+         "type": "double",
+         "description": "CAR Minimum Area to Mass Ratio [m^2/kg]"
+      },
+      {
+         "name": "cramrmax",
+         "value": "0.01",
+         "type": "double",
+         "description": "CAR Maximum Area to Mass Ratio [m^2/kg]"
+      },
+      {
+         "name": "delcramr",
+         "value": "0.05",
+         "type": "double",
+         "description": "CAR Delta Area to Mass Ratio [m^2/kg]"
+      },
+      {
+         "name": "compress",
+         "value": "1",
+         "type": "boolean",
+         "description": "Enable Tracklet Compression"
+      }
+   ]
+}

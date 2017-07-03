@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.brettonw</groupId>
-    <artifactId>pom</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <groupId>com.brettonw.bedrock</groupId>
+    <artifactId>bedrock</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Common POM</name>
-    <description>A POM file for all Maven projects with Java sources.</description>
-    <url>https://github.com/brettonw/POM/</url>
+    <name>Bedrock</name>
+    <description>A foundation for rapidly building microservices with client interactions.</description>
+    <url>https://bedrock.brettonw.com/</url>
     <licenses>
         <license>
             <name>MIT License</name>
@@ -27,12 +27,13 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <log4j.version>RELEASE</log4j.version>
     </properties>
 
     <scm>
-        <connection>scm:git:git@github.com:brettonw/POM.git</connection>
-        <developerConnection>scm:git:git@github.com:brettonw/POM.git</developerConnection>
-        <url>https://github.com:brettonw/POM.git</url>
+        <connection>scm:git:git@github.com:brettonw/Bedrock.git</connection>
+        <developerConnection>scm:git:git@github.com:brettonw/Bedrock.git</developerConnection>
+        <url>https://github.com:brettonw/Bedrock.git</url>
     </scm>
 
     <dependencies>
@@ -62,11 +63,15 @@
         </snapshotRepository>
     </distributionManagement>
 
+    <modules>
+        <module>bag</module>
+    </modules>
+
     <build>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>3.6.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -115,7 +120,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <configuration>
                     <archive>
                         <manifest>
