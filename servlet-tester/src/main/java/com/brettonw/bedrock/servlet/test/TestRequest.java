@@ -1,7 +1,7 @@
-package com.brettonw.servlet.test;
+package com.brettonw.bedrock.servlet.test;
 
-import com.brettonw.bag.Bag;
-import com.brettonw.bag.formats.MimeType;
+import com.brettonw.bedrock.bag.Bag;
+import com.brettonw.bedrock.bag.formats.MimeType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

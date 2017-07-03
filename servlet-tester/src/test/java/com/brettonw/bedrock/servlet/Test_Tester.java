@@ -1,8 +1,10 @@
-package com.brettonw;
+package com.brettonw.bedrock.servlet;
 
-import com.brettonw.bag.*;
-import com.brettonw.bag.formats.MimeType;
-import com.brettonw.servlet.ServletTester;
+import com.brettonw.bedrock.bag.BagObject;
+import com.brettonw.bedrock.bag.BagObjectFrom;
+import com.brettonw.bedrock.bag.SourceAdapter;
+import com.brettonw.bedrock.bag.SourceAdapterReader;
+import com.brettonw.bedrock.bag.formats.MimeType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
@@ -17,8 +19,8 @@ import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.assertTrue;
 
-public class Test_ServletTester extends HttpServlet {
-    private static final Logger log = LogManager.getLogger (Test_ServletTester.class);
+public class Test_Tester extends HttpServlet {
+    private static final Logger log = LogManager.getLogger (Test_Tester.class);
 
     public static final String OK_KEY = "ok";
     public static final String ERROR_KEY = "error";
@@ -28,10 +30,10 @@ public class Test_ServletTester extends HttpServlet {
     public static final String COMMAND_KEY = "command";
     public static final String TEST_KEY = "test";
 
-    ServletTester servletTester;
+    Tester servletTester;
 
-    public Test_ServletTester () {
-        servletTester = new ServletTester (this);
+    public Test_Tester () {
+        servletTester = new Tester (this);
     }
 
     @Override

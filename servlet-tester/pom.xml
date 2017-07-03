@@ -7,10 +7,10 @@
         <version>1.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>servlet-test</artifactId>
+    <artifactId>servlet-tester</artifactId>
     <packaging>jar</packaging>
 
-    <name>Servlet Test</name>
+    <name>Servlet Tester</name>
     <description>Servlet Test provides a support class to test 'GET' and 'POST' on servlet interfaces.</description>
 
     <dependencies>

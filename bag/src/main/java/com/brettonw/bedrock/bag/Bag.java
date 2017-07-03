@@ -14,7 +14,7 @@ abstract public class Bag {
     Object objectify (Object value) {
         if (value != null) {
             Class type = value.getClass ();
-            String typeName = type.getName ();
+            String typeName = type.getCanonicalName ();
             switch (typeName) {
                 case "java.lang.String":
                     // is this the right place to do a transformation that converts quotes to some
@@ -27,8 +27,10 @@ abstract public class Bag {
                 case "java.lang.Double": case "java.lang.Float":
                     return value.toString ();
 
-                case "BagObject":
-                case "BagArray":
+                //case "BagObject":
+                case "com.brettonw.bedrock.bag.BagObject":
+                //case "BagArray":
+                case "com.brettonw.bedrock.bag.BagArray":
                     return value;
 
                 default:

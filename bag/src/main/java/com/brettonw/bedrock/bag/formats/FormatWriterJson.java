@@ -11,10 +11,14 @@ public class FormatWriterJson extends FormatWriter {
 
     private String getJsonString (Object object) {
         if (object != null) {
-            switch (object.getClass ().getName ()) {
+            switch (object.getClass ().getCanonicalName ()) {
                 case "java.lang.String": return quote ((String) object);
-                case "BagObject": return write ((BagObject) object);
-                case "BagArray": return write ((BagArray) object);
+                //case "BagObject":
+                case "com.brettonw.bedrock.bag.BagObject":
+                    return write ((BagObject) object);
+                //case "BagArray":
+                case "com.brettonw.bedrock.bag.BagArray":
+                    return write ((BagArray) object);
 
                 // we omit the default case, because there should not be any other types stored in
                 // the Bag classes - as in, they would not make it into the container, as the

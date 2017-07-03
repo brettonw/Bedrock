@@ -1,12 +1,12 @@
-package com.brettonw.servlet;
+package com.brettonw.bedrock.servlet;
 
-import com.brettonw.bag.Bag;
-import com.brettonw.bag.BagObject;
-import com.brettonw.bag.BagObjectFrom;
-import com.brettonw.bag.formats.MimeType;
-import com.brettonw.servlet.test.TestRequest;
-import com.brettonw.servlet.test.TestResponse;
-import com.brettonw.servlet.test.TestServletConfig;
+import com.brettonw.bedrock.bag.Bag;
+import com.brettonw.bedrock.bag.BagObject;
+import com.brettonw.bedrock.bag.BagObjectFrom;
+import com.brettonw.bedrock.bag.formats.MimeType;
+import com.brettonw.bedrock.servlet.test.TestRequest;
+import com.brettonw.bedrock.servlet.test.TestResponse;
+import com.brettonw.bedrock.servlet.test.TestServletConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class ServletTester extends HttpServlet {
-    private static final Logger log = LogManager.getLogger (ServletTester.class);
+public class Tester extends HttpServlet {
+    private static final Logger log = LogManager.getLogger (Tester.class);
 
     public static final String TARGET_DIR = "target";
     public static final String TEST_DIR = "servlet-files";
@@ -28,7 +28,7 @@ public class ServletTester extends HttpServlet {
     private File targetTestDir;
     private HttpServlet httpServlet;
 
-    public ServletTester (HttpServlet httpServlet) {
+    public Tester (HttpServlet httpServlet) {
         this.httpServlet = httpServlet;
         try {
             httpServlet.init (new TestServletConfig (getClass ().getName ()));

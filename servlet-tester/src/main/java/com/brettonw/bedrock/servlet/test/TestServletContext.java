@@ -1,4 +1,4 @@
-package com.brettonw.servlet.test;
+package com.brettonw.bedrock.servlet.test;
 
 import javax.servlet.*;
 import javax.servlet.descriptor.JspConfigDescriptor;

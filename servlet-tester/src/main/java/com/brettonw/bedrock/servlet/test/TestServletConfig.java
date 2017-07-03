@@ -1,11 +1,11 @@
-package com.brettonw.servlet.test;
+package com.brettonw.bedrock.servlet.test;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import java.util.Enumeration;
 
 public class TestServletConfig implements ServletConfig {
-    TestServletContext servletContext;
+    com.brettonw.bedrock.servlet.test.TestServletContext servletContext;
     String name;
 
     public TestServletConfig () {
@@ -14,7 +14,7 @@ public class TestServletConfig implements ServletConfig {
 
     public TestServletConfig (String name) {
         this.name = name;
-        servletContext = new TestServletContext ();
+        servletContext = new com.brettonw.bedrock.servlet.test.TestServletContext ();
     }
 
     @Override
