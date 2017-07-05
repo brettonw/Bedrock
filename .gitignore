@@ -13,3 +13,5 @@ buildNumber.properties
 .settings
 .project
 .cache*
+site/docs
+site/js/bedrock*.js
