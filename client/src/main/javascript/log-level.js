@@ -38,5 +38,3 @@ let LogLevel = function () {
 
     return _;
 } ();
-
-SET_LOG_LEVEL (LogLevel.INFO);
