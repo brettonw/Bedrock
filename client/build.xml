@@ -32,8 +32,17 @@
         <mkdir dir="${target-dir}"/>
         <concat destfile="${target-dir}/${concat-target}">
             <!-- file order is important -->
-            <fileset dir="${source-dir}" includes="macros.js"/>
+            <fileset dir="${source-dir}" includes="bedrock.js"/>
             <fileset dir="${source-dir}" includes="log-level.js"/>
+            <fileset dir="${source-dir}" includes="base.js"/>
+            <fileset dir="${source-dir}" includes="utility.js"/>
+            <fileset dir="${source-dir}" includes="http.js"/>
+            <fileset dir="${source-dir}" includes="service-base.js"/>
+            <fileset dir="${source-dir}" includes="service-descriptor.js"/>
+            <fileset dir="${source-dir}" includes="html.js"/>
+            <fileset dir="${source-dir}" includes="combobox.js"/>
+            <fileset dir="${source-dir}" includes="forms.js"/>
+            <fileset dir="${source-dir}" includes="database.js"/>
         </concat>
     </target>
 

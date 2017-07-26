@@ -1,5 +1,5 @@
-let LogLevel = function () {
-    let _ = OBJ;
+Bedrock.LogLevel = function () {
+    let _ = Object.create (null);
 
     _.TRACE = 0;
     _.INFO = 1;
@@ -20,21 +20,21 @@ let LogLevel = function () {
         }
     };
 
-    _.trace = function (message) {
-        this.say (_.TRACE, message);
-    };
-
-    _.info = function (message) {
-        this.say (_.INFO, message);
-    };
-
-    _.warn = function (message) {
-        this.say (_.WARNNG, message);
-    };
-
-    _.error = function (message) {
-        this.say (_.ERROR, message);
-    };
-
     return _;
 } ();
+
+#ifdef DEBUG
+
+#define SET_LOG_LEVEL(logLevel) Bedrock.LogLevel.set (Bedrock.LogLevel.logLevel)
+#define LOG(logLevel, message) Bedrock.LogLevel.say (Bedrock.LogLevel.logLevel, message)
+#define DEBUGGER debugger
+
+#else
+
+#define SET_LOG_LEVEL(logLevel)
+#define LOG(logLevel, message)
+#define DEBUGGER
+
+#endif
+
+SET_LOG_LEVEL(INFO);

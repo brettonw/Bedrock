@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+    <link type="text/css" rel="stylesheet" href="../css/bedrock.css?1"/>
+    <link type="text/css" rel="stylesheet" href="../css/combobox.css?1"/>
+    <link type="text/css" rel="stylesheet" href="../css/database.css?1"/>
+    <link rel="icon" type="image/png" href="../img/icon.png?1"/>
+</head>
+
+<style>
+    div[id="bedrock-database-container"] {
+        display: inline-block;
+        font-family: sans-serif;
+        font-size: 12px;
+        text-align: left;
+        padding: 4px 0px;
+        width: 100%;
+    }
+
+    div[id="bedrock-database-display"] {
+        margin-top: 4px;
+        height: 500px;
+        overflow-y: scroll;
+        border: solid;
+        border-width: 1px;
+        border-radius: 2px;
+        border-color: #bbb;
+        padding: 4px;
+    }
+
+    .bedrock-database-line {
+        padding: 4px;
+        color: black;
+    }
+
+</style>
+
+<body>
+<div id="bedrock-database-container"></div>
+<div id="bedrock-database-display"></div>
+</body>
+</html>
+
+<script src="../js/bedrock.js"></script>
+<script src="../js/http.js"></script>
+<script src="../js/html.js"></script>
+<script src="../js/combobox.js"></script>
+<script src="../js/database.js"></script>
+<script>
+    let Html = Bedrock.Html;
+    let now = new Date ().getTime ();
+    Bedrock.Http.get ("bsc5-short.json?" + now, function (response) {
+        let database = response;
+        console.log ("loaded.");
+        Bedrock.Database.Container.new ({
+            database: database,
+            filterValues: [{ "field": "N" }],
+            onUpdate: function (db) {
+                let bedrockDatabaseDisplay = document.getElementById ("bedrock-database-display");
+
+                Html.removeAllChildren(bedrockDatabaseDisplay);
+                let i = 0;
+                for (let record of db) {
+                    let keys = Object.keys (record).sort ();
+                    let first = true;
+                    let recordHTML = "";
+                    for (let key of keys) {
+                        if (!first) {
+                            recordHTML += ", "
+                        } else {
+                            first = false;
+                        }
+                        recordHTML += "" + key + ": " + record[key] + "";
+                    }
+
+                    Html.addElement (bedrockDatabaseDisplay, "div", { classes: ((++i & 0x01) == 1) ? ["bedrock-database-line", "odd"] : ["bedrock-database-line"] }).innerHTML = recordHTML;
+                }
+            }
+        });
+    });
+</script>

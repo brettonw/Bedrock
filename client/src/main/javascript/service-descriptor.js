@@ -1,4 +1,4 @@
-let ServiceBase = function () {
+Bedrock.ServiceDescriptor = function () {
     let _ = Object.create (null);
 
     // Helper functions for emitting HTML from Javascript

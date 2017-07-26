@@ -1,0 +1,7 @@
+{
+    "connection-string": "mongodb://sonixtester:quietlynow@ec2-52-55-157-78.compute-1.amazonaws.com",
+    "database-name": "policy-test",
+    "collection-names": [
+        "collection-test"
+    ]
+}

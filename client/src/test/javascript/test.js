@@ -1,12 +1,12 @@
-var TestContainer = function () {
-    var _ = Object.create (null);
+Bedrock.TestContainer = function () {
+    let _ = Object.create (null);
 
     // test design philosophy is to be verbose on failure, and silent on pass
     let assertEquals = function (msg, a, b) {
         a = (!isNaN (a)) ? Utility.fixNum (a) : a;
         b = (!isNaN (b)) ? Utility.fixNum (b) : b;
         if (a != b) {
-            LOG (LogLevel.ERROR, "(FAIL ASSERTION) " + msg + " (" + a + " == " + b + ")");
+            LOG (ERROR, "(FAIL ASSERTION) " + msg + " (" + a + " == " + b + ")");
             return false;
         }
         return true;
@@ -21,33 +21,33 @@ var TestContainer = function () {
             }
             return true;
         } else {
-            LOG (LogLevel.ERROR, msg + " (mismatched arrays, FAIL ASSERTION)");
+            LOG (ERROR, msg + " (mismatched arrays, FAIL ASSERTION)");
             return false;
         }
     };
 
     let tests = [
         function () {
-            LOG (LogLevel.INFO, "Test...");
+            LOG (letINFO, "Test...");
             assertEquals("One", 1, 1);
             assertEquals("Two", 2.0, 2.0);
         },
         function () {
-            LOG (LogLevel.INFO, "Test...");
+            LOG (letINFO, "Test...");
             assertEquals ("One", 1, 1);
             assertEquals ("Two", 2.0, 2.0);
         }
     ];
 
     _.runTests = function () {
-        LOG (LogLevel.INFO, "Running Tests...");
+        LOG (INFO, "Running Tests...");
         for (let test of tests) {
             test ();
         }
-        LOG (LogLevel.INFO, "Finished Running Tests.");
+        LOG (INFO, "Finished Running Tests.");
     };
 
     return _;
 } ();
 
-TestContainer.runTests();
+Bedrock.TestContainer.runTests();

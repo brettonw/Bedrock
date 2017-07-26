@@ -1,0 +1,70 @@
+* {
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 0px;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    font-family: sans-serif;
+    font-size: 14px;
+    color: black;
+    text-align: left;
+    width: 100%;
+    max-width: 900px;
+    margin: 5px auto !important;
+    float: none !important;
+}
+
+.page-container-div {
+    border-radius: 6px;
+    border-width: 1px;
+    border-color: #ddd;
+    border-style: solid;
+    background: #fdfdfd;
+    padding: 5px 20px 12px;
+}
+
+.section-content-div {
+    padding: 0px;
+    margin: 0px 0px 10px 15px;
+}
+
+div[id="bedrockContainer"] {
+    display: inline-block;
+    font-family: sans-serif;
+    font-size: 12px;
+    text-align: left;
+    padding: 4px 0px;
+    width: 100%;
+}
+
+.odd {
+    background-color: aliceblue;
+}
+
+h1 {
+    margin: 10px 0px;
+    padding: 0px 0px;
+}
+
+h2 {
+    margin: 8px 0px;
+    padding: 0px 0px;
+}
+
+ul {
+    margin: 0px 15px;
+    padding: 0px 0px;
+}
+
+li {
+    margin: 5px 0px;
+    padding: 0px 0px;
+}
+
