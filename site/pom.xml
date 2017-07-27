@@ -8,10 +8,10 @@
         <version>1.0.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>client</artifactId>
+    <artifactId>site</artifactId>
 
-    <name>Client</name>
-    <description>Sources for the javascript site client and utility library.</description>
+    <name>Site</name>
+    <description>Website deployment for the Bedrock libraries and documentation.</description>
 
     <build>
         <plugins>
@@ -20,13 +20,10 @@
                 <version>1.8</version>
                 <executions>
                     <execution>
-                        <phase>compile</phase>
+                        <phase>deploy</phase>
                         <configuration>
                             <tasks>
                                 <ant antfile="build.xml" target="clean"/>
-                                <ant antfile="build.xml" target="dev"/>
-                                <ant antfile="build.xml" target="clean"/>
-                                <ant antfile="build.xml" target="rel"/>
                             </tasks>
                         </configuration>
                         <goals>
@@ -34,13 +31,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>2.5.2</version>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>

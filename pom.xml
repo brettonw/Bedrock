@@ -69,6 +69,8 @@
         <module>service-base</module>
         <module>test-server</module>
         <module>database</module>
+        <module>client</module>
+        <module>site</module>
     </modules>
 
     <build>
