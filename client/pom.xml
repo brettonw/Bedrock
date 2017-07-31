@@ -22,12 +22,12 @@
                     <execution>
                         <phase>compile</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <ant antfile="build.xml" target="clean"/>
                                 <ant antfile="build.xml" target="dev"/>
                                 <ant antfile="build.xml" target="clean"/>
                                 <ant antfile="build.xml" target="rel"/>
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
