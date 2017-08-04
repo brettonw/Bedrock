@@ -53,7 +53,7 @@ Bedrock.Forms = function () {
             };
 
             // and the input element depending on the type
-            let inputElementId = formName + INPUT + input.name;
+            let inputElementId = formName + "-" + Bedrock.Utility.randomString (8, "0123456789ABCDEF") + INPUT + input.name;
             switch (input.type) {
                 case _.TEXT: {
                     let value = ("value" in input) ? input.value : "";
@@ -124,7 +124,7 @@ Bedrock.Forms = function () {
             }
 
             // and now add the error element
-            inputObject.errorElement = Html.addElement (formDivElement, "div", { id: (formName + ERROR + input.name), class: "form-error", innerHTML: inputObject.required ? "REQUIRED" : "" });
+            inputObject.errorElement = Html.addElement (formDivElement, "div", { id: (formName + "-" + Bedrock.Utility.randomString (8, "0123456789ABCDEF") + ERROR + input.name), class: "form-error", innerHTML: inputObject.required ? "REQUIRED" : "" });
         }
 
         // now add the submit button
