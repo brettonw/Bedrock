@@ -1,12 +1,10 @@
 #! /usr/bin/env bash
 
-# get the project dir
-PROJECT_NAME="bedrock";
-PROJECT_DIR="$(pwd)";
+. bin/common.sh
+
 echo "Deploying $PROJECT_NAME from $PROJECT_DIR";
 
 # ensure the target directory is present and empty
-TARGET_DIR="$PROJECT_DIR/target";
 echo "Located 'target' as $TARGET_DIR";
 
 # deploy the results
@@ -21,10 +19,6 @@ DOCS_DEPLOY="$DEPLOY_DIR/docs";
 rm -f "$DEBUG_DEPLOY";
 rm -f "$RELEASE_DEPLOY";
 rm -rf "$DOCS_DEPLOY";
-
-# declare the targets
-DEBUG_TARGET="$TARGET_DIR/preprocess-debug.js";
-RELEASE_TARGET="$TARGET_DIR/preprocess-release.js";
 
 cp "$DEBUG_TARGET" "$DEBUG_DEPLOY";
 cp "$RELEASE_TARGET" "$RELEASE_DEPLOY.js";
