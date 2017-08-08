@@ -6,4 +6,13 @@
 
 echo "Deploy to S3..."
 dotclean.js .
-aws s3 sync --profile "bretton.wade@gmail.com" . s3://aws-website-bedrock-olhow --delete --include "*" --exclude ".*" --exclude "deploy-to-s3"
+aws s3 sync --profile "bretton.wade@gmail.com" .    \
+    s3://aws-website-bedrock-olhow                  \
+    --delete                                        \
+    --exclude "*"                                   \
+    --include "*.html"                              \
+    --include "js/*"                                \
+    --include "css/*"                               \
+    --include "img/*"                               \
+    --include "docs/*"                              \
+    --include "test/*"
