@@ -38,7 +38,7 @@ echo "Make docs";
 yuidoc -o "$TARGET_DIR/docs";
 
 # preprocess the release build
-RELEASE_MINIFY_TARGET="$TARGET_DIR/preprocess-minify-release.js";
+RELEASE_MINIFY_TARGET="$TARGET_DIR/$PROJECT_NAME-preprocess-release.js";
 echo "Preprocess release build to $RELEASE_MINIFY_TARGET";
 gcc -E -P -CC -xc++ -o"$RELEASE_MINIFY_TARGET" "$CONCAT"
 
