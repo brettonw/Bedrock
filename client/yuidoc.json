@@ -1,9 +1,9 @@
 {
-  "name": "WebGL",
-  "url": "webgl-render.azurewebsites.net",
+  "name": "Bedrock",
+  "url": "bedrock.brettonw.com",
   "version": "1.0.0",
   "options": {
-    "paths": "src/main/javascript",
+    "paths": "target",
     "outdir": "docs",
     "exclude": "",
     "themedir": "/usr/local/lib/node_modules/yuidoc-lucid-theme",

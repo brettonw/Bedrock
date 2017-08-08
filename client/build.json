@@ -1,0 +1,15 @@
+{
+    "files": [
+        "bedrock.js",
+        "log-level.js",
+        "base.js",
+        "utility.js",
+        "http.js",
+        "service-base.js",
+        "service-descriptor.js",
+        "html.js",
+        "combobox.js",
+        "forms.js",
+        "database.js"
+    ]
+}

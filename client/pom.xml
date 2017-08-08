@@ -20,13 +20,36 @@
                 <version>1.8</version>
                 <executions>
                     <execution>
+                        <id>clean</id>
+                        <phase>clean</phase>
+                        <configuration>
+                            <target>
+                                <exec executable="bin/clean.sh"></exec>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>compile</id>
                         <phase>compile</phase>
                         <configuration>
                             <target>
-                                <ant antfile="build.xml" target="clean"/>
-                                <ant antfile="build.xml" target="dev"/>
-                                <ant antfile="build.xml" target="clean"/>
-                                <ant antfile="build.xml" target="rel"/>
+                                <exec executable="bin/compile.sh"></exec>
+                                <exec executable="bin/deploy.sh"></exec>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test</id>
+                        <phase>test</phase>
+                        <configuration>
+                            <target>
+                                <exec executable="bin/test.sh"></exec>
                             </target>
                         </configuration>
                         <goals>
