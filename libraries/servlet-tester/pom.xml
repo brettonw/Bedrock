@@ -3,7 +3,7 @@
 
     <parent>
         <groupId>com.brettonw.bedrock</groupId>
-        <artifactId>bedrock</artifactId>
+        <artifactId>libraries</artifactId>
         <version>1.0.2-SNAPSHOT</version>
     </parent>
 
@@ -24,12 +24,6 @@
             <artifactId>javax.servlet-api</artifactId>
             <!-- Tomcat 8.5 -->
             <version>3.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

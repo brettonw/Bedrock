@@ -13,6 +13,6 @@ buildNumber.properties
 .settings
 .project
 .cache*
-site/docs
+site/docs/*
 site/js/bedroc*.js
 build.txt

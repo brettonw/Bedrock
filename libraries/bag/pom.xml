@@ -3,7 +3,7 @@
 
     <parent>
         <groupId>com.brettonw.bedrock</groupId>
-        <artifactId>bedrock</artifactId>
+        <artifactId>libraries</artifactId>
         <version>1.0.2-SNAPSHOT</version>
     </parent>
 
@@ -14,13 +14,4 @@
     <description>Bag provides two container classes for text-based storage of constrained types in
         an array (BagArray) or as a map (BagObject), with a means of serializing objects to and from
         these container types.</description>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 </project>
