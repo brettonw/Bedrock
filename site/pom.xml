@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>site</artifactId>
-    <packaging>war</packaging>
+    <packaging>pom</packaging>
 
     <name>Site</name>
     <description>Website deployment for the Bedrock libraries and documentation.</description>
