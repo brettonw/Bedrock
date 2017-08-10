@@ -13,6 +13,7 @@ buildNumber.properties
 .settings
 .project
 .cache*
-site/docs/*
-site/js/bedroc*.js
 build.txt
+*/js/bedrock-debug.js
+*/js/bedrock.js
+*/docs/bedrock

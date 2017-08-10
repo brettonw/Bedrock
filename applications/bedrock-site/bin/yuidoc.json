@@ -1,0 +1,9 @@
+{
+  "name": "Bedrock",
+  "url": "bedrock.brettonw.com",
+  "options": {
+    "exclude": "",
+    "themedir": "/usr/local/lib/node_modules/yuidoc-lucid-theme",
+    "helpers": ["/usr/local/lib/node_modules/yuidoc-lucid-theme/helpers/helpers.js"]
+  }
+}

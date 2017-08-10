@@ -60,7 +60,7 @@
     </dependencies>
 
     <modules>
-        <module>test-server</module>
+        <module>bedrock-site</module>
     </modules>
 
     <build>
@@ -84,6 +84,20 @@
                         </manifest>
                     </archive>
                     <archiveClasses>true</archiveClasses>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <configuration>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>
