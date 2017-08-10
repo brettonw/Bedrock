@@ -2,10 +2,6 @@
 
 . bin/clean.sh $1
 
-# make the docs (implicitly uses yuidoc.json)
-echo "Make docs";
-yuidoc --project-version "$PROJECT_VERSION" --quiet --outdir "$DOCS_ARTIFACT" "$SRC_DIR" "$PROJECT_DIR/js";
-
 # ensure the target directory is present and empty
 echo "Compile - create $TARGET_DIR";
 if [ ! -d "$TARGET_DIR" ]; then
