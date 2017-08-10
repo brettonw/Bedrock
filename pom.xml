@@ -46,7 +46,6 @@
     <modules>
         <module>libraries</module>
         <module>applications</module>
-        <module>site</module>
     </modules>
 
     <build>
