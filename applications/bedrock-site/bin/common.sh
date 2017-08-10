@@ -6,6 +6,9 @@ PROJECT_VERSION=$1;
 PROJECT_DIR="$(pwd)";
 echo "Project: $PROJECT_NAME@v$PROJECT_VERSION";
 
+# where are the sources
+SRC_DIR="$PROJECT_DIR/src/main/javascript";
+
 # the final product names
 DEBUG_NAME="$PROJECT_NAME-debug.js";
 RELEASE_NAME="$PROJECT_NAME.js";

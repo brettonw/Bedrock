@@ -8,13 +8,12 @@ yuidoc --project-version "$PROJECT_VERSION" --quiet --outdir "$DOCS_ARTIFACT" "$
 
 # ensure the target directory is present and empty
 echo "Compile - create $TARGET_DIR";
-if [ ! -d $TARGET_DIR ]; then
-    mkdir "$TARGET_DIR"
+if [ ! -d "$TARGET_DIR" ]; then
+    mkdir -p "$TARGET_DIR"
 fi
 
 # concatenate the files list into the target directory
 echo "Compile - concatenate source files";
-SRC_DIR="$PROJECT_DIR/src/main/javascript";
 CONCAT="$TARGET_DIR/$PROJECT_NAME-concat.js";
 pushd "$SRC_DIR";
 cat                                 \

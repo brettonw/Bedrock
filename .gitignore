@@ -14,6 +14,6 @@ buildNumber.properties
 .project
 .cache*
 build.txt
-*/js/bedrock-debug.js
-*/js/bedrock.js
-*/docs/bedrock
+/applications/bedrock-site/src/main/webapp/js/bedrock-debug.js
+/applications/bedrock-site/src/main/webapp/js/bedrock.js
+/applications/bedrock-site/src/main/webapp/docs/bedrock-js
