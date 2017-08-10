@@ -16,4 +16,4 @@ buildNumber.properties
 build.txt
 /applications/bedrock-site/src/main/webapp/js/bedrock-debug.js
 /applications/bedrock-site/src/main/webapp/js/bedrock.js
-/applications/bedrock-site/src/main/webapp/docs/bedrock-js
+/applications/bedrock-site/src/main/webapp/docs/*
