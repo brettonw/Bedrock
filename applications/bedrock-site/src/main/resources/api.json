@@ -30,16 +30,8 @@
         "headers": {
             "description": "Return the request headers as a JSON object.",
             "returns": {
-                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-                "accept-encoding": "gzip, deflate",
-                "accept-language": "en-US,en;q=0.8",
-                "connection": "Keep-Alive",
-                "host": "bedrock.brettonw.com",
-                "referer": "http://bedrock.brettonw.com/",
-                "upgrade-insecure-requests": "1",
-                "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36",
-                "x-forwarded-host": "bedrock.brettonw.com",
-                "x-forwarded-server": "ip-172-31-65-36.ec2.internal"
+                "host": { "description":"name of the host the request is to" },
+                "user-agent": { "description":"Browser user agent" }
             },
             "example": {}
         },
