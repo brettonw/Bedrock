@@ -1,6 +1,6 @@
 ## Description
 
-Bag Test Server is a simple JSON repeater designed to be part of the test suite for com.brettonw.bedrock.
+Bedrock Server hosts Bedrock APIs, and provides a simple JSON repeater designed to be part of the test suite for com.brettonw.bedrock.
 
 Online JSON test servers were proving very unreliable, substantially affecting the software development process as tests randomly failed. We developed this very simple application to run on a default Tomcat installation on localhost to provide a more reliable test service.
 

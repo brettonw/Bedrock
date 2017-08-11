@@ -13,7 +13,7 @@ public class FromUrlTest {
 
     @Test
     public void testGet () throws IOException {
-        BagObject brettonw = BagObjectFrom.url ("http://bag-test-server.brettonw.com/api?event=ip", () -> null);
+        BagObject brettonw = BagObjectFrom.url ("http://bedrock.brettonw.com/api?event=ip", () -> null);
         BagTest.report (brettonw.getString ("response/ip") != null, true, "Got a valid BagObject");
 
         BagArray repos = BagArrayFrom.url ("https://api.github.com/users/brettonw/repos", () -> null);
@@ -22,7 +22,7 @@ public class FromUrlTest {
 
     @Test
     public void testPost () throws IOException {
-        BagObject postResponseBagObject = BagObjectFrom.url ("http://bag-test-server.brettonw.com/api?event=echo",
+        BagObject postResponseBagObject = BagObjectFrom.url ("http://bedrock.brettonw.com/api?event=echo",
                 new BagObject ()
                         .put ("login", "brettonw")
                         .put ("First Name", "Bretton")
@@ -32,7 +32,7 @@ public class FromUrlTest {
         );
         BagTest.report (postResponseBagObject.getString ("post-data/login"), "brettonw", "Got a valid BagObject - 1");
 
-        postResponseBagObject = BagObjectFrom.url ("http://bag-test-server.brettonw.com/api?event=echo",
+        postResponseBagObject = BagObjectFrom.url ("http://bedrock.brettonw.com/api?event=echo",
                 new BagObject ()
                         .put ("login", "brettonw")
                         .put ("First Name", "Bretton")
@@ -41,7 +41,7 @@ public class FromUrlTest {
         );
         BagTest.report (postResponseBagObject.getString ("post-data/login"), "brettonw", "Got a valid BagObject - 2");
 
-        BagArray postResponseBagArray = BagArrayFrom.url ("http://bag-test-server.brettonw.com/api?event=post-data",
+        BagArray postResponseBagArray = BagArrayFrom.url ("http://bedrock.brettonw.com/api?event=post-data",
                 new BagArray ()
                         .add ("login")
                         .add ("brettonw")
@@ -53,7 +53,7 @@ public class FromUrlTest {
         );
         BagTest.report (postResponseBagArray.getString (1), "brettonw", "Got a valid BagArray - 1");
 
-        postResponseBagArray = BagArrayFrom.url ("http://bag-test-server.brettonw.com/api?event=post-data",
+        postResponseBagArray = BagArrayFrom.url ("http://bedrock.brettonw.com/api?event=post-data",
                 new BagArray ()
                         .add ("login")
                         .add ("brettonw")

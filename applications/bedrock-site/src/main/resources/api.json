@@ -34,11 +34,11 @@
                 "accept-encoding": "gzip, deflate",
                 "accept-language": "en-US,en;q=0.8",
                 "connection": "Keep-Alive",
-                "host": "bag-test-server.brettonw.com",
-                "referer": "http://bag-test-server.brettonw.com/",
+                "host": "bedrock.brettonw.com",
+                "referer": "http://bedrock.brettonw.com/",
                 "upgrade-insecure-requests": "1",
                 "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36",
-                "x-forwarded-host": "bag-test-server.brettonw.com",
+                "x-forwarded-host": "bedrock.brettonw.com",
                 "x-forwarded-server": "ip-172-31-65-36.ec2.internal"
             },
             "example": {}

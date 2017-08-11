@@ -9,7 +9,7 @@ public class SourceAdapterHttpTest {
     @Test
     public void testSourceAdapterHttpGet () {
         try {
-            SourceAdapter sourceAdapter = new SourceAdapterHttp ("http://bag-test-server.brettonw.com/api?event=ip");
+            SourceAdapter sourceAdapter = new SourceAdapterHttp ("http://bedrock.brettonw.com/api?event=ip");
             BagObject responseBagObject = BagObjectFrom.string (sourceAdapter.getStringData (), sourceAdapter.getMimeType ());
             BagTest.report (responseBagObject.getString ("response/ip") != null, true, "Got a valid response");
         } catch (IOException exception ){
@@ -24,7 +24,7 @@ public class SourceAdapterHttpTest {
                     .put ("login", "brettonw")
                     .put ("First Name", "Bretton")
                     .put ("Last Name", "Wade");
-            SourceAdapter sourceAdapter = new SourceAdapterHttp ("http://bag-test-server.brettonw.com/api?event=post-data", bagObject, MimeType.JSON);
+            SourceAdapter sourceAdapter = new SourceAdapterHttp ("http://bedrock.brettonw.com/api?event=post-data", bagObject, MimeType.JSON);
             BagObject responseBagObject = BagObjectFrom.string (sourceAdapter.getStringData (), sourceAdapter.getMimeType ());
             BagTest.report (responseBagObject.getString ("login"), "brettonw", "Got a valid response");
         } catch (IOException exception ){
