@@ -2,6 +2,7 @@ package com.brettonw.bedrock.database;
 
 import com.brettonw.bedrock.bag.BagArray;
 import com.brettonw.bedrock.bag.BagObject;
+import com.brettonw.bedrock.bag.BagObjectFrom;
 import com.brettonw.bedrock.bag.formats.MimeType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -270,7 +271,6 @@ public class MongoDatabase_Test {
 
     @Test
     public void testRemoteConfiguration () throws Exception {
-        /*
         BagObject configuration = BagObjectFrom.resource (MongoDatabase_Test.class, "/configuration.json");
 
         Map<String, MongoDatabase> collections = MongoDatabase.connect (configuration);
@@ -282,7 +282,6 @@ public class MongoDatabase_Test {
         } catch (Exception exception) {
             throw (exception);
         }
-        */
     }
 
     @Test
