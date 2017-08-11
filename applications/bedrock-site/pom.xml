@@ -71,9 +71,9 @@
                         <phase>deploy</phase>
                         <configuration>
                             <target>
-                                <!--
-                                <exec executable="deploy-to-s3" failonerror="true"></exec>
-                                -->
+                                <exec executable="eb" failonerror="true">
+                                    <arg value="deploy" />
+                                </exec>
                             </target>
                         </configuration>
                         <goals>
