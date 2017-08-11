@@ -2,6 +2,7 @@ Bedrock.ComboBox = function () {
     let _ = Object.create(Bedrock.Base);
 
     let Html = Bedrock.Html;
+    let Utility = Bedrock.Utility;
 
     let indexById = {};
 
@@ -58,9 +59,9 @@ Bedrock.ComboBox = function () {
                         }
 
                         // copy a few optional values if they are present
-                        Bedrock.copyIf ("placeholder", parameters, inputElementParameters);
-                        Bedrock.copyIf ("style", parameters, inputElementParameters);
-                        Bedrock.copyIf ("onchange", parameters, inputElementParameters);
+                        Utility.copyIf ("placeholder", parameters, inputElementParameters);
+                        Utility.copyIf ("style", parameters, inputElementParameters);
+                        Utility.copyIf ("onchange", parameters, inputElementParameters);
 
                         // now create the input element
                         inputElement = Html.addElement (parentElement, "input", inputElementParameters);
