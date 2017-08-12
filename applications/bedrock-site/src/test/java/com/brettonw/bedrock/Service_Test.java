@@ -12,15 +12,15 @@ import java.io.IOException;
 import static com.brettonw.bedrock.service.Keys.*;
 import static org.junit.Assert.assertTrue;
 
-public class TestServer_Test extends TestServer {
-    private static final Logger log = LogManager.getLogger (TestServer_Test.class);
+public class Service_Test extends Service {
+    private static final Logger log = LogManager.getLogger (Service_Test.class);
 
     public static final String ECHO = "echo";
     public static final String HEADERS = "headers";
 
     Tester tester;
 
-    public TestServer_Test () {
+    public Service_Test () {
         tester = new Tester (this);
     }
 

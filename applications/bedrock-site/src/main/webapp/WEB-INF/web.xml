@@ -4,11 +4,11 @@
 
 <web-app>
     <servlet>
-        <servlet-name>bag-test-server</servlet-name>
-        <servlet-class>com.brettonw.bedrock.TestServer</servlet-class>
+        <servlet-name>bedrock-service</servlet-name>
+        <servlet-class>com.brettonw.bedrock.Service</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>bag-test-server</servlet-name>
+        <servlet-name>bedrock-service</servlet-name>
         <url-pattern>/api</url-pattern>
     </servlet-mapping>
 </web-app>

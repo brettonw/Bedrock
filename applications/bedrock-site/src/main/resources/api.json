@@ -1,6 +1,6 @@
 {
-    "name": "Bedrock Server",
-    "description": "The Bedrock Server is a simple JSON repeater designed to demonstrate a simple API, and be used in test suites requiring JSON responses from a remote host, such as com.brettonw.bedrock.",
+    "name": "Bedrock Service",
+    "description": "The Bedrock Service is a simple JSON repeater designed to demonstrate a simple API, and be used in test suites requiring JSON responses from a remote host, such as com.brettonw.bedrock.",
     "events": {
         "version": {
             "description": "Return the build version for the current WAR.",

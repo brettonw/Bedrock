@@ -10,10 +10,10 @@ import java.util.Enumeration;
 
 import static com.brettonw.bedrock.service.Keys.POST_DATA;
 
-public class TestServer extends Base {
+public class Service extends Base {
     public static final String IP = "ip";
 
-    public TestServer () {
+    public Service () {
     }
 
     public void handleEventEcho (Event event) {
