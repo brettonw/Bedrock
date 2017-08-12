@@ -10,6 +10,8 @@ rm -rf "$TARGET_DIR";
 # ensure the built artifacts have been removed
 rm -f "$DEBUG_ARTIFACT";
 rm -f "$RELEASE_ARTIFACT";
+rm -f "$DEBUG_ARTIFACT_FINAL";
+rm -f "$RELEASE_ARTIFACT_FINAL";
 rm -rf "$DOCS_ARTIFACT";
 
 # remove other doc dirs
