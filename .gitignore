@@ -16,5 +16,6 @@ buildNumber.properties
 build.txt
 /applications/bedrock-site/src/main/webapp/js/bedrock-debug.js
 /applications/bedrock-site/src/main/webapp/js/bedrock.js
+*SNAPSHOT.js
 /applications/bedrock-site/src/main/webapp/docs/*
 !/applications/bedrock-site/.elasticbeanstalk/config.yml
