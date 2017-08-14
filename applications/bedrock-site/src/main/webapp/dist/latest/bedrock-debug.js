@@ -1,7 +1,7 @@
 "use strict;"
 
 let Bedrock = Object.create (null);
-Bedrock.version = "1.1.4";
+Bedrock.version = "xxx";
 Bedrock.LogLevel = function () {
     let _ = Object.create (null);
 
