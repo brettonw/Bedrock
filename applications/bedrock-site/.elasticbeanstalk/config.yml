@@ -1,0 +1,20 @@
+branch-defaults:
+  default:
+    environment: Bedrock-env
+    group_suffix: null
+global:
+  application_name: Bedrock
+  branch: null
+  default_ec2_keyname: brettonw-aws-eb
+  default_platform: Tomcat 8 Java 8
+  default_region: us-east-1
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: bretton.wade@gmail.com
+  repository: null
+  sc: null
+  workspace_type: Application
+deploy:
+  artifact: target/bedrock-site.war
