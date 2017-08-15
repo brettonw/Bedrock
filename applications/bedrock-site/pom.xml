@@ -43,9 +43,6 @@
                                 <exec executable="bin/generate-sources.sh" failonerror="true">
                                     <arg value="${project.version}" />
                                 </exec>
-                                <exec executable="bin/generate-docs.sh" failonerror="true">
-                                    <arg value="${project.version}" />
-                                </exec>
                             </target>
                         </configuration>
                         <goals>

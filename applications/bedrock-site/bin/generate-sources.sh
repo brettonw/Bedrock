@@ -2,14 +2,13 @@
 
 . bin/clean.sh $1
 
-# ensure the target directory and distribution directory are present and empty
-echo "Compile - create $TARGET_DIR";
+# ensure the target directory is are present
+echo "Generate Sources - create $TARGET_DIR";
 if [ ! -d "$TARGET_DIR" ]; then
     mkdir -p "$TARGET_DIR"
 fi
 mkdir -p "$ARTIFACT_VERSION_DIR";
-mkdir -p "$ARTIFACT_LATEST_DIR";
-echo "Created artifact dirs at $ARTIFACT_DIR";
+echo "Generate Sources - Created artifact dirs at $ARTIFACT_VERSION_DIR";
 
 
 # generate the version file
@@ -17,7 +16,7 @@ VERSION_FILE="$TARGET_DIR/version.js";
 echo "Bedrock.version = \"$PROJECT_VERSION\";" > "$VERSION_FILE";
 
 # concatenate the files list into the target directory
-echo "Compile - concatenate source files";
+echo "Generate Sources - concatenate source files";
 CONCAT="$TARGET_DIR/$PROJECT_NAME-concat.js";
 pushd "$SRC_DIR";
 cat                                 \
@@ -37,18 +36,51 @@ cat                                 \
 popd;
 
 # preprocess the debug build out to the artifact
-echo "Preprocess debug build to $DEBUG_ARTIFACT_VERSION";
-gcc -E -P -CC -xc++ -DDEBUG -o"$DEBUG_ARTIFACT_VERSION" "$CONCAT"
-cp "$DEBUG_ARTIFACT_VERSION" "$DEBUG_ARTIFACT_LATEST";
+echo "Generate Sources - Preprocess debug build to $DEBUG_ARTIFACT";
+gcc -E -P -CC -xc++ -DDEBUG -o"$DEBUG_ARTIFACT" "$CONCAT"
 
 # preprocess the release build
 PREPROCESS_RELEASE_TARGET="$TARGET_DIR/preprocess-$PROJECT_NAME-release.js";
-echo "Preprocess release build to $PREPROCESS_RELEASE_TARGET";
+echo "Generate Sources - Preprocess release build to $PREPROCESS_RELEASE_TARGET";
 gcc -E -P -CC -xc++ -o"$PREPROCESS_RELEASE_TARGET" "$CONCAT"
 
 # minify the release build
-echo "Minify release build to $RELEASE_ARTIFACT";
-uglifyjs "$PREPROCESS_RELEASE_TARGET" -o "$RELEASE_ARTIFACT_VERSION"
-cp "$RELEASE_ARTIFACT_VERSION" "$RELEASE_ARTIFACT_LATEST";
+echo "Generate Sources - Minify release build to $RELEASE_ARTIFACT";
+uglifyjs "$PREPROCESS_RELEASE_TARGET" -o "$RELEASE_ARTIFACT"
 
-echo "Done.";
+echo "Generate Sources - Done";
+
+# and now build the docs
+echo "-----";
+echo "Generate Docs - Start";
+
+# ensure the distribution directories are present and empty
+DOCS_ARTIFACT_VERSION_DIR="$ARTIFACT_VERSION_DIR/docs";
+if [ ! -d "$DOCS_ARTIFACT_VERSION_DIR" ]; then
+    mkdir -p "$DOCS_ARTIFACT_VERSION_DIR";
+fi;
+
+echo "Generate Docs - Created doc artifact dirs at $DOCS_ARTIFACT_VERSION_DIR";
+
+# make the docs (implicitly uses yuidoc.json)
+echo "Generate Docs - Make docs";
+yuidoc --project-version "$PROJECT_VERSION" --quiet --outdir "$DOCS_ARTIFACT_VERSION_DIR/$PROJECT_NAME" "$SRC_DIR";
+
+# copy docs from dependent projects (maven aggregation goals don't seem to work for this)
+echo "Generate Docs - Copy library docs";
+pushd "$PROJECT_DIR/../../libraries";
+for LIBRARY_NAME in *; do
+    if [ -d "$LIBRARY_NAME" ]; then
+        echo "$LIBRARY_NAME";
+        cp -r "$LIBRARY_NAME/target/apidocs" "$DOCS_ARTIFACT_VERSION_DIR/$LIBRARY_NAME";
+    fi
+done
+popd;
+
+echo "Generate Docs - Done";
+
+echo "-----";
+echo "Generate All - Update \"latest\" from $PROJECT_VERSION";
+cp -r "$ARTIFACT_VERSION_DIR" "$ARTIFACT_LATEST_DIR"
+
+echo "Generate All - Done";
