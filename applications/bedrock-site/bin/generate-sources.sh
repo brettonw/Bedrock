@@ -10,13 +10,12 @@ fi
 mkdir -p "$ARTIFACT_VERSION_DIR";
 echo "Generate Sources - Created artifact dirs at $ARTIFACT_VERSION_DIR";
 
-
 # generate the version file
 VERSION_FILE="$TARGET_DIR/version.js";
 echo "Bedrock.version = \"$PROJECT_VERSION\";" > "$VERSION_FILE";
 
 # concatenate the files list into the target directory
-echo "Generate Sources - concatenate source files";
+echo "Generate JS - concatenate source files";
 CONCAT="$TARGET_DIR/$PROJECT_NAME-concat.js";
 pushd "$SRC_DIR";
 cat                                 \
@@ -35,20 +34,33 @@ cat                                 \
     > "$CONCAT";
 popd;
 
+
 # preprocess the debug build out to the artifact
-echo "Generate Sources - Preprocess debug build to $DEBUG_ARTIFACT";
+echo "Generate JS - Preprocess debug build to $DEBUG_ARTIFACT";
 gcc -E -P -CC -xc++ -DDEBUG -o"$DEBUG_ARTIFACT" "$CONCAT"
 
 # preprocess the release build
 PREPROCESS_RELEASE_TARGET="$TARGET_DIR/preprocess-$PROJECT_NAME-release.js";
-echo "Generate Sources - Preprocess release build to $PREPROCESS_RELEASE_TARGET";
+echo "Generate JS - Preprocess release build to $PREPROCESS_RELEASE_TARGET";
 gcc -E -P -CC -xc++ -o"$PREPROCESS_RELEASE_TARGET" "$CONCAT"
 
 # minify the release build
-echo "Generate Sources - Minify release build to $RELEASE_ARTIFACT";
+echo "Generate JS - Minify release build to $RELEASE_ARTIFACT";
 uglifyjs "$PREPROCESS_RELEASE_TARGET" -o "$RELEASE_ARTIFACT"
 
-echo "Generate Sources - Done";
+echo "Generate JS - Done";
+
+# copy the CSS file
+echo "-----";
+echo "Generate CSS";
+cp "$SRC_DIR/bedrock.css" "$ARTIFACT_VERSION_DIR";
+echo "Generate CSS - Done";
+
+# copy the IMG directory
+echo "-----";
+echo "Generate IMG";
+cp -r "$SRC_DIR/img" "$ARTIFACT_VERSION_DIR";
+echo "Generate IMG - Done";
 
 # and now build the docs
 echo "-----";
@@ -80,7 +92,7 @@ popd;
 echo "Generate Docs - Done";
 
 echo "-----";
-echo "Generate All - Update \"latest\" from $PROJECT_VERSION";
+echo "Generate Sources - Update \"latest\" from $PROJECT_VERSION";
 cp -r "$ARTIFACT_VERSION_DIR" "$ARTIFACT_LATEST_DIR"
 
-echo "Generate All - Done";
+echo "Generate Sources - Done";
