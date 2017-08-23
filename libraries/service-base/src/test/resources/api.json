@@ -42,6 +42,11 @@
         "-dash-name": {
             "description": "A name that starts with a dash, and has a dash, so it should resolve to 'handleEventDashName'",
             "example": {}
+        },
+        "nope": {
+            "description": "Nope.",
+            "strict": false,
+            "example": {}
         }
     }
 }

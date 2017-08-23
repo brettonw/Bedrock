@@ -13,11 +13,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.brettonw.bedrock.service.Keys.*;
+import static java.util.stream.Collectors.joining;
 
 public class Base extends HttpServlet {
     private static final Logger log = LogManager.getLogger (Base.class);
@@ -41,16 +45,16 @@ public class Base extends HttpServlet {
         return null;
     }
 
-    private final Map<String, Handler> handlers;
+    private final Map<String, Handler> handlers = new HashMap<> ();
     protected BagObject api;
 
     protected Base () {
-        // try to load the schema and wire up the handlers
-        handlers = new HashMap<> ();
-        if ((api = BagObjectFrom.resource (getClass (), "/api.json")) != null) {
-            // if the API didn't supply a name, add one
-            api.put (NAME, getName ());
+        this ("/api.json");
+    }
 
+    protected Base (String apiResourceName) {
+        // try to load the schema and wire up the handlers
+        if ((api = BagObjectFrom.resource (getClass (), apiResourceName)) != null) {
             // add a 'help' event if one isn't supplied
             String help = Key.cat (EVENTS, HELP);
             if (! api.has (help)) {
@@ -66,9 +70,35 @@ public class Base extends HttpServlet {
             for (String eventName : eventNames) {
                 install (eventName);
             }
+
         } else {
             log.error ("Failed to load API");
+            api = BagObject.open (DESCRIPTION, "BOOTSTRAP").add (EVENTS, new BagObject ());
+
+            // bootstrap... loop over all of the methods that match the target signature and install
+            // them as bootstraped generics
+            Method methods[] = this.getClass ().getMethods ();
+            for (Method method : methods) {
+                // if the method signature matches the event handler signature
+                if ((method.getName ().startsWith (Handler.HANDLER_PREFIX)) && (method.getParameterCount () == 1) && (method.getParameterTypes()[0] == Event.class)) {
+                    // compute the event name (dash syntax), and check if we have it already
+                    String[] elements = method.getName ().substring (Handler.HANDLER_PREFIX.length ()).split("(?=[A-Z])");
+                    Stream<String> stream = Arrays.stream (elements).map (e -> e.toLowerCase ());
+                    String eventName = stream.collect(joining("-"));
+                    log.info ("Found event handler for '" + eventName + "'");
+                    install (eventName);
+
+                    // add a default api description so it passes validation
+                    api.put (Key.cat (EVENTS, eventName), BagObject
+                            .open (DESCRIPTION, "Bootstrap " + method.getName ())
+                            .add (STRICT, false)
+                    );
+                }
+            }
         }
+
+        // if the API didn't supply a name, add one
+        api.put (NAME, getName ());
     }
 
     public String getName () {
@@ -209,6 +239,7 @@ public class Base extends HttpServlet {
                 event.error ("Missing '" + EVENT + "'");
             }
         } else {
+            // XXX what are the circumstances under which this happens? I ask because it shouldn't
             event.error ("Missing API");
         }
         return event;
