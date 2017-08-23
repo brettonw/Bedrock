@@ -134,10 +134,10 @@ public class Base_Test extends Base {
         assertTrue (response.getString (STATUS).equals (OK));
 
         // make a dummy object that should match the response, and verify it does
-        BagObject verify = BagObjectFrom.resource (Base_Test.class, "/api.json");
+        BagObject verify = BagObjectFrom.resource (Base_Test.class, "/schema.json");
         String help = Key.cat (EVENTS, HELP);
-        verify.put (help, api.getObject (help));
-        verify.put (NAME, api.getObject (NAME));
+        verify.put (help, schema.getObject (help));
+        verify.put (NAME, schema.getObject (NAME));
         assertTrue (response.getBagObject (RESPONSE).equals (verify));
     }
 
@@ -178,7 +178,7 @@ public class Base_Test extends Base {
 
     @Test
     public void testDashName () throws IOException {
-        // the test api description actually uses "-dash-name" as the event name (including the
+        // the test schema actually uses "-dash-name" as the event name (including the
         // leading dash - so that's important
         BagObject query = BagObject.open (EVENT, "-dash-name");
         assertGet (tester.bagObjectFromGet (query), query);

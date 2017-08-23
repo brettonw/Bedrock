@@ -123,12 +123,8 @@ public class Bootstrap_Test extends Base {
         BagObject response = tester.bagObjectFromGet (query);
         assertTrue (response.getString (STATUS).equals (OK));
 
-        // make a dummy object that should match the response, and verify it does
-        BagObject verify = BagObjectFrom.resource (Bootstrap_Test.class, "/api.json");
-        String help = Key.cat (EVENTS, HELP);
-        verify.put (help, api.getObject (help));
-        verify.put (NAME, api.getObject (NAME));
-        assertTrue (response.getBagObject (RESPONSE).equals (api));
+        // make sure the response matches the schema
+        assertTrue (response.getBagObject (RESPONSE).equals (schema));
     }
 
     @Test
@@ -153,8 +149,6 @@ public class Bootstrap_Test extends Base {
     public void testVersion () throws IOException {
         BagObject query = BagObject.open (EVENT, VERSION);
         BagObject response = tester.bagObjectFromGet (query);
-        //assertTrue (response.getString (Key.cat (RESPONSE, VERSION)).equals (UNKNOWN));
-        //assertTrue (response.getString (Key.cat (RESPONSE, NAME)).equals ("ServletTester"));
         assertTrue (response.getString (STATUS).equals (OK));
     }
 

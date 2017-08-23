@@ -46,34 +46,37 @@ public class Base extends HttpServlet {
     }
 
     private final Map<String, Handler> handlers = new HashMap<> ();
-    protected BagObject api;
+    protected BagObject schema;
 
     protected Base () {
-        this ("/api.json");
+        this ("/schema.json");
     }
 
-    protected Base (String apiResourceName) {
+    protected Base (String schemaResourceName) {
         // try to load the schema and wire up the handlers
-        if ((api = BagObjectFrom.resource (getClass (), apiResourceName)) != null) {
+        if ((schema = BagObjectFrom.resource (getClass (), schemaResourceName)) != null) {
             // add a 'help' event if one isn't supplied
             String help = Key.cat (EVENTS, HELP);
-            if (! api.has (help)) {
-                api.put (help, BagObject
-                        .open (DESCRIPTION,"Get the API description.")
-                        .put (EXAMPLE, new BagObject ())
-                );
+            if (! schema.has (help)) {
+                schema.put (help, BagObjectFrom.resource (getClass (), "/help.json"));
             }
 
-            // autowire... loop over the elements in the schema, looking for functions that match
-            // the signature, "handleEventXxxYyy"
-            String[] eventNames = api.getBagObject (EVENTS).keys ();
+            // autowire... install the events in the schema - it is treated as authoritative so that
+            // only specified events are exposed
+            String[] eventNames = schema.getBagObject (EVENTS).keys ();
             for (String eventName : eventNames) {
                 install (eventName);
             }
 
         } else {
-            log.error ("Failed to load API");
-            api = BagObject.open (DESCRIPTION, "BOOTSTRAP").add (EVENTS, new BagObject ());
+            log.error ("Starting service with no schema.");
+            schema = BagObjectFrom.resource (getClass (), "/bootstrap.json");
+
+            // add the 'help' event if one isn't supplied
+            String help = Key.cat (EVENTS, HELP);
+            if (! schema.has (help)) {
+                schema.put (help, BagObjectFrom.resource (getClass (), "/help.json"));
+            }
 
             // bootstrap... loop over all of the methods that match the target signature and install
             // them as bootstraped generics
@@ -81,32 +84,37 @@ public class Base extends HttpServlet {
             for (Method method : methods) {
                 // if the method signature matches the event handler signature
                 if ((method.getName ().startsWith (Handler.HANDLER_PREFIX)) && (method.getParameterCount () == 1) && (method.getParameterTypes()[0] == Event.class)) {
-                    // compute the event name (dash syntax), and check if we have it already
+                    // compute the event name (dash syntax), and install the handler
                     String[] elements = method.getName ().substring (Handler.HANDLER_PREFIX.length ()).split("(?=[A-Z])");
                     Stream<String> stream = Arrays.stream (elements).map (e -> e.toLowerCase ());
                     String eventName = stream.collect(joining("-"));
                     log.info ("Found event handler for '" + eventName + "'");
                     install (eventName);
 
-                    // add a default api description so it passes validation
-                    api.put (Key.cat (EVENTS, eventName), BagObject
-                            .open (DESCRIPTION, "Bootstrap " + method.getName ())
-                            .add (STRICT, false)
-                    );
+                    // add a default schema entry if one isn't in the bootstrap so it passes
+                    // basic validation
+                    String schemaName = Key.cat (EVENTS, eventName);
+                    if (!schema.has (schemaName)) {
+                        log.info ("Adding bootstrap schema entry for '" + eventName + "'");
+                        schema.put (schemaName, BagObject
+                                .open (DESCRIPTION, "Bootstrap " + method.getName ())
+                                .add (STRICT, false)
+                        );
+                    }
                 }
             }
         }
 
-        // if the API didn't supply a name, add one
-        api.put (NAME, getName ());
+        // if the schema didn't supply a name, add one
+        schema.put (NAME, getName ());
     }
 
     public String getName () {
         String name = null;
 
         // if the designer supplied a name...
-        if ((name == null) && (api != null) && (api.has (NAME))) {
-            name = api.getString (NAME);
+        if ((name == null) && (schema != null) && (schema.has (NAME))) {
+            name = schema.getString (NAME);
         }
 
         // or if the POM has a name
@@ -181,12 +189,12 @@ public class Base extends HttpServlet {
 
     private Event handleEvent (BagObject query, HttpServletRequest request) {
         Event event = new Event (query, request);
-        if (api != null) {
+        if (schema != null) {
             // create the event object around the request parameters, and validate that it is
             // a known event
             String eventName = event.getEventName ();
             if (eventName != null) {
-                BagObject eventSpecification = api.getBagObject (Key.cat (EVENTS, eventName));
+                BagObject eventSpecification = schema.getBagObject (Key.cat (EVENTS, eventName));
                 if (eventSpecification != null) {
                     // validate the query parameters
                     BagObject parameterSpecification = eventSpecification.getBagObject (PARAMETERS);
@@ -263,7 +271,7 @@ public class Base extends HttpServlet {
     }
 
     public void handleEventHelp (Event event) {
-        event.ok (api);
+        event.ok (schema);
     }
 
     public void handleEventVersion (Event event) {
