@@ -18,13 +18,6 @@
             "description": "Handle multiple events in array format.",
             "parameters": {
                 "post-data": { "description": "An array of other events", "required": true }
-            },
-            "example": {
-                "post-data": [
-                    { "event": "ok" },
-                    { "event": "version" },
-                    { "event": "ok" }
-                ]
             }
         }
     }

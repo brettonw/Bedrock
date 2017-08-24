@@ -18,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import static com.brettonw.bedrock.service.Keys.*;
 import static java.util.stream.Collectors.joining;
@@ -53,10 +52,11 @@ public class Base extends HttpServlet {
     }
 
     protected Base (String schemaResourceName) {
+        String help = Key.cat (EVENTS, HELP);
+
         // try to load the schema and wire up the handlers
         if ((schema = BagObjectFrom.resource (getClass (), schemaResourceName)) != null) {
             // add a 'help' event if one isn't supplied
-            String help = Key.cat (EVENTS, HELP);
             if (! schema.has (help)) {
                 schema.put (help, BagObjectFrom.resource (getClass (), "/help.json"));
             }
@@ -71,12 +71,7 @@ public class Base extends HttpServlet {
         } else {
             log.error ("Starting service with no schema.");
             schema = BagObjectFrom.resource (getClass (), "/bootstrap.json");
-
-            // add the 'help' event if one isn't supplied
-            String help = Key.cat (EVENTS, HELP);
-            if (! schema.has (help)) {
-                schema.put (help, BagObjectFrom.resource (getClass (), "/help.json"));
-            }
+            schema.put (help, BagObjectFrom.resource (getClass (), "/help.json"));
 
             // bootstrap... loop over all of the methods that match the target signature and install
             // them as bootstraped generics
@@ -86,9 +81,7 @@ public class Base extends HttpServlet {
                 if ((method.getName ().startsWith (Handler.HANDLER_PREFIX)) && (method.getParameterCount () == 1) && (method.getParameterTypes()[0] == Event.class)) {
                     // compute the event name (dash syntax), and install the handler
                     String[] elements = method.getName ().substring (Handler.HANDLER_PREFIX.length ()).split("(?=[A-Z])");
-                    Stream<String> stream = Arrays.stream (elements).map (e -> e.toLowerCase ());
-                    String eventName = stream.collect(joining("-"));
-                    log.info ("Found event handler for '" + eventName + "'");
+                    String eventName = Arrays.stream (elements).map (e -> e.toLowerCase ()).collect(joining("-"));
                     install (eventName);
 
                     // add a default schema entry if one isn't in the bootstrap so it passes
@@ -257,7 +250,7 @@ public class Base extends HttpServlet {
         try {
             Handler handler = new Handler (eventName, this);
             handlers.put (handler.getEventName (), handler);
-            log.info ("Installed '" + handler.getMethodName () + "'");
+            log.info ("Installed handler '" + handler.getMethodName () + "' for '" + eventName + "'");
             return true;
         } catch (NoSuchMethodException exception) {
             log.error ("Install '" + EVENT + "' failed for (" + eventName + ")", exception);
