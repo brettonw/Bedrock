@@ -1,0 +1,54 @@
+{
+    "schema": {
+        "description": "Test API for ServletBase",
+        "events": {
+            "version": {
+                "description": "Return the build version for the current WAR.",
+                "example": {}
+            },
+            "multiple": {
+                "description": "Handle multiple events in array format.",
+                "parameters": {
+                    "post-data": { "description": "An array of other events", "required": true }
+                }
+            },
+            "hello": {
+                "description": "Say Hello.",
+                "strict": true,
+                "parameters": {
+                    "param1": { "description": "1st Parameter", "required": true },
+                    "param2": { "description": "2nd Parameter", "required": true },
+                    "param3": { "description": "3rd Parameter", "required": false }
+                },
+                "example": { "param1": "xxx", "param2": "yyy" }
+            },
+            "goodbye": {
+                "description": "Say Goodbye.",
+                "parameters": {
+                    "param1": {"description": "1st Parameter", "required": true },
+                    "param2": {"description": "2nd Parameter", "required": true },
+                    "param3": {"description": "3rd Parameter"},
+                    "post-data/test1": {"description": "a list of other stuff", "required": true}
+                }
+            },
+            "ok": {
+                "description": "Ok.",
+                "strict": false,
+                "example": {}
+            },
+            "no-handler": {
+                "description": "An event with no handler, passes validation, but can't be invoked.",
+                "example": {}
+            },
+            "-dash-name": {
+                "description": "A name that starts with a dash, and has a dash, so it should resolve to 'handleEventDashName'",
+                "example": {}
+            },
+            "nope": {
+                "description": "Nope.",
+                "strict": false,
+                "example": {}
+            }
+        }
+    }
+}

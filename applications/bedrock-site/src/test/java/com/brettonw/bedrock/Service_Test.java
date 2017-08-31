@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static com.brettonw.bedrock.service.Keys.*;
 import static org.junit.Assert.assertTrue;
 
 public class Service_Test extends Service {

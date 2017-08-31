@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static com.brettonw.bedrock.service.Keys.*;
+import static com.brettonw.bedrock.service.Base.*;
 
 @Data @RequiredArgsConstructor
 public class Event {

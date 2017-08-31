@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
@@ -109,5 +110,17 @@ public class Test_Tester extends HttpServlet {
     public void testPostByString () throws IOException {
         BagObject postData = BagObjectFrom.resource (getClass (), "/testPost.json");
         doPostAssert (servletTester.bagObjectFromPost (BagObject.open (COMMAND_KEY, TEST_KEY).toString (MimeType.URL), postData), postData);
+    }
+
+    @Test
+    public void testServletContextPaths () throws IOException {
+        String resourcePath = "/WEB-INF/configuration.json";
+        String path = getServletContext ().getRealPath (resourcePath);
+        log.info ("configuration.json path = " + path);
+
+        InputStream resourceAsStream = getServletContext ().getResourceAsStream (resourcePath);
+        BagObject configuration = BagObjectFrom.inputStream (resourceAsStream);
+        assertTrue (configuration != null);
+        assertTrue (configuration.getString (STATUS_KEY).equals (OK_KEY));
     }
 }

@@ -1,13 +1,22 @@
 package com.brettonw.bedrock.servlet.test;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.servlet.*;
 import javax.servlet.descriptor.JspConfigDescriptor;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class TestServletContext implements ServletContext {
+    private static final Logger log = LogManager.getLogger (TestServletContext.class);
+
     Map<String, Object> attributes;
 
     public TestServletContext () {
@@ -61,7 +70,12 @@ public class TestServletContext implements ServletContext {
 
     @Override
     public InputStream getResourceAsStream (String s) {
-        return null;
+        try {
+            return new FileInputStream (new File (getRealPath (s)));
+        } catch (FileNotFoundException exception) {
+            log.error (exception);
+            return null;
+        }
     }
 
     @Override
@@ -106,7 +120,22 @@ public class TestServletContext implements ServletContext {
 
     @Override
     public String getRealPath (String s) {
-        return null;
+        String root = Paths.get (".").toAbsolutePath ().normalize ().toString ();
+
+        // the purpose of this library is to provide testing of live web servlets. They will be under
+        // "src/main/webapp", but in some cases that location might not be part of the project, in
+        // which case we want a reasonable fallback
+
+        // first try to see if the requested reource is available in "src/main/webapp"
+        File webappFile = new File (new File (root, "src/main/webapp"), s);
+        if (webappFile.exists ()) {
+            return webappFile.toString ();
+        }
+
+        // otherwise see if it's under "src/test" somewhere
+        File testFile = new File (root, "src/test");
+        String fullPath = new File (testFile, s).toString ();
+        return fullPath;
     }
 
     @Override

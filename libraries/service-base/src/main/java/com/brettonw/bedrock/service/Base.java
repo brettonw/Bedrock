@@ -19,11 +19,34 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.brettonw.bedrock.service.Keys.*;
 import static java.util.stream.Collectors.joining;
 
 public class Base extends HttpServlet {
     private static final Logger log = LogManager.getLogger (Base.class);
+
+    public static final String CONTENT_TYPE = "Content-Type";
+    public static final String DESCRIPTION = "description";
+    public static final String DISPLAY_NAME = "display-name";
+    public static final String ERROR = "error";
+    public static final String EVENT = "event";
+    public static final String EVENTS = "events";
+    public static final String EXAMPLE = "example";
+    public static final String HELP = "help";
+    public static final String MULTIPLE = "multiple";
+    public static final String NAME = "name";
+    public static final String OK = "ok";
+    public static final String PARAMETERS = "parameters";
+    public static final String POM_NAME = "pom-name";
+    public static final String POM_VERSION = "pom-version";
+    public static final String POST_DATA = "post-data";
+    public static final String QUERY = "query";
+    public static final String REQUIRED = "required";
+    public static final String RESPONSE = "response";
+    public static final String SERVLET = "servlet";
+    public static final String STATUS = "status";
+    public static final String STRICT = "strict";
+    public static final String VERSION = "version";
+    public static final String SCHEMA = "schema";
 
     private static ServletContext context;
 
@@ -45,68 +68,103 @@ public class Base extends HttpServlet {
     }
 
     private final Map<String, Handler> handlers = new HashMap<> ();
-    protected BagObject schema;
 
-    protected Base () {
-        this ("/schema.json");
+    private String configurationResourcePath = "/WEB-INF/configuration.json";
+    private BagObject configuration;
+    private BagObject schema;
+
+    protected BagObject getSchema () {
+
+        return schema;
     }
 
-    protected Base (String schemaResourceName) {
-        String help = Key.cat (EVENTS, HELP);
-
-        // try to load the schema and wire up the handlers
-        if ((schema = BagObjectFrom.resource (getClass (), schemaResourceName)) != null) {
-            // add a 'help' event if one isn't supplied
-            if (! schema.has (help)) {
-                schema.put (help, BagObjectFrom.resource (getClass (), "/help.json"));
+    protected BagObject getConfiguration () {
+        // check to see if the servlet has been initialized
+        if (context != null) {
+            // if we already have the configuration, return it
+            if (configuration != null) {
+                return configuration;
             }
 
-            // autowire... install the events in the schema - it is treated as authoritative so that
-            // only specified events are exposed
-            String[] eventNames = schema.getBagObject (EVENTS).keys ();
-            for (String eventName : eventNames) {
-                install (eventName);
-            }
+            // otherwise, try to load the configuration from the specified file resource
+            String configurationPath = getContext ().getRealPath (configurationResourcePath);
+            log.info ("configuration path: " + configurationPath);
+            configuration = BagObjectFrom.inputStream (getContext ().getResourceAsStream (configurationResourcePath), () -> new BagObject ());
 
-        } else {
-            log.error ("Starting service with no schema.");
-            schema = BagObjectFrom.resource (getClass (), "/bootstrap.json");
-            schema.put (help, BagObjectFrom.resource (getClass (), "/help.json"));
+            // common values for building the schema
+            String help = Key.cat (EVENTS, HELP);
 
-            // bootstrap... loop over all of the methods that match the target signature and install
-            // them as bootstraped generics
-            Method methods[] = this.getClass ().getMethods ();
-            for (Method method : methods) {
-                // if the method signature matches the event handler signature
-                if ((method.getName ().startsWith (Handler.HANDLER_PREFIX)) && (method.getParameterCount () == 1) && (method.getParameterTypes()[0] == Event.class)) {
-                    // compute the event name (dash syntax), and install the handler
-                    String[] elements = method.getName ().substring (Handler.HANDLER_PREFIX.length ()).split("(?=[A-Z])");
-                    String eventName = Arrays.stream (elements).map (e -> e.toLowerCase ()).collect(joining("-"));
+            // try to load the schema and wire up the handlers
+            schema = configuration.getBagObject (SCHEMA);
+            if (schema != null) {
+                // add a 'help' event if one isn't supplied
+                if (! schema.has (help)) {
+                    schema.put (help, BagObjectFrom.resource (getClass (), "/help.json"));
+                }
+
+                // autowire... install the events in the schema - it is treated as authoritative so that
+                // only specified events are exposed
+                String[] eventNames = schema.getBagObject (EVENTS).keys ();
+                for (String eventName : eventNames) {
                     install (eventName);
+                }
+            } else {
+                log.error ("Starting service with no schema.");
 
-                    // add a default schema entry if one isn't in the bootstrap so it passes
-                    // basic validation
-                    String schemaName = Key.cat (EVENTS, eventName);
-                    if (!schema.has (schemaName)) {
-                        log.info ("Adding bootstrap schema entry for '" + eventName + "'");
-                        schema.put (schemaName, BagObject
-                                .open (DESCRIPTION, "Bootstrap " + method.getName ())
-                                .add (STRICT, false)
-                        );
+                // create a bootstrap schema, add the help descriptor, and put it into the configuration
+                schema = BagObjectFrom.resource (getClass (), "/bootstrap.json");
+                schema.put (help, BagObjectFrom.resource (getClass (), "/help.json"));
+                configuration.put (SCHEMA, schema);
+
+                // bootstrap... loop over all of the methods that match the target signature and install
+                // them as bootstraped generics
+                Method methods[] = this.getClass ().getMethods ();
+                for (Method method : methods) {
+                    // if the method signature matches the event handler signature
+                    if ((method.getName ().startsWith (Handler.HANDLER_PREFIX)) && (method.getParameterCount () == 1) && (method.getParameterTypes()[0] == Event.class)) {
+                        // compute the event name (dash syntax), and install the handler
+                        String[] elements = method.getName ().substring (Handler.HANDLER_PREFIX.length ()).split("(?=[A-Z])");
+                        String eventName = Arrays.stream (elements).map (e -> e.toLowerCase ()).collect(joining("-"));
+                        install (eventName);
+
+                        // add a default schema entry if one isn't in the bootstrap so it passes
+                        // basic validation
+                        String schemaName = Key.cat (EVENTS, eventName);
+                        if (!schema.has (schemaName)) {
+                            log.info ("Adding bootstrap schema entry for '" + eventName + "'");
+                            schema.put (schemaName, BagObject
+                                    .open (DESCRIPTION, "Bootstrap " + method.getName ())
+                                    .add (STRICT, false)
+                            );
+                        }
                     }
                 }
             }
-        }
 
-        // if the schema didn't supply a name, add one
-        schema.put (NAME, getName ());
+            // if the schema didn't supply a name, add one
+            schema.put (NAME, getName ());
+
+            // return the built result
+            return configuration;
+        } else {
+            log.error ("Configuration requested before initialization.");
+            return null;
+        }
+    }
+
+    protected Base () {
+    }
+
+    protected Base (String configurationResourcePath) {
+        this.configurationResourcePath = configurationResourcePath;
     }
 
     public String getName () {
-        String name = null;
+        // if the configuration supplies a name,,,
+        String name = (configuration != null) ? configuration.getString (NAME) : null;
 
-        // if the designer supplied a name...
-        if ((name == null) && (schema != null) && (schema.has (NAME))) {
+        // or if the schema supplies a name...
+        if ((name == null) && (schema != null)) {
             name = schema.getString (NAME);
         }
 
@@ -115,7 +173,7 @@ public class Base extends HttpServlet {
             name = getClass ().getPackage ().getImplementationTitle ();
         }
 
-        // or if the web context supplies a name...
+        // or if the web context supplies a name... this should be the last resort
         if ((name == null) && (context != null) && (context.getServletContextName () != null)) {
             name = context.getServletContextName ();
         }
@@ -129,6 +187,9 @@ public class Base extends HttpServlet {
         context = config.getServletContext ();
         log.debug ("STARTING " + getName ());
         setAttribute (SERVLET, this);
+
+        // configure the application
+        getConfiguration ();
     }
 
     @Override

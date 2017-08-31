@@ -6,9 +6,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static com.brettonw.bedrock.service.Keys.*;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class Base_Test extends Base {
     Tester tester;
@@ -133,12 +132,8 @@ public class Base_Test extends Base {
         BagObject response = tester.bagObjectFromGet (query);
         assertTrue (response.getString (STATUS).equals (OK));
 
-        // make a dummy object that should match the response, and verify it does
-        BagObject verify = BagObjectFrom.resource (Base_Test.class, "/schema.json");
-        String help = Key.cat (EVENTS, HELP);
-        verify.put (help, schema.getObject (help));
-        verify.put (NAME, schema.getObject (NAME));
-        assertTrue (response.getBagObject (RESPONSE).equals (verify));
+        // the response should be a new object that matches the schema
+        assertTrue (response.getBagObject (RESPONSE).equals (getSchema ()));
     }
 
     @Test

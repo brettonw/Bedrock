@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static com.brettonw.bedrock.service.Keys.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -124,7 +123,7 @@ public class Bootstrap_Test extends Base {
         assertTrue (response.getString (STATUS).equals (OK));
 
         // make sure the response matches the schema
-        assertTrue (response.getBagObject (RESPONSE).equals (schema));
+        assertTrue (response.getBagObject (RESPONSE).equals (getSchema ()));
     }
 
     @Test

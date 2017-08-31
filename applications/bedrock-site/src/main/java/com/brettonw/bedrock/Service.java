@@ -4,13 +4,15 @@ import com.brettonw.bedrock.bag.Bag;
 import com.brettonw.bedrock.bag.BagObject;
 import com.brettonw.bedrock.service.Base;
 import com.brettonw.bedrock.service.Event;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
-import static com.brettonw.bedrock.service.Keys.POST_DATA;
-
 public class Service extends Base {
+    private static final Logger log = LogManager.getLogger (Service.class);
+
     public static final String IP = "ip";
 
     public Service () {
