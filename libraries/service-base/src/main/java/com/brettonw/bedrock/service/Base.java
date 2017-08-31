@@ -67,6 +67,10 @@ public class Base extends HttpServlet {
         return null;
     }
 
+    public static String getBedrockVersion () {
+        return Base.class.getPackage ().getImplementationVersion ();
+    }
+
     private final Map<String, Handler> handlers = new HashMap<> ();
 
     private String configurationResourcePath = "/WEB-INF/configuration.json";
@@ -74,19 +78,19 @@ public class Base extends HttpServlet {
     private BagObject schema;
 
     protected BagObject getSchema () {
-
-        return schema;
+        // return a deep copy so the user can't accidentally modify it
+        return new BagObject (schema);
     }
 
     protected BagObject getConfiguration () {
-        // check to see if the servlet has been initialized
-        if (context != null) {
-            // if we already have the configuration, return it
-            if (configuration != null) {
-                return configuration;
-            }
+        // if we already have the configuration, return it
+        if (configuration != null) {
+            return configuration;
+        }
 
-            // otherwise, try to load the configuration from the specified file resource
+        // otherwise, check to see if the servlet has been initialized
+        if (context != null) {
+            // try to load the configuration from the specified file resource
             String configurationPath = getContext ().getRealPath (configurationResourcePath);
             log.info ("configuration path: " + configurationPath);
             configuration = BagObjectFrom.inputStream (getContext ().getResourceAsStream (configurationResourcePath), () -> new BagObject ());
@@ -94,30 +98,32 @@ public class Base extends HttpServlet {
             // common values for building the schema
             String help = Key.cat (EVENTS, HELP);
 
-            // try to load the schema and wire up the handlers
-            schema = configuration.getBagObject (SCHEMA);
-            if (schema != null) {
+            // try to fetch the schema
+            if ((schema = configuration.getBagObject (SCHEMA)) != null) {
+                // remove the schema object from the configuration so it is protected
+                configuration.remove (SCHEMA);
+
                 // add a 'help' event if one isn't supplied
                 if (! schema.has (help)) {
                     schema.put (help, BagObjectFrom.resource (getClass (), "/help.json"));
                 }
 
-                // autowire... install the events in the schema - it is treated as authoritative so that
+                // wire up the handlers specified in the schema - it is treated as authoritative so that
                 // only specified events are exposed
                 String[] eventNames = schema.getBagObject (EVENTS).keys ();
                 for (String eventName : eventNames) {
                     install (eventName);
                 }
             } else {
-                log.error ("Starting service with no schema.");
+                // there is no schema, so report the warning
+                log.warn ("Starting service with no schema.");
 
-                // create a bootstrap schema, add the help descriptor, and put it into the configuration
+                // create a bootstrap schema and add the help descriptor
                 schema = BagObjectFrom.resource (getClass (), "/bootstrap.json");
                 schema.put (help, BagObjectFrom.resource (getClass (), "/help.json"));
-                configuration.put (SCHEMA, schema);
 
-                // bootstrap... loop over all of the methods that match the target signature and install
-                // them as bootstraped generics
+                // bootstrap/autowire... loop over all of the methods that match the target signature
+                // and install them as bootstraped generics
                 Method methods[] = this.getClass ().getMethods ();
                 for (Method method : methods) {
                     // if the method signature matches the event handler signature
@@ -144,7 +150,7 @@ public class Base extends HttpServlet {
             // if the schema didn't supply a name, add one
             schema.put (NAME, getName ());
 
-            // return the built result
+            // return the built configuration
             return configuration;
         } else {
             log.error ("Configuration requested before initialization.");
@@ -185,7 +191,7 @@ public class Base extends HttpServlet {
     public void init (ServletConfig config) throws ServletException {
         super.init (config);
         context = config.getServletContext ();
-        log.debug ("STARTING " + getName ());
+        log.info ("STARTING " + getName () + " with Bedrock v." + getBedrockVersion ());
         setAttribute (SERVLET, this);
 
         // configure the application
