@@ -1,15 +1,16 @@
+<%@ page import="com.brettonw.bedrock.Service" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/png" href="img/icon.png?v=1"/>
     <link rel="stylesheet" href="dist/latest/bedrock.css" />
-    <title>Bedrock</title>
+    <title>Bedrock v.<%=Service.getBedrockVersion ()%></title>
 </head>
 
 <body>
 <div id="help">
-<h1>Bedrock</h1>
+<h1>Bedrock v.<%=Service.getBedrockVersion ()%></h1>
     <div class="container-div">
         <h2>About</h2>
         <div class="description-div">
