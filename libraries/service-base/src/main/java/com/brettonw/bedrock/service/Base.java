@@ -187,11 +187,15 @@ public class Base extends HttpServlet {
         return (name != null) ? name : "[UNNAMED]";
     }
 
+    public String getVersion () {
+        return getClass ().getPackage ().getImplementationVersion ();
+    }
+
     @Override
     public void init (ServletConfig config) throws ServletException {
         super.init (config);
         context = config.getServletContext ();
-        log.info ("STARTING " + getName () + " with Bedrock v." + getBedrockVersion ());
+        log.info ("STARTING " + getName () + " v." + getVersion () + " with Bedrock v." + getBedrockVersion ());
         setAttribute (SERVLET, this);
 
         // configure the application
@@ -336,7 +340,7 @@ public class Base extends HttpServlet {
 
     public void handleEventVersion (Event event) {
         event.ok (BagObject
-                .open (POM_VERSION, getClass ().getPackage ().getImplementationVersion ())
+                .open (POM_VERSION, getVersion ())
                 .put (DISPLAY_NAME, getName ())
         );
     }
