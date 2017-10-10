@@ -6,7 +6,7 @@ Bedrock.DatabaseOperations = function () {
 	// (AKA a database) as input, and returns a new database. Typical operations performed 
 	// by filters are "select" and "sort". More complex operations are accomplished by
 	// hierarchical combinations of these basic filters. Filters do their work lazily, 
-	// when the user calls the "get" method. The default filter implementation is a 
+	// when the user calls the "perform" method. The default filter implementation is a 
 	// passthrough for a "source".
 	$.Filter = function () {
         let _ = Object.create (Bedrock.Base);
@@ -15,7 +15,7 @@ Bedrock.DatabaseOperations = function () {
             return this;
         };
 
-        _.get = function (database) {
+        _.perform = function (database) {
             return database;
         };
 
@@ -49,7 +49,7 @@ Bedrock.DatabaseOperations = function () {
             return this;
         };
 		
-        _.get = function (database) {
+        _.perform = function (database) {
             let result = [];
 
 			// hoist the frequently used fields into the current context
@@ -103,22 +103,36 @@ Bedrock.DatabaseOperations = function () {
 
         _.init = function (parameters) {
 			this.field = parameters.field;
-			this.operation = parameters.operation; // lt, lte, eq, gte, gt
+			this.operation = parameters.operation; // lt, lte, eq, gte, gt, ne
 			this.type = parameters.type; // numeric, alphabetic, auto
 			this.value = parameters.value;
             return this;
         };
 
-        _.get = function (database) {
-            return database;
+        _.perform = function (database) {
+            let result = [];
+
+			// hoist the frequently used fields into the current context
+			let field = this.field;
+
+            // loop over all the records to see what passes
+            for (let record of database) {
+                if (field in record) {
+					
+				}
+			}
+
+            // return the result
+            return result;
         };
 
         return _;
 	} ();
 
     //------------------------------------------------------------------------------------
-	// Compare is a filter that does a log (n) time traversal of a database sorted on the
-	// requested field, to find where the given value divides the sorted list.
+	// CompareSorted is a filter that does a log (n) time traversal of a database sorted
+	// on the requested field, to find where the given value divides the sorted list.
+	// NOTE: the database must already be sorted when it comes in.
 	$.CompareSorted = function () {
         let _ = Object.create (Bedrock.Base);
 
@@ -126,66 +140,147 @@ Bedrock.DatabaseOperations = function () {
 			this.field = parameters.field;
 			this.operation = parameters.operation; // lt, lte, eq, gte, gt
 			this.type = parameters.type; // numeric, alphabetic, auto
+			this.value = parameters.value;
             return this;
         };
 
-        _.get = function (database) {
+        _.perform = function (database) {
             return database;
         };
 
         return _;
 	} ();
 
+    //------------------------------------------------------------------------------------
+	// And is a filter that runs each filter in a list in turn. Same as "Intersect".
 	$.And = function () {
         let _ = Object.create (Bedrock.Base);
 
         _.init = function (parameters) {
+			this.filters = parameters.filters;
             return this;
         };
 
-        _.get = function (database) {
+        _.perform = function (database) {
+            for (let filter of this.filters) {
+				database = filter.perform (database);
+			}
             return database;
         };
 
         return _;
 	} ();
 
+    //------------------------------------------------------------------------------------
+	// Or is a filter that runs each filter in a list, and then merges the results on a 
+	// given field. Same as "Union" or "Unique". NOTE, this assumes the given field is a 
+	// unique identifier for each record, like an "identity".
 	$.Or = function () {
         let _ = Object.create (Bedrock.Base);
 
         _.init = function (parameters) {
+			this.filters = parameters.filters;
+			this.field = parameters.field;
             return this;
         };
 
-        _.get = function (database) {
-            return database;
+        _.perform = function (database) {
+			let resultKey = {};
+			let result = [];
+			
+			// hoist frequently used variables to the current context
+			let field = this.field;
+			
+			// loop over all of the filters
+            for (let filter of this.filters) {
+				let filteredDatabase = filter.perform (database);
+				for (let record of filteredDatabase) {
+					// only store records that have the requested field
+					if (field in record) {
+						// and now, only store this record in the result if it's not 
+						// already in there...
+						let key = record[field];
+						if (!(key in resultKey)) {
+							resultKey[key] = key;
+							result.push (record);
+							
+							// XXX I wonder if there is an optimization to be made by 
+							// XXX removing the found record from the source database, so
+							// XXX we don't bother to filter it through the next one in
+							// XXX the list
+						}
+					}
+				}
+			}
+			
+            return result;
         };
 
         return _;
 	} ();
 
+    //------------------------------------------------------------------------------------
+	// Or is a filter that does runs each filter in a list, and then merges the results
+	// on a given field. Same as "Union" or "Unique".
 	$.Sort = function () {
         let _ = Object.create (Bedrock.Base);
 
         _.init = function (parameters) {
+			this.field = parameters.field;
+			this.type = parameters.type; // numeric, alphabetic, date, auto
+			
+			// allow the user to specify either ascending or descending
+			this.ascending = ("ascending" in parameters) ? parameters.ascending : true; 
+			this.ascending = ("descending" in parameters) ? (! parameters.descending) : this.ascending; 
             return this;
         };
 
-        _.get = function (database) {
+        _.perform = function (database) {
             return database;
         };
 
         return _;
 	} ();
 
+    //------------------------------------------------------------------------------------
+	// Range is a filter that composes a Sort and two CompareSorted filters into an AND
+	// filter.
 	$.Range = function () {
+        let _ = Object.create (Bedrock.Base);
+
+        _.init = function (parameters) {
+			this.field = parameters.field;
+			this.type = parameters.type; // numeric, alphabetic, date, auto
+			this.min = parameters.min;
+			this.max = parameters.max;
+			
+			let sort = Sort.new ({ field: parameters.field, type: parameters.type });
+			let min = CompareSorted.new ({ field: parameters.field, operation: "gte", type: parameters.type, value: parameters.min });
+			let max = CompareSorted.new ({ field: parameters.field, operation: "lte", type: parameters.type, value: parameters.max });
+			let and = And.new ({ filters: [sort, min, max] });
+			
+			this.filter = and;
+            return this;
+        };
+
+        _.perform = function (database) {
+            return and.perform (database);
+        };
+
+        return _;
+	} ();
+
+    //------------------------------------------------------------------------------------
+	// Select is a reduction filter that performs a linear time walk over the records of 
+	// the database and selects only the requested fields for the new database.
+	$.Select = function () {
         let _ = Object.create (Bedrock.Base);
 
         _.init = function (parameters) {
             return this;
         };
 
-        _.get = function (database) {
+        _.perform = function (database) {
             return database;
         };
 
