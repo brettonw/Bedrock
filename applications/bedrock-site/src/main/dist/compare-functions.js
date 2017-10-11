@@ -6,11 +6,12 @@
 Bedrock.CompareFunctions = function () { 
     let $ = Object.create (null);
 	
+	// this is repeated several times, but I don't want it to be a function call
 	#define	NULL_CHECK																	\
-        if (a == null) {																\
-            return (b != null) ? (asc ? -1 : 1) : 0;									\
+        if ((typeof (a) === "undefined") || (a == null)) {								\
+            return ((typeof (b) !== "undefined") && (b != null)) ? (asc ? -1 : 1) : 0;	\
         }																				\
-        if (b == null) {																\
+        if ((typeof (b) === "undefined") || (b == null)) {								\
             return (asc ? 1 : -1);														\
         }
 		

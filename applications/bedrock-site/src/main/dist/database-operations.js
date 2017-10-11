@@ -149,14 +149,61 @@ Bedrock.DatabaseOperations = function () {
 
         _.init = function (parameters) {
 			this.field = parameters.field;
-			this.operation = parameters.operation; // lt, lte, eq, gte, gt
-			this.type = parameters.type; // numeric, alphabetic, auto
+			this.operationMask = CompareFunctions.operationMask (("operation" in parameters) ? parameters.operation : "=");
+			this.compareFunction = CompareFunctions.get (("type" in parameters) ? parameters.type : "auto");
 			this.value = parameters.value;
             return this;
         };
 
         _.perform = function (database) {
-            return database;
+            let result = [];
+
+			// hoist the frequently used parameters into the current context
+			let field = this.field;
+			let operationMask = this.operationMask;
+			let compareFunction = this.compareFunction;
+			let value = this.value;
+			
+			// find the lower bound of the search region
+			let findLowerBound = function () {
+				let low = 0, high = (database.length) - 1;
+				while (low < high) {
+					let mid = (low + high) >>> 1;
+					if (compareFunction (database[mid][field], value, true) < 0) {
+						low = mid + 1;
+					} else {
+						high = mid - 1;
+					}
+				}
+				return low;
+			};
+			
+			// find the upper bound of the search region
+			let findUpperBound = function (low) {
+				let high = (database.length) - 1;
+				while (low < high) {
+					let mid = (low + high) >>> 1;
+					if (compareFunction (database[mid][field], value, true) <= 0) {
+						low = mid + 1;
+					} else {
+						high = mid - 1;
+					}
+				}
+				return low;
+			};
+						
+			// find where the comparison points are, then decide how to slice the result
+			let lowerBound = findLowerBound ();
+			let upperBound = findUpperBound (lowerBound);
+			if (index >= 0) {
+				switch (operationMask) {
+					
+				}
+			} else {
+			}
+			
+            // return the result
+            return result;
         };
 
         return _;
