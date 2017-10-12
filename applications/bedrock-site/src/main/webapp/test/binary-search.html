@@ -114,11 +114,12 @@
 	};
 	
 	let performAll = function (value) {
-		console.log ("========================================");
+		console.log ("=================================================");
 		
 		let output = function (operation, value) {
-			console.log (operation + " " + value + " : [" + perform (operation, value) + "]");
+			console.log (((operation.length > 1) ? "" : " ") + operation + " " + value + " : [" + perform (operation, value) + "]");
 		};
+		console.log (" src : [" + database + "]");
 		output ("<", value);
 		output ("<=", value);
 		output ("=", value);
