@@ -156,20 +156,20 @@ Bedrock.DatabaseOperations = function () {
         };
 
         _.perform = function (database) {
-            let result = [];
-
 			// hoist the frequently used parameters into the current context
 			let field = this.field;
 			let operationMask = this.operationMask;
 			let compareFunction = this.compareFunction;
 			let value = this.value;
+			let end = database.length;
+
 			
 			// find the lower bound of the search region
-			let findLowerBound = function () {
-				let low = 0, high = (database.length) - 1;
-				while (low < high) {
+			let findLowerBound = function (low, high) {
+				while (low <= high) {
 					let mid = (low + high) >>> 1;
-					if (compareFunction (database[mid][field], value, true) < 0) {
+					let cmp = (mid < end) ? compareFunction (database[mid][field], value, true) : 1;
+					if (cmp < 0) {
 						low = mid + 1;
 					} else {
 						high = mid - 1;
@@ -179,11 +179,11 @@ Bedrock.DatabaseOperations = function () {
 			};
 			
 			// find the upper bound of the search region
-			let findUpperBound = function (low) {
-				let high = (database.length) - 1;
-				while (low < high) {
+			let findUpperBound = function (low, high) {
+				while (low <= high) {
 					let mid = (low + high) >>> 1;
-					if (compareFunction (database[mid][field], value, true) <= 0) {
+					let cmp = (mid < end) ? compareFunction (database[mid][field], value, true) : 1;
+					if (cmp <= 0) {
 						low = mid + 1;
 					} else {
 						high = mid - 1;
@@ -193,15 +193,30 @@ Bedrock.DatabaseOperations = function () {
 			};
 						
 			// find where the comparison points are, then decide how to slice the result
-			let lowerBound = findLowerBound ();
-			let upperBound = findUpperBound (lowerBound);
-			if (index >= 0) {
-				switch (operationMask) {
-					
-				}
-			} else {
+			let upperBound;
+			switch (operationMask) {
+				case 0b0001: // <
+					// take from 0 to lower bound
+					return database.slice (0, findLowerBound (0, end));
+				case 0b0011: // <=
+					// take from 0 to upper bound
+					return database.slice (0, findUpperBound (0, end));
+				case 0b0010: // =
+					// take from lower bound to upper bound
+					upperBound = findUpperBound (0, end);
+					return database.slice (findLowerBound (0, upperBound), upperBound);
+				case 0b0110: // >=
+					// take from lower bound to end
+					return database.slice (findLowerBound (0, end));
+				case 0b0100: // >
+					// take from upper bound to end
+					return database.slice (findUpperBound (0, end));
+				case 0b0101: // <>
+					// take from 0 to lower bound, and upper bound to end
+					upperBound = findUpperBound (0, end);
+					return database.slice (0, findLowerBound (0, upperBound)).concat (database.slice (upperBound));
 			}
-			
+		
             // return the result
             return result;
         };
