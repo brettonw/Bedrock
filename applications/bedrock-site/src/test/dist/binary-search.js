@@ -1,10 +1,3 @@
-<html>
-<head>
-</head>
-<body></body>
-</html>
-
-<script>
 	//               0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
 	let database = [ 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5	];
 	let end = database.length;
@@ -119,22 +112,22 @@
 		}
 
 		// compare lengths - can save a lot of time 
-		if (left.length != right.length)
+		if (left.length !== right.length)
 			return false;
 
-		for (var i = 0, end = left.length; i < end; ++i) {
+		for (let i = 0, end = left.length; i < end; ++i) {
 			// recurse if we have nested arrays, otherwise just compare the values with 
 			// the assumption that they are not objects themselves
 			if ((left[i] instanceof Array) && (right[i] instanceof Array)) {
 				if (!arrayCompare (left[i], right[i])) {
 					return false;       
 				}
-			} else if (left[i] != right[i]) { 
+			} else if (left[i] !== right[i]) {
 				return false;   
 			}           
 		}       
 		return true;
-	}
+	};
 	
 	let performAll = function (value, expect) {
 		console.log ("=================================================");
@@ -142,7 +135,8 @@
 		let output = function (operation, value, expect) {
 			let result = perform (operation, value);
 			expect = expect[operation];
-			console.log (((operation.length > 1) ? "" : " ") + operation + " " + value + " : [" + result + "] - " + (arrayCompare (result, expect) ? "PASS" : "FAIL"));
+			let pass = arrayCompare (result, expect);
+			Test.assertTrue (((operation.length > 1) ? "" : " ") + operation + " " + value + " : [" + result + "]", arrayCompare (result, expect));
 		};
 		console.log (" src : [" + database + "]");
 		output ("<", value, expect);
@@ -227,4 +221,3 @@
 		">": [],
 		"<>": [1,1,1,2,2,2,3,3,3,3,4,4,4,5,5,5,5]
 	});
-</script>
