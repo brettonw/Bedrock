@@ -14,6 +14,11 @@
 
     <name>Bedrock Site</name>
 
+    <properties>
+        <javascript.testDistDirectory>src/test/dist</javascript.testDistDirectory>
+        <javascript.srcDistLatestDirectory>src/main/webapp/dist/latest</javascript.srcDistLatestDirectory>
+    </properties>
+
     <build>
         <finalName>bedrock-site</finalName>
         <plugins>
@@ -55,7 +60,14 @@
                         <configuration>
                             <target>
                                 <exec executable="bin/test.sh" failonerror="true">
-                                    <arg value="${project.version}" />
+                                    <arg value="${project.version}"/>
+                                </exec>
+                                <exec executable="jjs" failonerror="true">
+                                    <arg value="-scripting"/>
+                                    <arg value="--language=es6"/>
+                                    <arg value="${javascript.testDistDirectory}/test-harness.js"/>
+                                    <arg value="${javascript.srcDistLatestDirectory}/bedrock-debug.js"/>
+                                    <arg value="${javascript.testDistDirectory}/binary-search.js"/>
                                 </exec>
                             </target>
                         </configuration>
