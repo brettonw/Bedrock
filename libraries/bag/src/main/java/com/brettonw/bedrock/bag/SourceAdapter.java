@@ -1,5 +1,6 @@
 package com.brettonw.bedrock.bag;
 
+import com.brettonw.bedrock.bag.formats.FormatReader;
 import com.brettonw.bedrock.bag.formats.MimeType;
 
 import java.io.BufferedReader;
@@ -76,5 +77,10 @@ public class SourceAdapter {
         }
         bufferedReader.close ();
         return stringBuilder.toString ();
+    }
+
+    static {
+        // force the format readers to be registered
+        FormatReader.register ();
     }
 }

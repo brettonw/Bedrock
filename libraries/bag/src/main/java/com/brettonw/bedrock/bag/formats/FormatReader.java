@@ -6,6 +6,7 @@ import com.brettonw.bedrock.bag.SourceAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -84,6 +85,12 @@ public class FormatReader {
         return (formatReader != null) ? ((ObjectFormatReader)formatReader).readBagObject () : null;
     }
 
+    /**
+     * static method to forcibly invoke the static initializer
+     */
+    public static void register () {
+    }
+
     static {
         // rather than have a compile-time and run-time dependency, we just list the sub-
         // classes of FormatReader here that need to be loaded.
@@ -94,10 +101,11 @@ public class FormatReader {
         };
         for (Class type : formatReaders) {
             try {
-                type.newInstance ();
+                //type.newInstance ();
+                type.getConstructor ().newInstance ();
             } catch (IllegalAccessException exception) {
                 // do nothing
-            } catch (InstantiationException exception) {
+            } catch (InstantiationException | InvocationTargetException | NoSuchMethodException exception) {
                 log.error (exception);
             }
         }
