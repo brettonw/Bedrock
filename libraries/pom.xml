@@ -32,6 +32,7 @@
     </dependencies>
 
     <modules>
+        <module>base</module>
         <module>bag</module>
         <module>servlet-tester</module>
         <module>service-base</module>
@@ -45,7 +46,7 @@
                 <version>3.7.0</version>
                 <configuration>
                     <source>${java.version}</source>
-                    <target>9</target>
+                    <target>${java.version}</target>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
                 </configuration>

@@ -13,5 +13,15 @@
     <name>Bag</name>
     <description>Bag provides two container classes for text-based storage of constrained types in
         an array (BagArray) or as a map (BagObject), with a means of serializing objects to and from
-        these container types.</description>
+        these container types.
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.brettonw.bedrock</groupId>
+            <artifactId>base</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
 </project>
