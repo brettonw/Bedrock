@@ -3,10 +3,6 @@ package com.brettonw.bedrock.service;
 import com.brettonw.bedrock.bag.Bag;
 import com.brettonw.bedrock.bag.BagArray;
 import com.brettonw.bedrock.bag.BagObject;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,13 +10,29 @@ import javax.servlet.http.HttpServletRequest;
 
 import static com.brettonw.bedrock.service.Base.*;
 
-@Data @RequiredArgsConstructor
 public class Event {
     private static final Logger log = LogManager.getLogger (Event.class);
 
-    @Getter @NonNull private final BagObject query;
-    @Getter @NonNull private final HttpServletRequest request;
-    @Getter          private Bag response;
+    private final BagObject query;
+    private final HttpServletRequest request;
+    private Bag response;
+
+    public Event (BagObject query, HttpServletRequest request) {
+        this.query = query;
+        this.request = request;
+    }
+
+    public BagObject getQuery () {
+        return query;
+    }
+
+    public HttpServletRequest getRequest () {
+        return request;
+    }
+
+    public Bag getResponse () {
+        return response;
+    }
 
     public String getEventName () {
         return query.getString (EVENT);

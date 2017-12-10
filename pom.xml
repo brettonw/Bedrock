@@ -29,7 +29,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <log4j.version>RELEASE</log4j.version>
         <junit.version>RELEASE</junit.version>
-        <lombok.version>1.16.16</lombok.version>
         <!-- Tomcat 8.5 v. 3.1.0 -->
         <!-- Tomcat 9.0 v. 4.0.0 -->
         <servlet.version>4.0.0</servlet.version>
@@ -57,6 +56,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
                 <configuration>
                     <archive>
                         <manifest>

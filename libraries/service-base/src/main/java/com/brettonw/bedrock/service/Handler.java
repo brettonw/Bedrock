@@ -1,6 +1,5 @@
 package com.brettonw.bedrock.service;
 
-import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,7 +13,7 @@ public class Handler {
 
     private Object container;
     private Method method;
-    @Getter private String eventName;
+    private String eventName;
 
     public Handler (String eventName, Object container) throws NoSuchMethodException {
         this.container = container;
@@ -30,6 +29,10 @@ public class Handler {
 
         // this might fail for a variety of reasons, including the method is present but not public
         method = container.getClass ().getMethod (methodName, Event.class);
+    }
+
+    public String getEventName () {
+        return eventName;
     }
 
     public void handle (Event event) {

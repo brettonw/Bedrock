@@ -8,7 +8,6 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
-import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
@@ -30,8 +29,8 @@ public class MongoDatabase implements Interface, AutoCloseable {
 
     private static final Map<MongoClientURI, MongoClient> MONGO_CLIENTS = new HashMap<> ();
 
-    @Getter private String databaseName;
-    @Getter private String collectionName;
+    private String databaseName;
+    private String collectionName;
     private MongoCollection<Document> collection;
 
     private MongoDatabase (String databaseName, String collectionName, MongoCollection<Document> collection) {
@@ -39,6 +38,14 @@ public class MongoDatabase implements Interface, AutoCloseable {
         this.collectionName = collectionName;
         this.collection = collection;
         log.info ("Connected to '" + getName () + "'");
+    }
+
+    public String getDatabaseName () {
+        return databaseName;
+    }
+
+    public String getCollectionName () {
+        return collectionName;
     }
 
     /**
