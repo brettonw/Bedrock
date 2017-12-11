@@ -3,7 +3,7 @@
 //     a < b : negative
 //     a = b : zero
 //     a > b : positive
-Bedrock.CompareFunctions = function () { 
+Bedrock.CompareFunctions = function () {
     let $ = Object.create (null);
 	
 	// this is repeated several times, but I don't want it to be a function call
