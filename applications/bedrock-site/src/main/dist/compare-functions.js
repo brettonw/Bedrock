@@ -119,5 +119,6 @@ Bedrock.CompareFunctions = function () {
 		}
 		throw "Unknown operation (" + operation + ")";
 	};
-	
+
+	return _;
 } ();
