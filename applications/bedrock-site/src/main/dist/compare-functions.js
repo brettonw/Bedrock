@@ -4,8 +4,15 @@
 //     a = b : zero
 //     a > b : positive
 Bedrock.CompareFunctions = function () {
-    let $ = Object.create (null);
-	
+    let _ = Object.create (null);
+
+    // constants for the interface
+    _.NUMERIC = "numeric";
+    _.ALPHABETIC = "alphabetic";
+    _.CHRONOLOGIC = "chronologic";
+    _.AUTO = "auto";
+    _.WILDCARD = "*";
+
 	// this is repeated several times, but I don't want it to be a function call
 	#define	NULL_CHECK																	\
         if ((typeof (a) === "undefined") || (a == null)) {								\
@@ -20,7 +27,7 @@ Bedrock.CompareFunctions = function () {
 		return asc ? (a - b) : (b - a)
 	};
 		
-	$.numeric = function (a, b, asc) {
+	_.numeric = function (a, b, asc) {
 		NULL_CHECK;
 		return compareNumeric (a, b, asc);
 	};
@@ -32,19 +39,19 @@ Bedrock.CompareFunctions = function () {
 		return asc ? ra.localeCompare (rb) : rb.localeCompare (ra);
 	};
 	
-	$.alphabetic = function (a, b, asc) {
+	_.alphabetic = function (a, b, asc) {
 		NULL_CHECK;
 		return compareAlphabetic (a, b, asc);
 	};
 	
-	$.date = function (a, b, asc) {
+	_.date = function (a, b, asc) {
 		NULL_CHECK;
 		
 		// convert the dates/timestamps to numerical values for comparison
 		return compareNumeric (new Date (a).valueOf (), new Date (b).valueOf ());
 	};
 	
-	$.auto = function (a, b, asc) {
+	_.auto = function (a, b, asc) {
 		NULL_CHECK;
 		
 		// try to compare the values as numerical if we can
@@ -57,40 +64,40 @@ Bedrock.CompareFunctions = function () {
 		return compareAlphabetic (a, b, asc);
 	};
 	
-	$.get = function (type) {
+	_.get = function (type) {
 		switch (type.toLowerCase ()) {
-			case "numeric":
+			case _.NUMERIC:
 			case "number":
 			case "digits":
 				return this.numeric;
 				
-			case "alphabetic":
+			case _.ALPHABETIC:
 			case "text":
 			case "string":
 				return this.alphabetic;
 				
-			case "chronologic":
+			case _.CHRONOLOGIC:
 			case "date":
 			case "timestamp":
 				return this.date;
 				
-			case "auto":
+			case _.AUTO:
 			case "any":
-			case "*":
+			case _.WILDCARD:
 				return this.auto;
 		}
 		throw "Unknown type (" + type + ")";
 	};
 	
-	$.compare = function (a, b, asc, type) {
+	_.compare = function (a, b, asc, type) {
 		return this.get (type) (a, b, asc);
 	};
 	
-	$.mask = function (compareResult) {
+	_.mask = function (compareResult) {
 		return (compareResult < 0) ? 0b0001 : (compareResult > 0) ? 0b0100 : 0b0010;
 	};
 	
-	$.operationMask = function (operation) {
+	_.operationMask = function (operation) {
 		switch (operation.toLowerCase ()) {
 			case "lt": case "<":
 				return 0b0001;
