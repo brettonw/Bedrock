@@ -1,5 +1,5 @@
 Bedrock.ServiceDescriptor = function () {
-    let _ = Object.create (null);
+    let $ = Object.create (null);
 
     // Helper functions for emitting HTML from Javascript
     let valid = function (value) {
@@ -27,7 +27,7 @@ Bedrock.ServiceDescriptor = function () {
         return block ("a", { "class": cssClass, "href": href, "target": "_top" }, content);
     };
 
-    _.get = function (queryString, onSuccess) {
+    $.get = function (queryString, onSuccess) {
         let request = new XMLHttpRequest ();
         request.overrideMimeType ("application/json");
         request.open ("GET", queryString, true);
@@ -40,7 +40,7 @@ Bedrock.ServiceDescriptor = function () {
         request.send ();
     };
 
-    _.displaySpecification = function (specification) {
+    $.displaySpecification = function (specification) {
         // start with an empty build
         let innerHTML = "";
 
@@ -137,11 +137,11 @@ Bedrock.ServiceDescriptor = function () {
     };
 
     // a little black raincloud, of course
-    _.display = function (displayInDivId, inputUrl) {
-        let url = (typeof (inputUrl) !== "undefined") ? inputUrl : "api?event=help";
-        _.get (url, function (db) {
+    $.display = function (displayInDivId, inputUrl) {
+        let url = (inputUrl !== undefined) ? inputUrl : "api?event=help";
+        $.get (url, function (db) {
             // if we retrieved the api.json from the service base, get the actual response
-            if (typeof (inputUrl) === "undefined") { db = db.response; }
+            if (inputUrl === undefined) { db = db.response; }
 
             document.getElementById(displayInDivId).innerHTML = Bedrock.ServiceDescriptor.displaySpecification (db);
         });
@@ -154,7 +154,7 @@ Bedrock.ServiceDescriptor = function () {
         });
     };
 
-    _.translateResponse = function (response) {
+    $.translateResponse = function (response) {
         // internal function to copy the object as a response
         let copyAsResponse = function (object) {
             let copy = {};
@@ -177,16 +177,16 @@ Bedrock.ServiceDescriptor = function () {
         }
     };
 
-    _.api = function (onSuccess, baseUrl, apiSource) {
+    $.api = function (onSuccess, baseUrl, apiSource) {
         // condition the inputs
         baseUrl = ((typeof baseUrl === "undefined") || (baseUrl === "")) ? location.href.substr(0,location.href.lastIndexOf("/")) : baseUrl;
         baseUrl = baseUrl.replace (/\/$/g, "");
 
         // get the api
-        let url = ((typeof (apiSource) === "undefined") || (apiSource === "")) ? (baseUrl + "/api?event=help") : apiSource;
-        _.get (url, function (response) {
+        let url = ((apiSource === undefined) || (apiSource === "")) ? (baseUrl + "/api?event=help") : apiSource;
+        $.get (url, function (response) {
             // if we retrieved the api.json from the service base, get the actual response
-            if (typeof (apiSource) === "undefined") { response = response.response; }
+            if (apiSource === undefined) { response = response.response; }
 
             // start with an empty build
             let api = Object.create (null);
@@ -238,5 +238,5 @@ Bedrock.ServiceDescriptor = function () {
         });
     };
 
-    return _;
+    return $;
 } ();

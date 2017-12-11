@@ -1,11 +1,11 @@
 Bedrock.Utility = function () {
-    let _ = Object.create (null);
+    let $ = Object.create (null);
 
-    _.copyIf = function (key, leftObject, rightObject) {
+    $.copyIf = function (key, leftObject, rightObject) {
         if (key in leftObject) rightObject[key] = leftObject[key];
     };
 
-    _.randomString = function (length, chars) {
+    $.randomString = function (length, chars) {
         var result = "";
         for (let i = 0; i < length; ++i) {
             result += chars[Math.floor (Math.random () * chars.length)];
@@ -13,5 +13,5 @@ Bedrock.Utility = function () {
         return result;
     };
 
-    return _;
+    return $;
 } ();

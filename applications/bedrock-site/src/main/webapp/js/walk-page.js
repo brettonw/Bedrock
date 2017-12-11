@@ -69,12 +69,12 @@ defaults[makeId ("1.", "about")] = SHOW;
 
 let walkPage = function (page, prefix) {
     //console.log (page.tagName + "(" + page.childNodes.length + ")");
-    if (typeof (page) !== "undefined") {
-        if (typeof (page.childNodes) !== "undefined") {
+    if (page !== undefined) {
+        if (page.childNodes !== undefined) {
             let counter = 0;
             for (let i = 0; i < page.childNodes.length; ++i) {
                 let element = page.childNodes.item (i);
-                if (typeof (element.tagName) !== "undefined") {
+                if (element.tagName !== undefined) {
                     switch (element.tagName) {
                         case "H2":
                         case "H3":

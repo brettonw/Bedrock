@@ -298,17 +298,17 @@ Bedrock.DatabaseOperations = function () {
         let _ = Object.create (Bedrock.Base);
 
         _.init = function (parameters) {
-            this.field = parameters.field;
-            this.type = parameters.type; // numeric, alphabetic, date, auto
-
-            // allow the user to specify either ascending or descending
-            this.ascending = ("ascending" in parameters) ? parameters.ascending : true;
-            this.ascending = ("descending" in parameters) ? (! parameters.descending) : this.ascending;
+            this.recordComparable = Bedrock.Comparable.RecordComparable.new (parameters);
             return this;
         };
 
         _.perform = function (database) {
-            return database;
+            let newDatabase = database.slice ();
+            let that = this;
+            newDatabase.sort (function (recordA, recordB) {
+                return that.recordComparable.compare (recordA, recordB);
+            });
+            return newDatabase;
         };
 
         return _;
@@ -322,14 +322,14 @@ Bedrock.DatabaseOperations = function () {
 
         _.init = function (parameters) {
             this.field = parameters.field;
-            this.type = parameters.type; // numeric, alphabetic, date, auto
+            this.type = parameters.type; // numeric, alphabetic, chronologic, auto
             this.min = parameters.min;
             this.max = parameters.max;
 
-            let sort = Sort.new ({ field: parameters.field, type: parameters.type });
-            let min = CompareSorted.new ({ field: parameters.field, operation: "gte", type: parameters.type, value: parameters.min });
-            let max = CompareSorted.new ({ field: parameters.field, operation: "lte", type: parameters.type, value: parameters.max });
-            let and = And.new ({ filters: [sort, min, max] });
+            let sort = $.Sort.new ({ fields: [ { name: parameters.field, type: parameters.type }] });
+            let min = $.CompareSorted.new ({ field: parameters.field, operation: "gte", type: parameters.type, value: parameters.min });
+            let max = $.CompareSorted.new ({ field: parameters.field, operation: "lte", type: parameters.type, value: parameters.max });
+            let and = $.And.new ({ filters: [sort, min, max] });
 
             this.filter = and;
             return this;
@@ -359,4 +359,5 @@ Bedrock.DatabaseOperations = function () {
         return _;
     } ();
 
+    return $;
 } ();

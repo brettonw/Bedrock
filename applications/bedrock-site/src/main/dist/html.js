@@ -1,6 +1,6 @@
 // Helper functions for emitting HTML from Javascript
 let valid = function (value) {
-    return (typeof (value) !== "undefined") && (value !== null);
+    return (value !== undefined) && (value !== null);
 };
 
 let block = function (block, attributes, content) {

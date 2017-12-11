@@ -16,3 +16,7 @@ http://localhost:8080/bag-test-server/api?command=echo&word=hello
 - **echo:** return a JSON object representing the URL query parameters, with the tag "post-data" containing the JSON from a POST request (if present).
 - **post-data:** return a JSON array or object as an echo of the POST data.
 - **headers:** return a JSON array of the headers supplied in the request.</li>
+
+## Some Coding Standards
+$ is used for name space
+_ is used for object declaration

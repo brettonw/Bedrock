@@ -4,22 +4,22 @@
 //     a = b : zero
 //     a > b : positive
 Bedrock.CompareFunctions = function () {
-    let _ = Object.create (null);
+    let $ = Object.create (null);
 
     // constants for the interface
-    _.NUMERIC = "numeric";
-    _.ALPHABETIC = "alphabetic";
-    _.CHRONOLOGIC = "chronologic";
-    _.AUTO = "auto";
-    _.WILDCARD = "*";
+    $.NUMERIC = "numeric";
+    $.ALPHABETIC = "alphabetic";
+    $.CHRONOLOGIC = "chronologic";
+    $.AUTO = "auto";
+    $.WILDCARD = "*";
 
 	// this is repeated several times, but I don't want it to be a function call
-	#define	NULL_CHECK																	\
-        if ((typeof (a) === "undefined") || (a == null)) {								\
-            return ((typeof (b) !== "undefined") && (b != null)) ? (asc ? -1 : 1) : 0;	\
-        }																				\
-        if ((typeof (b) === "undefined") || (b == null)) {								\
-            return (asc ? 1 : -1);														\
+	#define	NULL_CHECK															\
+        if ((a === undefined) || (a === null)) {								\
+            return ((b !== undefined) && (b !== null)) ? (asc ? -1 : 1) : 0;	\
+        }																		\
+        if ((b === undefined) || (b === null)) {								\
+            return (asc ? 1 : -1);												\
         }
 		
 	let compareNumeric = function (a, b, asc) {
@@ -27,7 +27,7 @@ Bedrock.CompareFunctions = function () {
 		return asc ? (a - b) : (b - a)
 	};
 		
-	_.numeric = function (a, b, asc) {
+	$.numeric = function (a, b, asc) {
 		NULL_CHECK;
 		return compareNumeric (a, b, asc);
 	};
@@ -39,19 +39,19 @@ Bedrock.CompareFunctions = function () {
 		return asc ? ra.localeCompare (rb) : rb.localeCompare (ra);
 	};
 	
-	_.alphabetic = function (a, b, asc) {
+	$.alphabetic = function (a, b, asc) {
 		NULL_CHECK;
 		return compareAlphabetic (a, b, asc);
 	};
 	
-	_.date = function (a, b, asc) {
+	$.date = function (a, b, asc) {
 		NULL_CHECK;
 		
 		// convert the dates/timestamps to numerical values for comparison
 		return compareNumeric (new Date (a).valueOf (), new Date (b).valueOf ());
 	};
 	
-	_.auto = function (a, b, asc) {
+	$.auto = function (a, b, asc) {
 		NULL_CHECK;
 		
 		// try to compare the values as numerical if we can
@@ -64,40 +64,40 @@ Bedrock.CompareFunctions = function () {
 		return compareAlphabetic (a, b, asc);
 	};
 	
-	_.get = function (type) {
+	$.get = function (type) {
 		switch (type.toLowerCase ()) {
-			case _.NUMERIC:
+			case $.NUMERIC:
 			case "number":
 			case "digits":
 				return this.numeric;
 				
-			case _.ALPHABETIC:
+			case $.ALPHABETIC:
 			case "text":
 			case "string":
 				return this.alphabetic;
 				
-			case _.CHRONOLOGIC:
+			case $.CHRONOLOGIC:
 			case "date":
 			case "timestamp":
 				return this.date;
 				
-			case _.AUTO:
+			case $.AUTO:
 			case "any":
-			case _.WILDCARD:
+			case $.WILDCARD:
 				return this.auto;
 		}
 		throw "Unknown type (" + type + ")";
 	};
 	
-	_.compare = function (a, b, asc, type) {
+	$.compare = function (a, b, asc, type) {
 		return this.get (type) (a, b, asc);
 	};
 	
-	_.mask = function (compareResult) {
+	$.mask = function (compareResult) {
 		return (compareResult < 0) ? 0b0001 : (compareResult > 0) ? 0b0100 : 0b0010;
 	};
 	
-	_.operationMask = function (operation) {
+	$.operationMask = function (operation) {
 		switch (operation.toLowerCase ()) {
 			case "lt": case "<":
 				return 0b0001;
@@ -120,5 +120,5 @@ Bedrock.CompareFunctions = function () {
 		throw "Unknown operation (" + operation + ")";
 	};
 
-	return _;
+	return $;
 } ();

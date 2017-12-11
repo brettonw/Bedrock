@@ -1,5 +1,5 @@
 let SimpleDatabase = function () {
-    let _ = Object.create (null);
+    let $ = Object.create (null);
 
     // databases = [ "models", "clips" ];
     /**
@@ -7,7 +7,7 @@ let SimpleDatabase = function () {
      * @param databaseNames {Array} names of the sub-databases to load
      * @param onReady {Function} what to do when all of the databases are loaded
      */
-    _.load = function (databaseNames, onReady) {
+    $.load = function (databaseNames, onReady) {
         console.log ("loading " + databaseNames.length + " databases");
 
         let loadDatabase = function (database, name, onReady) {
@@ -42,7 +42,7 @@ let SimpleDatabase = function () {
      * @param match
      * @returns {Array}
      */
-    _.filter = function (records, match) {
+    $.filter = function (records, match) {
         let filteredRecords = [];
 
         // only enumerate the object's own keys
@@ -109,7 +109,7 @@ let SimpleDatabase = function () {
      * @param records
      * @param sortFieldArray
      */
-    _.sort = function (records, sortFields) {
+    $.sort = function (records, sortFields) {
         let newRecords = records.slice ();
         newRecords.sort (function (a, b) {
             // walk over the sort fields in order
@@ -124,5 +124,5 @@ let SimpleDatabase = function () {
         return newRecords;
     };
 
-    return _;
+    return $;
 } ();
