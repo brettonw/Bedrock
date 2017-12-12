@@ -79,6 +79,23 @@ Bedrock.Html = function () {
         return ((elementBottom <= viewBottom) && (elementTop >= viewTop));
     };
 
+    /**
+     * Utility function to retrieve a style value from the stylesheets
+     * @param selector the name of the class to fetch a style value from
+     * @param style the name of the style to fetch
+     * @returns {string} the found style value, or undefined
+     */
+    $.getCssSelectorStyle = function (selector, style) {
+        for (let styleSheet of document.styleSheets) {
+            for (let cssRule of styleSheet.cssRules) {
+                if (cssRule.selectorText && (cssRule.selectorText === selector)) {
+                    return cssRule.style[style];
+                }
+            }
+        }
+        return undefined;
+    };
+
     $.Builder = function () {
         let _ = Object.create (Bedrock.Base);
 

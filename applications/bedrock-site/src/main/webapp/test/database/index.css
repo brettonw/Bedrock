@@ -1,0 +1,74 @@
+div[id="bedrock-database-container"] {
+    display: inline-block;
+    font-family: sans-serif;
+    text-align: left;
+    padding: 4px 0px;
+    width: 100%;
+}
+
+div[id="bedrock-database-display"] {
+    height: 500px;
+    border: solid;
+    border-width: 1px;
+    border-radius: 2px;
+    border-color: #bbb;
+}
+
+div[id="bedrock-header-line"] {
+    padding: 4px;
+    height:26px;
+    border: solid;
+    border-width: 0;
+    border-bottom-width: 1px;
+    border-color: #999;
+}
+
+.bedrock-header-entry {
+    display: inline-block;
+    width: 10%;
+    text-align: center;
+}
+
+.bedrock-header-entry-text {
+    font-size: 12px;
+    font-weight: bold;
+    height: 18px;
+    line-height: 18px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    text-align: center;
+    margin: 0 2px;
+
+    border: solid;
+    border-width: 0;
+    border-bottom-width: 1px;
+    border-color: #ddd;
+}
+
+div[id="bedrock-database-display-list"] {
+    overflow-y: scroll;
+    height: calc(100% - 26px);
+}
+
+.bedrock-database-line {
+    padding: 4px;
+    color: black;
+    font-size: 10px;
+    height: 22px;
+}
+
+.bedrock-database-entry {
+    display: inline-block;
+    height: 100%;
+    width: 10%;
+    text-align: center;
+}
+
+.bedrock-database-entry-text {
+    height: 100%;
+    line-height: calc(100%);
+    overflow-x: hidden;
+    overflow-y: hidden;
+    margin: 0 2px;
+    padding: 0 3px;
+}

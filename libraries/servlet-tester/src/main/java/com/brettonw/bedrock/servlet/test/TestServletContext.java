@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -303,7 +304,6 @@ public class TestServletContext implements ServletContext {
         return null;
     }
 
-    /*
     @Override
     public ServletRegistration.Dynamic addJspFile (String s, String s1) {
         return null;
@@ -335,5 +335,4 @@ public class TestServletContext implements ServletContext {
     @Override
     public void setResponseCharacterEncoding (String s) {
     }
-    */
 }
