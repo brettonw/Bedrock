@@ -336,7 +336,7 @@ Bedrock.DatabaseOperations = function () {
         };
 
         _.perform = function (database) {
-            return and.perform (database);
+            return this.filter.perform (database);
         };
 
         return _;

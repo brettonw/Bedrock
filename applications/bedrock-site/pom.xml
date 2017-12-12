@@ -31,8 +31,9 @@
                         <phase>clean</phase>
                         <configuration>
                             <target>
-                                <exec executable="bin/clean.sh" failonerror="true">
-                                    <arg value="${project.version}" />
+                                <exec executable="bash" failonerror="true">
+                                    <arg value="-c" />
+                                    <arg value="bin/clean.sh ${project.version}" />
                                 </exec>
                             </target>
                         </configuration>
@@ -45,8 +46,9 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <target>
-                                <exec executable="bin/generate-sources.sh" failonerror="true">
-                                    <arg value="${project.version}" />
+                                <exec executable="bash" failonerror="true">
+                                    <arg value="-c" />
+                                    <arg value="bin/generate-sources.sh ${project.version}" />
                                 </exec>
                             </target>
                         </configuration>
@@ -59,15 +61,9 @@
                         <phase>test</phase>
                         <configuration>
                             <target>
-                                <exec executable="bin/test.sh" failonerror="true">
-                                    <arg value="${project.version}"/>
-                                </exec>
-                                <exec executable="jjs" failonerror="true">
-                                    <arg value="-scripting"/>
-                                    <arg value="--language=es6"/>
-                                    <arg value="${javascript.testDistDirectory}/test-harness.js"/>
-                                    <arg value="${javascript.srcDistLatestDirectory}/bedrock-debug.js"/>
-                                    <arg value="${javascript.testDistDirectory}/binary-search.js"/>
+                                <exec executable="bash" failonerror="true">
+                                    <arg value="-c" />
+                                    <arg value="bin/test.sh ${project.version}" />
                                 </exec>
                             </target>
                         </configuration>

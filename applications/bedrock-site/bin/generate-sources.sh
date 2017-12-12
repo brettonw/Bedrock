@@ -30,6 +30,9 @@ cat                                 \
     html.js                         \
     combobox.js                     \
     forms.js                        \
+    compare-functions.js            \
+    comparable.js                   \
+    database-operations.js          \
     database.js                     \
     > "$CONCAT";
 popd;
