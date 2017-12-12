@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>/Users/brettonw/Work/BrettonW/Bedrock/applications/bedrock-site/src/main/dist/html.js - Bedrock</title>
+    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="stylesheet" href="../assets/css/custom.css">
+    <link rel="stylesheet" href="../assets/css/lucid.css">
+    <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.css">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+</head>
+<body class="yui3-skin-sam">
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <h1 class="brand" style="padding: 10px 16px 10px; height: 20px; line-height: 20px; margin-left: 0;">
+            Bedrock
+        </h1>
+	<div class="nav">
+            <li class="divider-vertical"></li>
+            <li>
+                <p class="navbar-text">
+                    API Docs for Version: <b>1.3.3</b>
+                </p>
+            </li>
+        </div>
+        <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='[]'>
+        </form>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="span3">
+<div>
+    <div id="sidebar">
+    <div id="classes">
+        <ul id="api-classes" class="nav nav-list">
+        </ul>
+    </div>
+    </div>
+</div>
+        </div>
+        <div class="span9">
+    <form id="options-form" class="form-inline pull-right">
+        Show:
+        <label for="api-show-inherited" class="checkbox">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected" class="checkbox">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private" class="checkbox">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated" class="checkbox">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </form>
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<div class="page-header">
+    <h1>/Users/brettonw/Work/BrettonW/Bedrock/applications/bedrock-site/src/main/dist/html.js <small>File</small></h1>
+</div>
+
+<div class="file">
+    <pre class="prettyprint linenums">
+// Helper functions for emitting HTML from Javascript
+let valid = function (value) {
+    return (typeof (value) !== &quot;undefined&quot;) &amp;&amp; (value !== null);
+};
+
+let block = function (block, attributes, content) {
+    let result = &quot;&lt;&quot; + block;
+    if (valid (attributes)) {
+        let attributeNames = Object.keys (attributes);
+        for (let attributeName of attributeNames) {
+            if (valid (attributes[attributeName])) {
+                result += &quot; &quot; + attributeName + &quot;=\&quot;&quot; + attributes[attributeName] + &quot;\&quot;&quot;;
+            }
+        }
+    }
+    return result + (valid (content) ? (&quot;&gt;&quot; + content + &quot;&lt;/&quot; + block + &quot;&gt;&quot;) : (&quot;/&gt;&quot;));
+};
+
+let div = function (cssClass, content) {
+    return block (&quot;div&quot;, { &quot;class&quot;: cssClass }, content);
+};
+
+Bedrock.Html = function () {
+    let $ = Object.create (null);
+
+    $.removeAllChildren = function (element) {
+        while (element.firstChild) {
+            element.removeChild (element.firstChild);
+        }
+    };
+
+    $.makeElement = function (tag, options) {
+        let element = document.createElement (tag);
+        let optionNames = Object.keys (options);
+        for (let optionName of optionNames) {
+            switch (optionName) {
+                case &quot;class&quot;: {
+                    element.classList.add (options.class);
+                    break;
+                }
+                case &quot;classes&quot;: {
+                    for (let cssClass of options.classes) {
+                        element.classList.add (cssClass);
+                    }
+                    break;
+                }
+                case &quot;style&quot;: {
+                    for (let style of Object.keys (options.style)) {
+                        element.style[style] = options.style[style];
+                    }
+                    break;
+                }
+                default: {
+                    element[optionName] = options[optionName];
+                    break;
+                }
+            }
+        }
+        return element;
+    };
+
+    $.addElement = function (parent, tag, options, before) {
+        let element = $.makeElement(tag, options);
+        parent.insertBefore (element, (typeof before !== &quot;undefined&quot;) ? before : null);
+        return element;
+    };
+
+    /**
+     * Utility function to tell if an element is in view in the scrolling region of a container
+     * @param element
+     * @param view
+     * @returns {boolean}
+     */
+    $.elementIsInView = function (element, view) {
+        let viewTop = view.scrollTop;
+        let viewBottom = view.offsetHeight + viewTop;
+        let elementTop = element.offsetTop;
+        let elementBottom = elementTop + element.offsetHeight;
+        return ((elementBottom &lt;= viewBottom) &amp;&amp; (elementTop &gt;= viewTop));
+    };
+
+    $.Builder = function () {
+        let _ = Object.create (Bedrock.Base);
+
+        _.init = function (parameters) {
+            this.parentBuilder = (&quot;parentBuilder&quot; in parameters) ? parameters.parentBuilder : null;
+            this.elementType = parameters.elementType;
+            this.elementParameters = parameters.elementParameters;
+            this.builders = [];
+            return this;
+        };
+
+        _.addBuilder = function (builder) {
+            this.builders.push (builder);
+            return this;
+        };
+
+        _.add = function (elementType, elementParameters) {
+            // if this method is called as a static, this is creating a new builder
+            return (this === _) ?
+                _.new ({ elementType: elementType, elementParameters: elementParameters }).build () :
+                this.addBuilder (_.new ( { parentBuilder: this, elementType: elementType, elementParameters: elementParameters }));
+        };
+
+        _.beginBuilder = function (builder) {
+            this.builders.push (builder);
+            return builder;
+        };
+
+        _.begin = function (elementType, elementParameters) {
+            // if this method is called as a static, this is creating a new builder
+            return (this === _) ?
+                _.new ({ elementType: elementType, elementParameters: elementParameters }) :
+                this.beginBuilder (_.new ({ parentBuilder: this, elementType: elementType, elementParameters: elementParameters }));
+        };
+
+        _.end = function () {
+            return (this.parentBuilder !== null) ? this.parentBuilder : this.build ();
+        };
+
+        _.build = function () {
+            // create my element
+            let element = $.makeElement (this.elementType, this.elementParameters);
+
+            // walk down the builders, building in turn
+            for (let builder of this.builders) {
+                element.appendChild(builder.build ())
+            }
+
+            return element;
+        };
+
+        return _;
+    } ();
+
+    return $;
+} ();
+
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/jquery/jquery-1.8.2.min.js"></script>
+<script src="../assets/vendor/bootstrap/js/bootstrap.js"></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script src="../assets/js/yuidoc-bootstrap.js"></script>
+<script>prettyPrint();</script>
+</body>
+</html>
