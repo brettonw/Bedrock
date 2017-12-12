@@ -30,7 +30,6 @@ public class TestServletInputStream extends ServletInputStream {
 
     @Override
     public void setReadListener (ReadListener readListener) {
-
     }
 
     @Override

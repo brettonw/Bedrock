@@ -106,17 +106,14 @@ public class TestServletContext implements ServletContext {
 
     @Override
     public void log (String s) {
-
     }
 
     @Override
     public void log (Exception e, String s) {
-
     }
 
     @Override
     public void log (String s, Throwable throwable) {
-
     }
 
     @Override
@@ -251,7 +248,6 @@ public class TestServletContext implements ServletContext {
 
     @Override
     public void setSessionTrackingModes (Set<SessionTrackingMode> set) {
-
     }
 
     @Override
@@ -266,17 +262,14 @@ public class TestServletContext implements ServletContext {
 
     @Override
     public void addListener (String s) {
-
     }
 
     @Override
     public <T extends EventListener> void addListener (T t) {
-
     }
 
     @Override
     public void addListener (Class<? extends EventListener> aClass) {
-
     }
 
     @Override
@@ -296,43 +289,10 @@ public class TestServletContext implements ServletContext {
 
     @Override
     public void declareRoles (String... strings) {
-
     }
 
     @Override
     public String getVirtualServerName () {
         return null;
-    }
-
-    @Override
-    public ServletRegistration.Dynamic addJspFile (String s, String s1) {
-        return null;
-    }
-
-    @Override
-    public int getSessionTimeout () {
-        return 0;
-    }
-
-    @Override
-    public void setSessionTimeout (int i) {
-    }
-
-    @Override
-    public String getRequestCharacterEncoding () {
-        return StandardCharsets.UTF_8.name ();
-    }
-
-    @Override
-    public void setRequestCharacterEncoding (String s) {
-    }
-
-    @Override
-    public String getResponseCharacterEncoding () {
-        return StandardCharsets.UTF_8.name ();
-    }
-
-    @Override
-    public void setResponseCharacterEncoding (String s) {
     }
 }
