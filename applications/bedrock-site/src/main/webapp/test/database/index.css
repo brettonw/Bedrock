@@ -66,7 +66,6 @@ div[id="bedrock-database-display-list"] {
 
 .bedrock-database-entry-text {
     height: 100%;
-    line-height: calc(100%);
     overflow-x: hidden;
     overflow-y: hidden;
     margin: 0 2px;
