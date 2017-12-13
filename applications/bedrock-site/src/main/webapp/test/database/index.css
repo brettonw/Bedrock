@@ -25,7 +25,7 @@ div[id="bedrock-header-line"] {
 
 .bedrock-header-entry {
     display: inline-block;
-    width: 10%;
+    width: 80px;
     text-align: center;
 }
 
@@ -60,7 +60,7 @@ div[id="bedrock-database-display-list"] {
 .bedrock-database-entry {
     display: inline-block;
     height: 100%;
-    width: 10%;
+    width: 80px;
     text-align: center;
 }
 
