@@ -34,12 +34,13 @@ Bedrock.Html = function () {
         let optionNames = Object.keys (options);
         for (let optionName of optionNames) {
             switch (optionName) {
-                case "class": {
-                    element.classList.add (options.class);
-                    break;
-                }
+                case "class":
                 case "classes": {
-                    for (let cssClass of options.classes) {
+                    let cssClasses = options[optionName];
+                    if (! Array.isArray (cssClasses)) {
+                        cssClasses = cssClasses.split (",");
+                    }
+                    for (let cssClass of cssClasses) {
                         element.classList.add (cssClass);
                     }
                     break;
@@ -102,7 +103,7 @@ Bedrock.Html = function () {
         _.init = function (parameters) {
             this.parentBuilder = ("parentBuilder" in parameters) ? parameters.parentBuilder : null;
             this.elementType = parameters.elementType;
-            this.elementParameters = parameters.elementParameters;
+            this.elementParameters = (parameters.elementParameters !== undefined) ? parameters.elementParameters : {};
             this.builders = [];
             return this;
         };
@@ -114,7 +115,7 @@ Bedrock.Html = function () {
 
         _.add = function (elementType, elementParameters) {
             // if this method is called as a static, this is creating a new builder
-            return (this === _) ?
+            return (Object.is (this, _)) ?
                 _.new ({ elementType: elementType, elementParameters: elementParameters }).build () :
                 this.addBuilder (_.new ( { parentBuilder: this, elementType: elementType, elementParameters: elementParameters }));
         };
@@ -126,7 +127,7 @@ Bedrock.Html = function () {
 
         _.begin = function (elementType, elementParameters) {
             // if this method is called as a static, this is creating a new builder
-            return (this === _) ?
+            return (Object.is (this, _)) ?
                 _.new ({ elementType: elementType, elementParameters: elementParameters }) :
                 this.beginBuilder (_.new ({ parentBuilder: this, elementType: elementType, elementParameters: elementParameters }));
         };
@@ -141,7 +142,7 @@ Bedrock.Html = function () {
 
             // walk down the builders, building in turn
             for (let builder of this.builders) {
-                element.appendChild(builder.build ())
+                element.appendChild(builder.build ());
             }
 
             return element;

@@ -2,6 +2,15 @@
 
 let Html = Bedrock.Html;
 
+// 1 - can I build the display objects before adding them to the container so that
+//     layout doesn't try to happen multiple times in the update
+
+// 2 - encapsulate
+
+// 3 - dynamically compute the column widths
+
+// 4 - pagedTable, pagedTableWithHeader...
+
 let pagedTable = function (container, records, fieldNames) {
     let recordCount = records.length;
 
@@ -38,7 +47,7 @@ let pagedTable = function (container, records, fieldNames) {
         // figure out which pages to make visible
         let start = Math.floor (container.scrollTop / pageHeight);
         let end = Math.min (pageCount, start + 2);
-        let pages = container.children;
+        let pages = container.children[0].children;
         for (let i = start; i < end; ++i) {
             let page = pages[i];
             if ((page.children.length === 0) && pageIsVisible (page, container)) {
@@ -53,40 +62,49 @@ let pagedTable = function (container, records, fieldNames) {
 
     // function to populate a page
     let populatePage = function (pageElement) {
+        // create a filler object to make add/remove quick
+        let pageBulder = Html.Builder.begin("div");
+
         let pageInfo = pageElement.id.split (/-/);
         let start = parseInt (pageInfo[1]);
         let end = parseInt (pageInfo[2]);
         for (let j = start; j < end; ++j) {
             try {
                 let record = records[j];
-                let lineElement = Html.addElement(pageElement, "div", {classes: ((j & 0x01) === 1) ? ["bedrock-database-line", "odd"] : ["bedrock-database-line"]});
+                let lineBuilder = pageBulder.begin("div", {class: ((j & 0x01) === 1) ? ["bedrock-database-line", "odd"] : ["bedrock-database-line"]});
                 for (let fieldName of fieldNames) {
                     let value = (fieldName in record) ? record[fieldName] : "";
                     let styleName = fieldName.replace (/ /g, "-").toLowerCase ();
-                    let entryElement = Html.addElement(lineElement, "div", {class: "bedrock-database-entry"});
-                    Html.addElement(entryElement, "div", {classes: [styleName, "bedrock-database-entry-text"]}).innerHTML = value;
+                    lineBuilder
+                        .begin ("div", { class: "bedrock-database-entry" })
+                            .add ("div", { class: [styleName, "bedrock-database-entry-text"], innerHTML: value })
+                        .end ();
                 }
+                pageBulder.end ();
             } catch (exception) {
                 console.log(exception);
             }
         }
+        pageElement.appendChild(pageBulder.end ());
     };
 
     // reset everything
     Html.removeAllChildren (container);
     container.scrollTop = 0;
 
-    // build out the paging flow, computing the page height such that it would be impossible to have more than 2
-    // pages visible at any one time
+    // build out the paging flow, computing the page height such that it would
+    // be impossible to have more than two pages visible at any one time
     pageCount = Math.floor (recordCount / pageSize) + (((recordCount % pageSize) > 0) ? 1 : 0);
 
     // loop over all of the records, page by page
+    let pageContainer = Html.Builder.begin ("div");
     for (let pageIndex = 0; pageIndex < pageCount; ++pageIndex) {
         let start = pageIndex * pageSize;
         let end = Math.min(start + pageSize, recordCount);
         let count = end - start;
-        Html.addElement (container, "div", { id: "page-" + start + "-" + end, style: { height: (count * displayLineSize) + "px" } });
+        pageContainer.add ("div", { id: "page-" + start + "-" + end, style: { height: (count * displayLineSize) + "px" } });
     }
+    container.appendChild(pageContainer.end ());
     container.onscroll (null);
 };
 
