@@ -1,5 +1,7 @@
 "use strict";
 
+let Html = Bedrock.Html;
+
 let now = new Date ().getTime ();
 Bedrock.Http.get ("bsc5-short.json?" + now, function (records) {
     console.log ("Database loaded.");

@@ -17,7 +17,7 @@ Bedrock.PagedDisplay = function () {
                 fields[key] = key;
             }
         }
-        let fieldNames = Object.keys (fields).sort();
+        return Object.keys (fields).sort();
     };
 
     $.makeTable = function (container, records, fieldNames) {
