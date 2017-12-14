@@ -29,10 +29,11 @@ cat                                 \
     service-descriptor.js           \
     html.js                         \
     combobox.js                     \
+    paged-display.js                \
     forms.js                        \
     compare-functions.js            \
     comparable.js                   \
-    database-operations.js          \
+    database-filters.js             \
     database.js                     \
     > "$CONCAT";
 popd;
