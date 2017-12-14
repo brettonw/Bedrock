@@ -1,10 +1,8 @@
-"use strict;"
+"use strict";
 
 const VERSION = 2;
 
-let setCookie = function (name, value, expireDays) {
-    // default to 30 days expiration if no expiration is provided
-    expireDays = (typeof expireDays !== "undefined") ? expireDays : 30;
+let setCookie = function (name, value, expireDays = 30) {
     let date = new Date ();
     date.setTime (date.getTime () + (expireDays * 24 * 60 * 60 * 1000));
     let expires = "expires=" + date.toUTCString ();
@@ -18,7 +16,7 @@ let getCookie = function (name) {
     for (let cookie of cookieArray) {
         let index = cookie.indexOf (find);
         if (index >= 0) {
-            return cookie.substring (index + find.length)
+            return cookie.substring (index + find.length);
         }
     }
     return "";
@@ -72,8 +70,7 @@ let walkPage = function (page, prefix) {
     if (page !== undefined) {
         if (page.childNodes !== undefined) {
             let counter = 0;
-            for (let i = 0; i < page.childNodes.length; ++i) {
-                let element = page.childNodes.item (i);
+            for (let element of page.childNodes) {
                 if (element.tagName !== undefined) {
                     switch (element.tagName) {
                         case "H2":
@@ -81,7 +78,7 @@ let walkPage = function (page, prefix) {
                         case "H4": {
                             // get the following element, which should be a container class
                             let container = element.nextElementSibling;
-                            if ((typeof (container) != "undefined") && (container != null)) {
+                            if ((container !== undefined) && (container !== null)) {
                                 if (container.classList.contains ("container")) {
                                     let counterText = prefix + (++counter) + ".";
                                     let id = makeId (counterText, element.innerText);

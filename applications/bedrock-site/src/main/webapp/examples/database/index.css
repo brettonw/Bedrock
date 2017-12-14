@@ -14,7 +14,7 @@ div[id="bedrock-database-display"] {
     border-color: #bbb;
 }
 
-div[id="bedrock-header-line"] {
+.bedrock-header-line {
     padding: 4px;
     height:26px;
     border: solid;
@@ -45,7 +45,7 @@ div[id="bedrock-header-line"] {
     border-color: #ddd;
 }
 
-div[id="bedrock-database-display-list"] {
+.bedrock-database-display-list {
     overflow-y: scroll;
     height: calc(100% - 26px);
 }

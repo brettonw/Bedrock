@@ -1,6 +1,6 @@
 // Helper functions for emitting HTML from Javascript
-let valid = function (value) {
-    return (value !== undefined) && (value !== null);
+let valid = function (value = null) {
+    return (value !== null);
 };
 
 let block = function (block, attributes, content) {
@@ -60,9 +60,9 @@ Bedrock.Html = function () {
         return element;
     };
 
-    $.addElement = function (parent, tag, options, before) {
+    $.addElement = function (parent, tag, options, before = null) {
         let element = $.makeElement(tag, options);
-        parent.insertBefore (element, (typeof before !== "undefined") ? before : null);
+        parent.insertBefore (element, before);
         return element;
     };
 
@@ -88,9 +88,11 @@ Bedrock.Html = function () {
      */
     $.getCssSelectorStyle = function (selector, style) {
         for (let styleSheet of document.styleSheets) {
-            for (let cssRule of styleSheet.cssRules) {
-                if (cssRule.selectorText && (cssRule.selectorText === selector)) {
-                    return cssRule.style[style];
+            if (styleSheet.cssRules !== null) {
+                for (let cssRule of styleSheet.cssRules) {
+                    if (cssRule.selectorText && (cssRule.selectorText === selector)) {
+                        return cssRule.style[style];
+                    }
                 }
             }
         }

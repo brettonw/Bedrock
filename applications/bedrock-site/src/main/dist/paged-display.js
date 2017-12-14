@@ -3,6 +3,16 @@ Bedrock.PagedDisplay = function () {
 
     let Html = Bedrock.Html;
 
+    $.Select = function () {
+        let _ = Object.create(Bedrock.Base);
+
+        _.init = function (parameters) {
+            this.name = parameters.name
+        };
+
+        return _;
+    };
+
     // 2 - encapsulate
 
     // 3 - dynamically compute the column widths
@@ -20,10 +30,7 @@ Bedrock.PagedDisplay = function () {
         return Object.keys (fields).sort();
     };
 
-    $.makeTable = function (container, records, fieldNames) {
-
-        fieldNames = (fieldNames !== undefined) ? fieldNames : this.getAllFieldNames(records);
-
+    $.makeTable = function (container, records, fieldNames = $.getAllFieldNames(records)) {
         // size the pages a bit larger than the actual view so that there can't be
         // more than two pages visible at any one time. this is also a bit of a
         // compromise as larger pages means more populated lines for display per
@@ -84,7 +91,7 @@ Bedrock.PagedDisplay = function () {
         // function to populate a page - build it out from the records
         let populatePage = function (pageElement) {
             // create a filler object to make add/remove quick
-            let pageBulder = Html.Builder.begin("div");
+            let pageBuilder = Html.Builder.begin("div");
 
             let pageInfo = pageElement.id.split(/-/);
             let start = parseInt(pageInfo[1]);
@@ -92,7 +99,7 @@ Bedrock.PagedDisplay = function () {
             for (let j = start; j < end; ++j) {
                 try {
                     let record = records[j];
-                    let lineBuilder = pageBulder.begin("div", {class: ((j & 0x01) === 1) ? ["bedrock-database-line", "odd"] : ["bedrock-database-line"]});
+                    let lineBuilder = pageBuilder.begin("div", {class: ((j & 0x01) === 1) ? ["bedrock-database-line", "odd"] : ["bedrock-database-line"]});
                     for (let fieldName of fieldNames) {
                         let value = (fieldName in record) ? record[fieldName] : "";
                         let styleName = fieldName.replace(/ /g, "-").toLowerCase();
@@ -101,26 +108,44 @@ Bedrock.PagedDisplay = function () {
                             .add("div", {class: [styleName, "bedrock-database-entry-text"], innerHTML: value})
                             .end();
                     }
-                    pageBulder.end();
+                    pageBuilder.end();
                 } catch (exception) {
                     console.log(exception);
                 }
             }
-            pageElement.appendChild(pageBulder.end());
+            pageElement.appendChild(pageBuilder.end());
         };
 
         // loop over all of the records, page by page
-        let pageContainer = Html.Builder.begin("div");
+        let pageContainerBuilder = Html.Builder.begin("div");
         for (let pageIndex = 0; pageIndex < pageCount; ++pageIndex) {
             let start = pageIndex * pageSize;
             let end = Math.min(start + pageSize, recordCount);
-            pageContainer.add("div", {
+            pageContainerBuilder.add("div", {
                 id: "page-" + start + "-" + end,
                 style: {height: ((end - start) * displayLineSize) + "px"}
             });
         }
-        container.appendChild(pageContainer.end());
+        container.appendChild(pageContainerBuilder.end());
         container.onscroll(null);
+        return container;
+    };
+
+    $.makeTableWithHeader = function (container, records, fieldNames = $.getAllFieldNames(records)) {
+        Html.removeAllChildren(container);
+
+        // add the header
+        let headerBuilder = Html.Builder.begin ("div", { class: "bedrock-header-line" });
+        for (let fieldName of fieldNames) {
+            let styleName = fieldName.replace (/ /g, "-").toLowerCase ();
+            headerBuilder
+                .begin ("div", { class: "bedrock-header-entry" })
+                .add ("div", { class: [ styleName, "bedrock-header-entry-text" ], innerHTML: fieldName })
+                .end ();
+        }
+        container.appendChild(headerBuilder.end());
+        let listContainer = Html.addElement (container, "div", { class: "bedrock-database-display-list" });
+        return $.makeTable (listContainer, records, fieldNames);
     };
 
     return $;
