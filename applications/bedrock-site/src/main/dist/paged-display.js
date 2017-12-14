@@ -131,10 +131,7 @@ Bedrock.PagedDisplay = function () {
         return container;
     };
 
-    $.makeTableWithHeader = function (container, records, fieldNames = $.getAllFieldNames(records)) {
-        Html.removeAllChildren(container);
-
-        // add the header
+    $.makeTableHeader = function (container, fieldNames) {
         let headerBuilder = Html.Builder.begin ("div", { class: "bedrock-header-line" });
         for (let fieldName of fieldNames) {
             let styleName = fieldName.replace (/ /g, "-").toLowerCase ();
@@ -144,6 +141,15 @@ Bedrock.PagedDisplay = function () {
                 .end ();
         }
         container.appendChild(headerBuilder.end());
+    };
+
+    $.makeTableWithHeader = function (container, records, fieldNames = $.getAllFieldNames(records)) {
+        Html.removeAllChildren(container);
+
+        // add the header
+        $.makeTableHeader(container, fieldNames);
+
+        // add the table to a sub element
         let listContainer = Html.addElement (container, "div", { class: "bedrock-database-display-list" });
         return $.makeTable (listContainer, records, fieldNames);
     };
