@@ -7,7 +7,7 @@ Bedrock.PagedDisplay = function () {
         let _ = Object.create(Bedrock.Base);
 
         _.init = function (parameters) {
-            this.name = parameters.name
+            this.name = parameters.name;
         };
 
         return _;
@@ -31,14 +31,29 @@ Bedrock.PagedDisplay = function () {
     };
 
     $.makeTable = function (container, records, fieldNames = $.getAllFieldNames(records)) {
+        let getContainerHeight = function (rowHeight) {
+            let containerHeight = container.offsetHeight;
+            if ((parseInt (containerHeight.toString ()) > 0) === false) {
+                containerHeight = window.getComputedStyle (container).getPropertyValue ("height");
+            }
+            if ((parseInt (containerHeight.toString ()) > 0) === false) {
+                containerHeight = window.getComputedStyle (container).getPropertyValue ("max-height");
+            }
+            if ((parseInt (containerHeight.toString ()) > 0) === false) {
+                containerHeight = rowHeight;
+            }
+            return parseInt (containerHeight.toString ());
+        };
+
         // size the pages a bit larger than the actual view so that there can't be
         // more than two pages visible at any one time. this is also a bit of a
         // compromise as larger pages means more populated lines for display per
         // page, so we don't want to just blow the size way up.
         let recordCount = records.length;
-        const displayLineSize = parseInt(Html.getCssSelectorStyle(".bedrock-database-line", "height"));
-        const pageSize = Math.floor((container.offsetHeight / displayLineSize) * 1.25);
-        const pageHeight = displayLineSize * pageSize;
+        const rowHeight = parseInt(Html.getCssSelectorStyle(".bedrock-database-line", "height"));
+        const containerHeight = getContainerHeight (rowHeight);
+        const pageSize = Math.max (Math.floor((containerHeight / rowHeight) * 1.25), 1);
+        const pageHeight = rowHeight * pageSize;
         const pageCount = Math.floor(recordCount / pageSize) + (((recordCount % pageSize) > 0) ? 1 : 0);
 
         // reset everything
@@ -49,8 +64,8 @@ Bedrock.PagedDisplay = function () {
         // decide if the page is visible
         let pageIsVisible = function (page, view) {
             let pageInfo = page.id.split(/-/);
-            let start = (parseInt(pageInfo[1]) * displayLineSize) - view.scrollTop;
-            let end = (parseInt(pageInfo[2]) * displayLineSize) - view.scrollTop;
+            let start = (parseInt(pageInfo[1]) * rowHeight) - view.scrollTop;
+            let end = (parseInt(pageInfo[2]) * rowHeight) - view.scrollTop;
             return (end >= 0) && (start <= view.clientHeight);
         };
 
@@ -105,7 +120,7 @@ Bedrock.PagedDisplay = function () {
                         let styleName = fieldName.replace(/ /g, "-").toLowerCase();
                         lineBuilder
                             .begin("div", {class: "bedrock-database-entry"})
-                            .add("div", {class: [styleName, "bedrock-database-entry-text"], innerHTML: value})
+                            .add("div", {class: [styleName, "bedrock-database-entry-text"], innerHTML: (value !== undefined) ? value : "" })
                             .end();
                     }
                     pageBuilder.end();
@@ -123,7 +138,7 @@ Bedrock.PagedDisplay = function () {
             let end = Math.min(start + pageSize, recordCount);
             pageContainerBuilder.add("div", {
                 id: "page-" + start + "-" + end,
-                style: {height: ((end - start) * displayLineSize) + "px"}
+                style: {height: ((end - start) * rowHeight) + "px"}
             });
         }
         container.appendChild(pageContainerBuilder.end());

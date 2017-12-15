@@ -232,9 +232,7 @@ Bedrock.ComboBox = function () {
         let optionsElement = this.optionsElement;
 
         // clear out the options (fragment, should be one op)
-        while (optionsElement.firstChild) {
-            optionsElement.removeChild (optionsElement.firstChild);
-        }
+        Html.removeAllChildren(optionsElement);
 
         // try doing this on a document fragment to prevent lots of dom updates
         let fragment = document.createDocumentFragment();
@@ -244,8 +242,10 @@ Bedrock.ComboBox = function () {
         let regExp = new RegExp (inputElementValue, 'i');
 
         // take the inputElement value and use it to filter the list
+        let optionList = [];
         for (let option of this.options) {
             if (option.matchTarget.match (regExp)) {
+                /*
                 let comboBoxOption = Html.addElement (fragment, "div", {
                     class: "combobox-option",
                     onmousedown: function () {
@@ -283,11 +283,18 @@ Bedrock.ComboBox = function () {
                 } else {
                     comboBoxOption.innerHTML = display;
                 }
+                */
+                optionList.push ({
+                    "data-value": option.value,
+                    "display": (option.value.length > 32) ? (option.value.substr(0, 30) + "...") : option.value,
+                    "label": option.label
+                });
             }
         }
+        Bedrock.PagedDisplay.makeTable(optionsElement, optionList, ["display", "label"]);
 
         // add the fragment to the options element
-        optionsElement.appendChild(fragment);
+        //optionsElement.appendChild(fragment);
 
         return this;
     };

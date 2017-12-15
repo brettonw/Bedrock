@@ -28,8 +28,8 @@ cat                                 \
     service-base.js                 \
     service-descriptor.js           \
     html.js                         \
-    combobox.js                     \
     paged-display.js                \
+    combobox.js                     \
     forms.js                        \
     compare-functions.js            \
     comparable.js                   \
