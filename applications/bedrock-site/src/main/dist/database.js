@@ -58,11 +58,8 @@ Bedrock.Database = function () {
     $.FilterElement = function () {
         let _ = Object.create (Bedrock.Base);
 
-        let doFilter = function (database, filterField, filterValue, shouldMatch) {
+        let doFilter = function (database, filterField, filterValue, shouldMatch = true) {
             let result = [];
-
-            // initialize the not value if it wasn't passed
-            shouldMatch = (typeof shouldMatch !== "undefined") ? shouldMatch : true;
 
             // if the search key is not specified, this is a pass-through filter, just return
             // what we started with
@@ -241,8 +238,7 @@ Bedrock.Database = function () {
     $.Filter = function () {
         let _ = Object.create (Bedrock.Base);
 
-        let conditionValues = function (values, elementCount) {
-            values = (typeof values !== "undefined") ? values : [];
+        let conditionValues = function (values = [], elementCount = 0) {
             for (let i = values.length; i < elementCount; ++i) {
                 values.push ({});
             }
@@ -425,7 +421,7 @@ Bedrock.Database = function () {
                 databaseSource: this.databaseSource,
                 fieldKeys: this.fieldKeys,
                 owner: this,
-                elementCount: (typeof parameters.filterElementCount !== "undefined") ? parameters.filterElementCount : 4,
+                elementCount: (parameters.filterElementCount !== undefined) ? parameters.filterElementCount : 4,
                 initialValues: parameters.filterValues
             });
 /*

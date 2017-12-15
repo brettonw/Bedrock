@@ -37,6 +37,11 @@
                 <li><a href="dist/latest/docs/bedrock/">Bedrock</a></li>
             </ul>
         </div>
+
+        <h2>Examples</h2>
+        <div class="description-div">
+            Take a look at the <a href="examples">examples</a> of the usages for various Bedrock components.</p>
+        </div>
     </div>
 </div>
 <div class="content-center footer">Find it at <a class="footer-link" href="https://github.com/brettonw/bedrock">brettonw/Bedrock</a></div>

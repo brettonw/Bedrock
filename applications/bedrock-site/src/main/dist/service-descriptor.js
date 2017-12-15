@@ -2,8 +2,8 @@ Bedrock.ServiceDescriptor = function () {
     let $ = Object.create (null);
 
     // Helper functions for emitting HTML from Javascript
-    let valid = function (value) {
-        return (typeof (value) != "undefined") && (value !== null);
+    let valid = function (value = null) {
+        return (value !== null);
     };
 
     let block = function (block, attributes, content) {
@@ -137,13 +137,12 @@ Bedrock.ServiceDescriptor = function () {
     };
 
     // a little black raincloud, of course
-    $.display = function (displayInDivId, inputUrl) {
-        let url = (inputUrl !== undefined) ? inputUrl : "api?event=help";
-        $.get (url, function (db) {
+    const API_EVENT_HELP = "api?event=help";
+    $.display = function (displayInDivId, url = API_EVENT_HELP) {
+        $.get (url, function (response) {
             // if we retrieved the api.json from the service base, get the actual response
-            if (inputUrl === undefined) { db = db.response; }
-
-            document.getElementById(displayInDivId).innerHTML = Bedrock.ServiceDescriptor.displaySpecification (db);
+            response = (response.response !== undefined) ? response.response : response;
+            document.getElementById(displayInDivId).innerHTML = Bedrock.ServiceDescriptor.displaySpecification (response);
         });
     };
 
@@ -177,16 +176,16 @@ Bedrock.ServiceDescriptor = function () {
         }
     };
 
-    $.api = function (onSuccess, baseUrl, apiSource) {
+    $.api = function (onSuccess, baseUrl = "", apiSource = "") {
         // condition the inputs
-        baseUrl = ((typeof baseUrl === "undefined") || (baseUrl === "")) ? location.href.substr(0,location.href.lastIndexOf("/")) : baseUrl;
+        baseUrl = (baseUrl === "") ? location.href.substr(0,location.href.lastIndexOf("/")) : baseUrl;
         baseUrl = baseUrl.replace (/\/$/g, "");
 
         // get the api
-        let url = ((apiSource === undefined) || (apiSource === "")) ? (baseUrl + "/api?event=help") : apiSource;
+        let url = (apiSource === "") ? (baseUrl + "/" + API_EVENT_HELP) : apiSource;
         $.get (url, function (response) {
             // if we retrieved the api.json from the service base, get the actual response
-            if (apiSource === undefined) { response = response.response; }
+            response = (response.response !== undefined) ? response.response : response;
 
             // start with an empty build
             let api = Object.create (null);

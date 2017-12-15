@@ -15,10 +15,10 @@ Bedrock.CompareFunctions = function () {
 
 	// this is repeated several times, but I don't want it to be a function call
 	#define	NULL_CHECK															\
-        if ((a === undefined) || (a === null)) {								\
-            return ((b !== undefined) && (b !== null)) ? (asc ? -1 : 1) : 0;	\
+        if (a === null) {														\
+            return (b !== null) ? (asc ? -1 : 1) : 0;							\
         }																		\
-        if ((b === undefined) || (b === null)) {								\
+        if (b === null) {														\
             return (asc ? 1 : -1);												\
         }
 		
@@ -27,7 +27,7 @@ Bedrock.CompareFunctions = function () {
 		return asc ? (a - b) : (b - a)
 	};
 		
-	$.numeric = function (a, b, asc) {
+	$.numeric = function (a = null, b = null, asc) {
 		NULL_CHECK;
 		return compareNumeric (a, b, asc);
 	};
@@ -39,19 +39,19 @@ Bedrock.CompareFunctions = function () {
 		return asc ? ra.localeCompare (rb) : rb.localeCompare (ra);
 	};
 	
-	$.alphabetic = function (a, b, asc) {
+	$.alphabetic = function (a = null, b = null, asc) {
 		NULL_CHECK;
 		return compareAlphabetic (a, b, asc);
 	};
 	
-	$.date = function (a, b, asc) {
+	$.date = function (a = null, b = null, asc) {
 		NULL_CHECK;
 		
 		// convert the dates/timestamps to numerical values for comparison
 		return compareNumeric (new Date (a).valueOf (), new Date (b).valueOf ());
 	};
 	
-	$.auto = function (a, b, asc) {
+	$.auto = function (a = null, b = null, asc) {
 		NULL_CHECK;
 		
 		// try to compare the values as numerical if we can
@@ -64,7 +64,7 @@ Bedrock.CompareFunctions = function () {
 		return compareAlphabetic (a, b, asc);
 	};
 	
-	$.get = function (type) {
+	$.get = function (type = $.AUTO) {
 		switch (type.toLowerCase ()) {
 			case $.NUMERIC:
 			case "number":
@@ -84,6 +84,7 @@ Bedrock.CompareFunctions = function () {
 			case $.AUTO:
 			case "any":
 			case $.WILDCARD:
+			default:
 				return this.auto;
 		}
 		throw "Unknown type (" + type + ")";
