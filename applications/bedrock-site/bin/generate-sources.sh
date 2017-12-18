@@ -22,6 +22,7 @@ cat                                 \
     bedrock.js                      \
     $VERSION_FILE                   \
     log-level.js                    \
+    enum.js                         \
     base.js                         \
     utility.js                      \
     http.js                         \

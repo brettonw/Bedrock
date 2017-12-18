@@ -2,6 +2,7 @@ Bedrock.ComboBox = function () {
     let _ = Object.create(Bedrock.Base);
 
     let Html = Bedrock.Html;
+    let PagedDisplay = Bedrock.PagedDisplay;
     let Utility = Bedrock.Utility;
 
     let indexById = {};
@@ -30,18 +31,19 @@ Bedrock.ComboBox = function () {
 
             // the user must specify an inputElementId, or inputElement that we can get the
             // inputElementId from
+            // XXX NOTE TODO - this is obviated by the code 20 lines before
             let inputElementId = ("inputElementId" in parameters) ? parameters.inputElementId :
                 ("inputElement" in parameters) ? parameters.inputElement.id : null;
-            if (inputElementId != null) {
+            if (inputElementId !== null) {
                 // we know we have an id, now try to get the inputElement
                 inputElement = ("inputElement" in parameters) ? parameters.inputElement : document.getElementById (inputElementId);
-                if (inputElement == null) {
+                if (inputElement === null) {
                     // have to create the inputElement, the user must specify a
                     // parentElementId, or parentElement that we can get the
                     // parentElementId from
                     let parentElementId = ("parentElementId" in parameters) ? parameters.parentElementId :
                         ("parentElement" in parameters) ? parameters.parentElement.id : null;
-                    if (parentElementId != null) {
+                    if (parentElementId !== null) {
                         // get the parent element
                         parentElement = ("parentElement" in parameters) ? parameters.parentElement : document.getElementById (parentElementId);
 
@@ -291,7 +293,14 @@ Bedrock.ComboBox = function () {
                 });
             }
         }
-        Bedrock.PagedDisplay.makeTable(optionsElement, optionList, ["display", "label"]);
+        PagedDisplay.Table.new ({
+            container:optionsElement,
+            records: optionList,
+            select: [
+                { name: "display", type: PagedDisplay.EntryType.LEFT_JUSTIFY },
+                { name: "label", type: PagedDisplay.EntryType.RIGHT_JUSTIFY }
+            ]
+        }).makeTable ();
 
         // add the fragment to the options element
         //optionsElement.appendChild(fragment);
