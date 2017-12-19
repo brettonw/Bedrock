@@ -125,7 +125,7 @@ Bedrock.PagedDisplay = function () {
                     }
 
                     // start off with no selected row, allowing mouseover
-                    this.selectedRow = null;
+                    this.currentRow = null;
                     this.allowMouseover = true;
                 } else {
                     console.log ("'container' must be a valid element with an id (which is used as the base name for rows).");
@@ -142,6 +142,77 @@ Bedrock.PagedDisplay = function () {
             const styles = this.styles;
             const self = this;
 
+            // capture some keys (up/down, for instance)
+            container.onkeydown = function (event) {
+                switch (event.key) {
+                    case "ArrowUp": {
+                        /*
+                        if (self.currentRow != null) {
+                            self.currentRow.classList.remove (styles[Style.HOVER]);
+                            if (self.currentRow.previousSibling != null) {
+                                self.currentRow = self.currentRow.previousSibling;
+                            } else {
+                                self.currentRow = optionsElement.lastChild.lastChild;
+                            }
+                        } else {
+                            self.currentRow = optionsElement.lastChild;
+                        }
+                        self.currentRow.classList.add (styles[Style.HOVER]);
+
+                        // if the newly selected current option is not visible, set the scroll
+                        // pos to make it visible, and tell the options not to respond to
+                        // mouseover events until the mouse moves
+                        if (!Html.elementIsInView (self.currentRow, optionsElement)) {
+                            self.allowMouseover = false;
+                            optionsElement.scrollTop = self.currentRow.offsetTop;
+                        }
+                        */
+                        break;
+                    }
+                    case "ArrowDown": {
+                        /*
+                        if (self.currentRow != null) {
+                            self.currentRow.classList.remove ("combobox-option-hover");
+                            if (self.currentRow.nextSibling != null) {
+                                self.currentRow = self.currentRow.nextSibling;
+                            } else {
+                                self.currentRow = optionsElement.firstChild;
+                            }
+                        } else {
+                            self.currentRow = optionsElement.firstChild;
+                        }
+                        self.currentRow.classList.add ("combobox-option-hover");
+
+                        // if the newly selected current option is not visible, set the scroll
+                        // pos to make it visible, and tell the options not to respond to
+                        // mouseover events until the mouse moves
+                        if (!Html.elementIsInView (self.currentRow, optionsElement)) {
+                            self.allowMouseover = false;
+                            optionsElement.scrollTop = (self.currentRow.offsetTop - optionsElement.offsetHeight) + self.currentRow.offsetHeight;
+                        }
+                        */
+                        break;
+                    }
+                    case "Enter": {
+                        /*
+                        if (self.currentRow != null) {
+                            inputElement.value = self.currentRow.getAttribute ("data-value");
+                        }
+                        self.callOnChange ();
+                        inputElement.blur ();
+                        */
+                        break;
+                    }
+                    case "Escape": {
+                        //inputElement.blur ();
+                        break;
+                    }
+                    default:
+                        return true;
+                }
+                return false;
+            };
+            
             // utility function to compute the container height, just helps keep
             // the code a bit cleaner when I use it
             let getContainerHeight = (rowHeight) => {
@@ -174,15 +245,52 @@ Bedrock.PagedDisplay = function () {
             Html.removeAllChildren (container);
             container.scrollTop = 0;
 
-            // utility function that uses special knowledge of the size of a
-            // page to decide if the page is visible
-            let pageIsVisible = function (page, view) {
+            // utility functions that use special knowledge of the size of a
+            // page to decide if the page or row is visible
+            let rangeIsVisible = function (start, end) {
+                const scrollTop = container.scrollTop;
+                start = (start * rowHeight) - scrollTop;
+                end = (end * rowHeight) - scrollTop;
+                return (end >= 0) && (start <= container.clientHeight);
+            };
+
+            let getRowInfo = function (rowId) {
+                return parseInt (rowId.split (/-/).slice(-1)[0]);
+            };
+
+            let rowIsVisible = function (rowId) {
+                let row = getRowInfo (rowId);
+                return rangeIsVisible (row, row + 1);
+            };
+
+            let getPageInfo = function (pageId) {
                 // extract the page range that we encoded into the id, like
                 // this:"blah-blah-32-85"
-                let pageInfo = page.id.split (/-/);
-                let start = (parseInt (pageInfo[pageInfo.length - 2]) * rowHeight) - view.scrollTop;
-                let end = (parseInt (pageInfo[pageInfo.length - 1]) * rowHeight) - view.scrollTop;
-                return (end >= 0) && (start <= view.clientHeight);
+                let pageInfo = pageId.split (/-/);
+                return {
+                    start: parseInt (pageInfo[pageInfo.length - 2]),
+                    end: parseInt (pageInfo[pageInfo.length - 1])
+                };
+            };
+
+            let pageIsVisible = function (page) {
+                let pageInfo = getPageInfo (page.id);
+                return rangeIsVisible(pageInfo.start, pageInfo.end);
+            };
+
+            // click function
+            let click = function () {
+                if (self.callback !== undefined) {
+                    let id = getRowInfo (self.currentRow.id);
+                    self.callback (self.records[id]);
+                }
+            };
+
+            // function to select a row
+            let setCurrentRow = function (rowIndex) {
+                // figure out what page the rowIndex refers to, check and see if it's
+                // a populated page
+
             };
 
             // the main worker function - when the container is scrolled, figure out which
@@ -196,7 +304,7 @@ Bedrock.PagedDisplay = function () {
 
                 // clear the lastVisiblePages
                 for (let page of lastVisiblePages) {
-                    if (pageIsVisible (page, container)) {
+                    if (pageIsVisible (page)) {
                         visiblePages.push (page);
                     } else {
                         Html.removeAllChildren (page);
@@ -209,7 +317,7 @@ Bedrock.PagedDisplay = function () {
                 let pages = container.children[0].children;
                 for (let i = start; i < end; ++i) {
                     let page = pages[i];
-                    if ((page.children.length === 0) && pageIsVisible (page, container)) {
+                    if ((page.children.length === 0) && pageIsVisible (page)) {
                         visiblePages.push (page);
                         populatePage (page);
                     }
@@ -226,13 +334,10 @@ Bedrock.PagedDisplay = function () {
 
                 // extract the page range that we encoded into the id, like
                 // this:"blah-blah-32-85"
-                let pageInfo = pageElement.id.split (/-/);
-                let start = parseInt (pageInfo[pageInfo.length - 2]);
-                let end = parseInt (pageInfo[pageInfo.length - 1]);
-                for (let j = start; j < end; ++j) {
+                let pageInfo = getPageInfo (pageElement);
+                for (let j = pageInfo.start, end = pageInfo.end; j < end; ++j) {
                     try {
                         let record = records[j];
-                        // XXX TODO - Note, I need to add hover and select as options
                         let rowBuilder = pageBuilder.begin ("div", {
                             id: container.id + "-row-" + j,
                             class: ((j & 0x01) === 1) ? [styles[Style.TABLE_ROW], styles[Style.ODD]] : [styles[Style.TABLE_ROW]],
@@ -244,10 +349,10 @@ Bedrock.PagedDisplay = function () {
                             onmouseover: function () {
                                 //console.log ("onmouseover (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
                                 if (self.allowMouseover === true) {
-                                    if (self.selectedRow != null) {
-                                        self.selectedRow.classList.remove (styles[Style.HOVER]);
+                                    if (self.currentRow != null) {
+                                        self.currentRow.classList.remove (styles[Style.HOVER]);
                                     }
-                                    self.selectedRow = this;
+                                    self.currentRow = this;
                                     this.classList.add (styles[Style.HOVER]);
                                 }
                                 self.allowMouseover = true;
