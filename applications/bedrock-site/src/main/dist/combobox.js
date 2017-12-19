@@ -244,66 +244,70 @@ Bedrock.ComboBox = function () {
         let regExp = new RegExp (inputElementValue, 'i');
 
         // take the inputElement value and use it to filter the list
+        let usePagedDisplay = false;
         let optionList = [];
         for (let option of this.options) {
             if (option.matchTarget.match (regExp)) {
-                /*
-                let comboBoxOption = Html.addElement (fragment, "div", {
-                    class: "combobox-option",
-                    onmousedown: function () {
-                        inputElement.value = option.value;
-                        self.callOnChange();
-                        return true;
-                    },
-                    onmouseover: function () {
-                        //console.log ("onmouseover (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
-                        if (self.allowMouseover === true) {
-                            if (self.currentOption != null) {
-                                self.currentOption.classList.remove ("combobox-option-hover");
-                            }
-                            self.currentOption = this;
-                            this.classList.add ("combobox-option-hover");
-                        }
-                        self.allowMouseover = true;
-                    },
-                    onmouseout: function () {
-                        //console.log ("onmouseout (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
-                        if (self.allowMouseover === true) {
-                            this.classList.remove ("combobox-option-hover");
-                        }
-                    }
-                });
-                comboBoxOption.setAttribute("data-value", option.value);
-
-                // cap the display at 32 chars
-                let display = (option.value.length > 32) ? (option.value.substr(0, 30) + "...") : option.value;
-
-                //comboBoxOption.innerHTML = ("label" in option) ? option.label : option.value;
-                if ("label" in option) {
-                    Html.addElement (comboBoxOption, "div", { style: { float: "left" }}).innerHTML = display;
-                    Html.addElement (comboBoxOption, "div", { class: "combobox-option-label" }).innerHTML = option.label;
+                if (usePagedDisplay === true) {
+                    optionList.push ({
+                        "data-value": option.value,
+                        "display": (option.value.length > 32) ? (option.value.substr (0, 30) + "...") : option.value,
+                        "label": option.label
+                    });
                 } else {
-                    comboBoxOption.innerHTML = display;
+                    let comboBoxOption = Html.addElement (fragment, "div", {
+                        class: "combobox-option",
+                        onmousedown: function () {
+                            inputElement.value = option.value;
+                            self.callOnChange();
+                            return true;
+                        },
+                        onmouseover: function () {
+                            //console.log ("onmouseover (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
+                            if (self.allowMouseover === true) {
+                                if (self.currentOption != null) {
+                                    self.currentOption.classList.remove ("combobox-option-hover");
+                                }
+                                self.currentOption = this;
+                                this.classList.add ("combobox-option-hover");
+                            }
+                            self.allowMouseover = true;
+                        },
+                        onmouseout: function () {
+                            //console.log ("onmouseout (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
+                            if (self.allowMouseover === true) {
+                                this.classList.remove ("combobox-option-hover");
+                            }
+                        }
+                    });
+                    comboBoxOption.setAttribute("data-value", option.value);
+
+                    // cap the display at 32 chars
+                    let display = (option.value.length > 32) ? (option.value.substr(0, 30) + "...") : option.value;
+
+                    //comboBoxOption.innerHTML = ("label" in option) ? option.label : option.value;
+                    if ("label" in option) {
+                        Html.addElement (comboBoxOption, "div", { style: { float: "left" }}).innerHTML = display;
+                        Html.addElement (comboBoxOption, "div", { class: "combobox-option-label" }).innerHTML = option.label;
+                    } else {
+                        comboBoxOption.innerHTML = display;
+                    }
                 }
-                */
-                optionList.push ({
-                    "data-value": option.value,
-                    "display": (option.value.length > 32) ? (option.value.substr(0, 30) + "...") : option.value,
-                    "label": option.label
-                });
             }
         }
-        PagedDisplay.Table.new ({
-            container:optionsElement,
-            records: optionList,
-            select: [
-                { name: "display", type: PagedDisplay.EntryType.LEFT_JUSTIFY },
-                { name: "label", type: PagedDisplay.EntryType.RIGHT_JUSTIFY }
-            ]
-        }).makeTable ();
-
-        // add the fragment to the options element
-        //optionsElement.appendChild(fragment);
+        if (usePagedDisplay === true) {
+            PagedDisplay.Table.new ({
+                container: optionsElement,
+                records: optionList,
+                select: [
+                    { name: "display", type: PagedDisplay.EntryType.LEFT_JUSTIFY },
+                    { name: "label", type: PagedDisplay.EntryType.RIGHT_JUSTIFY }
+                ]
+            }).makeTable ();
+        } else {
+            // add the fragment to the options element
+            optionsElement.appendChild(fragment);
+        }
 
         return this;
     };

@@ -194,6 +194,11 @@ li {
     background-color: aliceblue;
 }
 
+.bedrock-paged-display-hover {
+    color: white;
+    background-color: mediumblue;
+}
+
 .bedrock-paged-display-entry-left-justify {
     text-align: left;
 }

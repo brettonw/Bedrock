@@ -51,7 +51,8 @@ Bedrock.PagedDisplay = function () {
         "TABLE_ROW",
         "TABLE_ROW_ENTRY",
         "TABLE_ROW_ENTRY_TEXT",
-        "ODD"
+        "ODD",
+        "HOVER"
     ]);
 
     const defaultStyles = Object.create (null);
@@ -63,6 +64,7 @@ Bedrock.PagedDisplay = function () {
     defaultStyles[Style.TABLE_ROW_ENTRY] = "bedrock-paged-display-table-row-entry";
     defaultStyles[Style.TABLE_ROW_ENTRY_TEXT] = "bedrock-paged-display-table-row-entry-text";
     defaultStyles[Style.ODD] = "bedrock-paged-display-odd";
+    defaultStyles[Style.HOVER] = "bedrock-paged-display-hover";
     defaultStyles[EntryType.LEFT_JUSTIFY] = "bedrock-paged-display-entry-left-justify";
     defaultStyles[EntryType.CENTER_JUSTIFY] = "bedrock-paged-display-entry-center-justify";
     defaultStyles[EntryType.RIGHT_JUSTIFY] = "bedrock-paged-display-entry-right-justify";
@@ -121,6 +123,10 @@ Bedrock.PagedDisplay = function () {
                     if (parameters.callback !== undefined) {
                         this.callback = parameters.callback;
                     }
+
+                    // start off with no selected row, allowing mouseover
+                    this.selectedRow = null;
+                    this.allowMouseover = true;
                 } else {
                     console.log ("'container' must be a valid element with an id (which is used as the base name for rows).");
                 }
@@ -134,6 +140,7 @@ Bedrock.PagedDisplay = function () {
         _.makeTable = function (container = this.container) {
             const select = this.select;
             const styles = this.styles;
+            const self = this;
 
             // utility function to compute the container height, just helps keep
             // the code a bit cleaner when I use it
@@ -228,7 +235,29 @@ Bedrock.PagedDisplay = function () {
                         // XXX TODO - Note, I need to add hover and select as options
                         let rowBuilder = pageBuilder.begin ("div", {
                             id: container.id + "-row-" + j,
-                            class: ((j & 0x01) === 1) ? [styles[Style.TABLE_ROW], styles[Style.ODD]] : [styles[Style.TABLE_ROW]]
+                            class: ((j & 0x01) === 1) ? [styles[Style.TABLE_ROW], styles[Style.ODD]] : [styles[Style.TABLE_ROW]],
+                            onmousedown: function () {
+                                //inputElement.value = option.value;
+                                //self.callOnChange ();
+                                return true;
+                            },
+                            onmouseover: function () {
+                                //console.log ("onmouseover (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
+                                if (self.allowMouseover === true) {
+                                    if (self.selectedRow != null) {
+                                        self.selectedRow.classList.remove (styles[Style.HOVER]);
+                                    }
+                                    self.selectedRow = this;
+                                    this.classList.add (styles[Style.HOVER]);
+                                }
+                                self.allowMouseover = true;
+                            },
+                            onmouseout: function () {
+                                //console.log ("onmouseout (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
+                                if (self.allowMouseover === true) {
+                                    this.classList.remove (styles[Style.HOVER]);
+                                }
+                            }
                         });
                         for (let entry of select) {
                             let value = (entry.name in record) ? record[entry.name] : "";
