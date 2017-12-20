@@ -255,7 +255,7 @@ Bedrock.PagedDisplay = function () {
             };
 
             let getRowInfo = function (rowId) {
-                return parseInt (rowId.split (/-/).slice(-1)[0]);
+                return parseInt (rowId.toString ().split (/-/).slice(-1)[0]);
             };
 
             let rowIsVisible = function (rowId) {
@@ -266,7 +266,7 @@ Bedrock.PagedDisplay = function () {
             let getPageInfo = function (pageId) {
                 // extract the page range that we encoded into the id, like
                 // this:"blah-blah-32-85"
-                let pageInfo = pageId.split (/-/);
+                let pageInfo = pageId.toString ().split (/-/);
                 return {
                     start: parseInt (pageInfo[pageInfo.length - 2]),
                     end: parseInt (pageInfo[pageInfo.length - 1])
@@ -334,7 +334,7 @@ Bedrock.PagedDisplay = function () {
 
                 // extract the page range that we encoded into the id, like
                 // this:"blah-blah-32-85"
-                let pageInfo = getPageInfo (pageElement);
+                let pageInfo = getPageInfo (pageElement.id);
                 for (let j = pageInfo.start, end = pageInfo.end; j < end; ++j) {
                     try {
                         let record = records[j];
