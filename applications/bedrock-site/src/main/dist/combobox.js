@@ -121,9 +121,9 @@ Bedrock.ComboBox = function () {
                 inputElement.onkeydown = function (event) {
                     switch (event.key) {
                         case "ArrowUp": {
-                            if (self.currentOption != null) {
+                            if (self.currentOption !== null) {
                                 self.currentOption.classList.remove ("combobox-option-hover");
-                                if (self.currentOption.previousSibling != null) {
+                                if (self.currentOption.previousSibling !== null) {
                                     self.currentOption = self.currentOption.previousSibling;
                                 } else {
                                     self.currentOption = optionsElement.lastChild;
@@ -143,9 +143,9 @@ Bedrock.ComboBox = function () {
                             break;
                         }
                         case "ArrowDown": {
-                            if (self.currentOption != null) {
+                            if (self.currentOption !== null) {
                                 self.currentOption.classList.remove ("combobox-option-hover");
-                                if (self.currentOption.nextSibling != null) {
+                                if (self.currentOption.nextSibling !== null) {
                                     self.currentOption = self.currentOption.nextSibling;
                                 } else {
                                     self.currentOption = optionsElement.firstChild;
@@ -244,13 +244,13 @@ Bedrock.ComboBox = function () {
         let regExp = new RegExp (inputElementValue, 'i');
 
         // take the inputElement value and use it to filter the list
-        let usePagedDisplay = false;
+        let usePagedDisplay = true;
         let optionList = [];
         for (let option of this.options) {
             if (option.matchTarget.match (regExp)) {
                 if (usePagedDisplay === true) {
                     optionList.push ({
-                        "data-value": option.value,
+                        "value": option.value,
                         "display": (option.value.length > 32) ? (option.value.substr (0, 30) + "...") : option.value,
                         "label": option.label
                     });
@@ -302,7 +302,12 @@ Bedrock.ComboBox = function () {
                 select: [
                     { name: "display", type: PagedDisplay.EntryType.LEFT_JUSTIFY },
                     { name: "label", type: PagedDisplay.EntryType.RIGHT_JUSTIFY }
-                ]
+                ],
+                onclick: function (record) {
+                    inputElement.value = record.value;
+                    self.callOnChange();
+                    return true;
+                }
             }).makeTable ();
         } else {
             // add the fragment to the options element

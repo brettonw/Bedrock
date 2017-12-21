@@ -13,3 +13,12 @@ div[id="bedrock-database-display"] {
     border-radius: 2px;
     border-color: #bbb;
 }
+
+div[id="bedrock-record-display"] {
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+body.noScroll {
+    overflow: hidden;
+}

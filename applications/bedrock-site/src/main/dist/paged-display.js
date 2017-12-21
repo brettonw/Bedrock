@@ -120,8 +120,8 @@ Bedrock.PagedDisplay = function () {
 
                     // "callback" is a way for the display to send an event if a row is
                     // clicked on or selected by the user
-                    if (parameters.callback !== undefined) {
-                        this.callback = parameters.callback;
+                    if (parameters.onclick !== undefined) {
+                        this.onclick = parameters.onclick;
                     }
 
                     // start off with no selected row, allowing mouseover
@@ -170,27 +170,7 @@ Bedrock.PagedDisplay = function () {
                         break;
                     }
                     case "ArrowDown": {
-                        /*
-                        if (self.currentRow != null) {
-                            self.currentRow.classList.remove ("combobox-option-hover");
-                            if (self.currentRow.nextSibling != null) {
-                                self.currentRow = self.currentRow.nextSibling;
-                            } else {
-                                self.currentRow = optionsElement.firstChild;
-                            }
-                        } else {
-                            self.currentRow = optionsElement.firstChild;
-                        }
-                        self.currentRow.classList.add ("combobox-option-hover");
-
-                        // if the newly selected current option is not visible, set the scroll
-                        // pos to make it visible, and tell the options not to respond to
-                        // mouseover events until the mouse moves
-                        if (!Html.elementIsInView (self.currentRow, optionsElement)) {
-                            self.allowMouseover = false;
-                            optionsElement.scrollTop = (self.currentRow.offsetTop - optionsElement.offsetHeight) + self.currentRow.offsetHeight;
-                        }
-                        */
+                        goNext();
                         break;
                     }
                     case "Enter": {
@@ -278,11 +258,36 @@ Bedrock.PagedDisplay = function () {
                 return rangeIsVisible(pageInfo.start, pageInfo.end);
             };
 
-            // click function
-            let click = function () {
-                if (self.callback !== undefined) {
-                    let id = getRowInfo (self.currentRow.id);
-                    self.callback (self.records[id]);
+            // go next, go prev... for key-press access
+            let goNext = function () {
+                // default to row 0
+                let rowId = 0;
+
+                // deselect the current row if there is one
+                if (self.currentRow !== null) {
+                    // update the next row...
+                    rowId = (getRowInfo (self.currentRow.id) + 1) % records.length;
+                    self.currentRow.remove (styles[Style.HOVER]);
+                }
+
+                // what page is the new element on, and is it populated?
+                let pageId = Math.floor (rowId / pageSize);
+                let page = container.children[0].children[pageId];
+                if (page.children.length === 0) {
+                    populatePage(page);
+                }
+
+                // get the relative offset and get the actual row
+                let relativeIndex = rowId - (pageId * pageSize);
+                let row = page.children[0].children[relativeIndex];
+                row.classList.add (styles[Style.HOVER]);
+
+                // and finally, check to see if the row is visible
+                if (! rangeIsVisible(rowId, rowId + 1)) {
+                    // gotta scroll to make it visible, and tell the rows not
+                    // to respond to mouseover events until the mouse moves
+                    self.allowMouseover = false;
+                    container.scrollTop = rowId * rowHeight;
                 }
             };
 
@@ -336,49 +341,52 @@ Bedrock.PagedDisplay = function () {
                 // this:"blah-blah-32-85"
                 let pageInfo = getPageInfo (pageElement.id);
                 for (let j = pageInfo.start, end = pageInfo.end; j < end; ++j) {
-                    try {
-                        let record = records[j];
-                        let rowBuilder = pageBuilder.begin ("div", {
-                            id: container.id + "-row-" + j,
-                            class: ((j & 0x01) === 1) ? [styles[Style.TABLE_ROW], styles[Style.ODD]] : [styles[Style.TABLE_ROW]],
-                            onmousedown: function () {
-                                //inputElement.value = option.value;
-                                //self.callOnChange ();
-                                return true;
-                            },
-                            onmouseover: function () {
-                                //console.log ("onmouseover (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
-                                if (self.allowMouseover === true) {
-                                    if (self.currentRow != null) {
-                                        self.currentRow.classList.remove (styles[Style.HOVER]);
-                                    }
-                                    self.currentRow = this;
-                                    this.classList.add (styles[Style.HOVER]);
+                    let record = records[j];
+                    let rowBuilder = pageBuilder.begin ("div", {
+                        id: container.id + "-row-" + j,
+                        class: ((j & 0x01) === 1) ? [styles[Style.TABLE_ROW], styles[Style.ODD]] : [styles[Style.TABLE_ROW]],
+                        onmousedown: function () {
+                            if (self.onclick !== undefined) {
+                                if (self.onclick (self.records[j])) {
+                                    // if the called function returns true, we reset the
+                                    // selected element
+                                    this.classList.remove (styles[Style.HOVER]);
+                                    self.currentRow = null;
                                 }
-                                self.allowMouseover = true;
-                            },
-                            onmouseout: function () {
-                                //console.log ("onmouseout (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
-                                if (self.allowMouseover === true) {
+                                return true;
+                            }
+                            return false;
+                        },
+                        onmouseover: function () {
+                            //console.log ("onmouseover (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
+                            if (self.allowMouseover === true) {
+                                if (self.currentRow !== null) {
                                     this.classList.remove (styles[Style.HOVER]);
                                 }
+                                self.currentRow = this;
+                                this.classList.add (styles[Style.HOVER]);
                             }
-                        });
-                        for (let entry of select) {
-                            let value = (entry.name in record) ? record[entry.name] : "";
-                            value = (value !== undefined) ? value : "";
-                            rowBuilder
-                                .begin ("div", { class: styles[Style.TABLE_ROW_ENTRY] })
-                                .add ("div", {
-                                    class: [styles[entry.type], styles[Style.TABLE_ROW_ENTRY_TEXT]],
-                                    innerHTML: value
-                                })
-                                .end ();
+                            self.allowMouseover = true;
+                        },
+                        onmouseout: function () {
+                            //console.log ("onmouseout (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
+                            if (self.allowMouseover === true) {
+                                this.classList.remove (styles[Style.HOVER]);
+                            }
                         }
-                        pageBuilder.end ();
-                    } catch (exception) {
-                        console.log (exception);
+                    });
+                    for (let entry of select) {
+                        let value = (entry.name in record) ? record[entry.name] : "";
+                        value = (value !== undefined) ? value : "";
+                        rowBuilder
+                            .begin ("div", { class: styles[Style.TABLE_ROW_ENTRY] })
+                            .add ("div", {
+                                class: [styles[entry.type], styles[Style.TABLE_ROW_ENTRY_TEXT]],
+                                innerHTML: value
+                            })
+                            .end ();
                     }
+                    pageBuilder.end ();
                 }
                 pageElement.appendChild (pageBuilder.end ());
             };
