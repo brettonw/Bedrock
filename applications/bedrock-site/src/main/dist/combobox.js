@@ -3,7 +3,17 @@ Bedrock.ComboBox = function () {
 
     let Html = Bedrock.Html;
     let PagedDisplay = Bedrock.PagedDisplay;
+    let Style = PagedDisplay.Style;
+    let EntryType = PagedDisplay.EntryType;
     let Utility = Bedrock.Utility;
+
+    const defaultStyles = Object.create (null);
+    defaultStyles[Style.TABLE] = "bedrock-combobox-paged-display-table";
+    defaultStyles[Style.TABLE_ROW] = "bedrock-combobox-paged-display-table-row";
+    defaultStyles[Style.TABLE_ROW_ENTRY] = "bedrock-combobox-paged-display-table-row-entry";
+    defaultStyles[Style.TABLE_ROW_ENTRY_TEXT] = "bedrock-combobox-paged-display-table-row-entry-text";
+    defaultStyles[Style.ODD] = "bedrock-combobox-paged-display-odd";
+    defaultStyles[Style.HOVER] = "bedrock-combobox-paged-display-hover";
 
     let indexById = {};
 
@@ -25,6 +35,16 @@ Bedrock.ComboBox = function () {
 
             // set up the option for regexp in matching, default is false
             this.useRegExp = ("useRegExp" in parameters) ? parameters.useRegExp : false;
+
+            // if there are styles, copy them in...
+            this.styles = Object.create (defaultStyles);
+            if (parameters.styles !== undefined) {
+                for (let style of Object.keys (defaultStyles)) {
+                    if (parameters.styles[style] !== undefined) {
+                        this.styles[style] = parameters.styles[style];
+                    }
+                }
+            }
 
             // we will need the parentElement, this is a placeholder for it
             let inputElement, parentElement;
@@ -303,6 +323,7 @@ Bedrock.ComboBox = function () {
                     { name: "display", type: PagedDisplay.EntryType.LEFT_JUSTIFY },
                     { name: "label", type: PagedDisplay.EntryType.RIGHT_JUSTIFY }
                 ],
+                styles: this.styles,
                 onclick: function (record) {
                     inputElement.value = record.value;
                     self.callOnChange();

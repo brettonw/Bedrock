@@ -197,13 +197,13 @@ Bedrock.PagedDisplay = function () {
             // the code a bit cleaner when I use it
             let getContainerHeight = (rowHeight) => {
                 let containerHeight = container.offsetHeight;
-                if ((parseInt (containerHeight.toString ()) > 0) === false) {
+                if ((parseInt (containerHeight.toString ()) >= rowHeight) === false) {
                     containerHeight = window.getComputedStyle (container).getPropertyValue ("height");
                 }
-                if ((parseInt (containerHeight.toString ()) > 0) === false) {
+                if ((parseInt (containerHeight.toString ()) >= rowHeight) === false) {
                     containerHeight = window.getComputedStyle (container).getPropertyValue ("max-height");
                 }
-                if ((parseInt (containerHeight.toString ()) > 0) === false) {
+                if ((parseInt (containerHeight.toString ()) >= rowHeight) === false) {
                     containerHeight = rowHeight;
                 }
                 return parseInt (containerHeight.toString ());
