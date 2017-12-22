@@ -61,7 +61,92 @@ li {
     background-color: aliceblue;
 }
 
-/* ComboBox styling tags */
+/* Paged Display default styling tags */
+
+.bedrock-paged-display-header-row {
+    padding: 4px;
+    height:26px;
+    border: solid;
+    border-width: 0;
+    border-bottom-width: 1px;
+    border-color: #999;
+}
+
+.bedrock-paged-display-header-entry {
+    display: inline-block;
+    width: 80px;
+    text-align: center;
+}
+
+.bedrock-paged-display-header-entry-text {
+    font-size: 12px;
+    font-weight: bold;
+    height: 18px;
+    line-height: 18px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    text-align: center;
+    margin: 0 2px;
+
+    border: solid;
+    border-width: 0;
+    border-bottom-width: 1px;
+    border-color: #ddd;
+}
+
+.bedrock-paged-display-table {
+    overflow-y: scroll;
+    height: calc(100% - 26px);
+}
+
+.bedrock-paged-display-table-row {
+    padding: 4px 4px 3px 4px; /* top right bottom left */
+    color: black;
+    font-size: 12px;
+    height: 21px;
+}
+
+.bedrock-paged-display-table-row-entry {
+    display: inline-block;
+    height: 100%;
+    width: 80px;
+    text-align: center;
+}
+
+.bedrock-paged-display-table-row-entry-text {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    margin: 0 2px;
+    padding: 0 3px;
+}
+
+.bedrock-paged-display-odd {
+    background-color: aliceblue;
+}
+
+.bedrock-paged-display-hover {
+    color: white;
+    background-color: mediumblue;
+}
+
+.bedrock-paged-display-entry-left-justify {
+    text-align: left;
+}
+
+.bedrock-paged-display-entry-center-justify {
+    text-align: center;
+}
+
+.bedrock-paged-display-entry-right-justify {
+    text-align: right;
+}
+
+.bedrock-paged-display-entry-image {
+    text-align: center;
+}
+
+/* ComboBox default styling tags */
 
 .combobox-input {
     width: 125px;
@@ -129,6 +214,43 @@ li {
     color: white;
     background-color: mediumblue;
 }
+
+.bedrock-combobox-paged-display-table {
+    overflow-y: scroll;
+    height: 100%;
+}
+
+.bedrock-combobox-paged-display-table-row {
+    padding: 3px;
+    color: black;
+    font-size: 10px;
+    height: 19px;
+}
+
+.bedrock-combobox-paged-display-table-row-entry {
+    display: inline-block;
+    height: 100%;
+    width: 80px;
+    text-align: center;
+}
+
+.bedrock-combobox-paged-display-table-row-entry-text {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    margin: 0 2px;
+    padding: 0 3px;
+}
+
+.bedrock-combobox-paged-display-odd {
+    background-color: #f0f0ff;
+}
+
+.bedrock-combobox-paged-display-hover {
+    color: white;
+    background-color: #004;
+}
+
 
 /* Database styling tags */
 
