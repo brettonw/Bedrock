@@ -142,69 +142,20 @@ Bedrock.PagedDisplay = function () {
             const styles = this.styles;
             const self = this;
 
-            // capture some keys (up/down, for instance)
-            container.onkeydown = function (event) {
-                switch (event.key) {
-                    case "ArrowUp": {
-                        /*
-                        if (self.currentRow != null) {
-                            self.currentRow.classList.remove (styles[Style.HOVER]);
-                            if (self.currentRow.previousSibling != null) {
-                                self.currentRow = self.currentRow.previousSibling;
-                            } else {
-                                self.currentRow = optionsElement.lastChild.lastChild;
-                            }
-                        } else {
-                            self.currentRow = optionsElement.lastChild;
-                        }
-                        self.currentRow.classList.add (styles[Style.HOVER]);
-
-                        // if the newly selected current option is not visible, set the scroll
-                        // pos to make it visible, and tell the options not to respond to
-                        // mouseover events until the mouse moves
-                        if (!Html.elementIsInView (self.currentRow, optionsElement)) {
-                            self.allowMouseover = false;
-                            optionsElement.scrollTop = self.currentRow.offsetTop;
-                        }
-                        */
-                        break;
-                    }
-                    case "ArrowDown": {
-                        goNext();
-                        break;
-                    }
-                    case "Enter": {
-                        /*
-                        if (self.currentRow != null) {
-                            inputElement.value = self.currentRow.getAttribute ("data-value");
-                        }
-                        self.callOnChange ();
-                        inputElement.blur ();
-                        */
-                        break;
-                    }
-                    case "Escape": {
-                        //inputElement.blur ();
-                        break;
-                    }
-                    default:
-                        return true;
-                }
-                return false;
-            };
-            
             // utility function to compute the container height, just helps keep
-            // the code a bit cleaner when I use it
-            let getContainerHeight = (rowHeight) => {
+            // the code a bit cleaner when I use it - this is a bit stilted code-
+            // wise because the actual return value from some of these styles
+            // might not be a number at all
+            let getContainerHeight = (minHeight) => {
                 let containerHeight = container.offsetHeight;
-                if ((parseInt (containerHeight.toString ()) >= rowHeight) === false) {
+                if ((parseInt (containerHeight.toString ()) >= minHeight) === false) {
                     containerHeight = window.getComputedStyle (container).getPropertyValue ("height");
                 }
-                if ((parseInt (containerHeight.toString ()) >= rowHeight) === false) {
+                if ((parseInt (containerHeight.toString ()) >= minHeight) === false) {
                     containerHeight = window.getComputedStyle (container).getPropertyValue ("max-height");
                 }
-                if ((parseInt (containerHeight.toString ()) >= rowHeight) === false) {
-                    containerHeight = rowHeight;
+                if ((parseInt (containerHeight.toString ()) >= minHeight) === false) {
+                    containerHeight = minHeight;
                 }
                 return parseInt (containerHeight.toString ());
             };
