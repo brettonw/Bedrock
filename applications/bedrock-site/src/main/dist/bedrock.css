@@ -100,10 +100,10 @@ li {
 }
 
 .bedrock-paged-display-table-row {
-    padding: 4px;
+    padding: 4px 4px 3px 4px; /* top right bottom left */
     color: black;
     font-size: 12px;
-    height: 20px;
+    height: 21px;
 }
 
 .bedrock-paged-display-table-row-entry {
@@ -221,10 +221,10 @@ li {
 }
 
 .bedrock-combobox-paged-display-table-row {
-    padding: 4px;
+    padding: 3px;
     color: black;
     font-size: 10px;
-    height: 18px;
+    height: 19px;
 }
 
 .bedrock-combobox-paged-display-table-row-entry {
@@ -243,7 +243,7 @@ li {
 }
 
 .bedrock-combobox-paged-display-odd {
-    background-color: #fafaff;
+    background-color: #f0f0ff;
 }
 
 .bedrock-combobox-paged-display-hover {
