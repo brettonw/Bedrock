@@ -193,23 +193,19 @@ li {
 
 .combobox-option {
     opacity: 1;
-    height: 19px;
     padding: 2px 4px;
     font-size: 11px;
     line-height: 15px;
-    font-family: sans-serif;
-    color: black;
     vertical-align: middle;
     overflow-x: hidden;
 }
 
 .combobox-option-label {
+    opacity: 0.75;
     margin-left: 10px;
-    height: 19px;
     line-height: 11px;
     padding: 2px 4px;
     font-size: 9px;
-    color: gray;
     width: 95%;
     text-align: right;
     overflow-x: hidden;
@@ -226,6 +222,7 @@ li {
 }
 
 .bedrock-combobox-paged-display-table-row {
+    font-family: sans-serif;
     padding: 3px;
     color: black;
     font-size: 10px;

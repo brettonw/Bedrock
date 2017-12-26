@@ -21,6 +21,8 @@ Bedrock.PagedDisplay = function () {
 
     // 3 - dynamically compute the column widths
 
+    // 3.5 - allow columns to be individually styled, including column widths
+
     // 4 - user selectable style classes based on input parameters
 
     let getAllFieldNames = $.getAllFieldNames = function (records) {
@@ -85,7 +87,8 @@ Bedrock.PagedDisplay = function () {
 
                     // "select" should be an array of objects specifying the name
                     // of the field, its display name, and its type (in desired
-                    // display order)
+                    // display order) - the user either supplies all columns, or
+                    // none
                     let select;
                     if (parameters.select === undefined) {
                         select = this.select = [];
@@ -137,7 +140,8 @@ Bedrock.PagedDisplay = function () {
             return this;
         };
 
-        _.makeTable = function (container = this.container) {
+        _.makeTable = function () {
+            const container = this.container;
             const select = this.select;
             const styles = this.styles;
             const self = this;
@@ -209,16 +213,15 @@ Bedrock.PagedDisplay = function () {
                 return rangeIsVisible(pageInfo.start, pageInfo.end);
             };
 
-            // go next, go prev... for key-press access
-            let goNext = function () {
+            let go = function (defaultRowId, add, scroll) {
                 // default to row 0
-                let rowId = 0;
+                let rowId = defaultRowId;
 
                 // deselect the current row if there is one
                 if (self.currentRow !== null) {
                     // update the next row...
-                    rowId = (getRowInfo (self.currentRow.id) + 1) % records.length;
-                    self.currentRow.remove (styles[Style.HOVER]);
+                    rowId = ((getRowInfo (self.currentRow.id) + add) + records.length) % records.length;
+                    self.currentRow.classList.remove (styles[Style.HOVER]);
                 }
 
                 // what page is the new element on, and is it populated?
@@ -230,23 +233,35 @@ Bedrock.PagedDisplay = function () {
 
                 // get the relative offset and get the actual row
                 let relativeIndex = rowId - (pageId * pageSize);
-                let row = page.children[0].children[relativeIndex];
-                row.classList.add (styles[Style.HOVER]);
+                self.currentRow = page.children[0].children[relativeIndex];
+                self.currentRow.classList.add (styles[Style.HOVER]);
 
                 // and finally, check to see if the row is visible
                 if (! rangeIsVisible(rowId, rowId + 1)) {
                     // gotta scroll to make it visible, and tell the rows not
                     // to respond to mouseover events until the mouse moves
                     self.allowMouseover = false;
-                    container.scrollTop = rowId * rowHeight;
+                    container.scrollTop = scroll (rowId);
                 }
             };
 
-            // function to select a row
-            let setCurrentRow = function (rowIndex) {
-                // figure out what page the rowIndex refers to, check and see if it's
-                // a populated page
+            // go next, go prev... for key-press access
+            self.goNext = function () {
+                go (0, 1, function (rowId) {
+                    return rowId * rowHeight;
+                });
+            };
 
+            self.goPrev = function () {
+                go (records.length - 1, -1, function (rowId) {
+                    return rowId * rowHeight;
+                });
+            };
+
+            self.select = function () {
+                if (self.currentRow !== null) {
+                    self.currentRow.onmousedown();
+                }
             };
 
             // the main worker function - when the container is scrolled, figure out which
@@ -326,15 +341,24 @@ Bedrock.PagedDisplay = function () {
                             }
                         }
                     });
+
+                    // populate the row entries
                     for (let entry of select) {
                         let value = (entry.name in record) ? record[entry.name] : "";
-                        value = (value !== undefined) ? value : "";
+                        let entryClass = [styles[entry.type], styles[Style.TABLE_ROW_ENTRY_TEXT]];
+                        if (entry.class !== undefined) {
+                            entryClass = entryClass.concat(Array.isArray(entry.class) ? entry.class : entry.class.split (","));
+                        }
+                        let entryTextParams = {
+                            class: entryClass,
+                            innerHTML: (value !== undefined) ? value : ""
+                        };
+                        if (entry.style !== undefined) {
+                            entryTextParams.style = entry.style;
+                        }
                         rowBuilder
                             .begin ("div", { class: styles[Style.TABLE_ROW_ENTRY] })
-                            .add ("div", {
-                                class: [styles[entry.type], styles[Style.TABLE_ROW_ENTRY_TEXT]],
-                                innerHTML: value
-                            })
+                                .add ("div", entryTextParams)
                             .end ();
                     }
                     pageBuilder.end ();
@@ -354,7 +378,7 @@ Bedrock.PagedDisplay = function () {
             }
             container.appendChild (pageContainerBuilder.end ());
             container.onscroll (null);
-            return container;
+            return this;
         };
 
         _.makeTableHeader = function () {
@@ -379,8 +403,8 @@ Bedrock.PagedDisplay = function () {
             this.makeTableHeader ();
 
             // add the table to a sub element
-            let listContainer = Html.addElement (this.container, "div", { id: this.container.id + "-table", class: this.styles[Style.TABLE] });
-            return this.makeTable (listContainer);
+            this.container = Html.addElement (this.container, "div", { id: this.container.id + "-table", class: this.styles[Style.TABLE] });
+            return this.makeTable ();
         };
 
         return _;

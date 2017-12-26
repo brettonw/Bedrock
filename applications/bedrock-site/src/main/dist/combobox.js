@@ -141,18 +141,7 @@ Bedrock.ComboBox = function () {
                 inputElement.onkeydown = function (event) {
                     switch (event.key) {
                         case "ArrowUp": {
-                            if (self.currentOption !== null) {
-                                self.currentOption.classList.remove ("combobox-option-hover");
-                                if (self.currentOption.previousSibling !== null) {
-                                    self.currentOption = self.currentOption.previousSibling;
-                                } else {
-                                    self.currentOption = optionsElement.lastChild;
-                                }
-                            } else {
-                                self.currentOption = optionsElement.lastChild;
-                            }
-                            self.currentOption.classList.add ("combobox-option-hover");
-
+                            /*
                             // if the newly selected current option is not visible, set the scroll
                             // pos to make it visible, and tell the options not to respond to
                             // mouseover events until the mouse moves
@@ -160,21 +149,12 @@ Bedrock.ComboBox = function () {
                                 self.allowMouseover = false;
                                 optionsElement.scrollTop = self.currentOption.offsetTop;
                             }
+                            */
+                            self.optionsTable.goPrev();
                             break;
                         }
                         case "ArrowDown": {
-                            if (self.currentOption !== null) {
-                                self.currentOption.classList.remove ("combobox-option-hover");
-                                if (self.currentOption.nextSibling !== null) {
-                                    self.currentOption = self.currentOption.nextSibling;
-                                } else {
-                                    self.currentOption = optionsElement.firstChild;
-                                }
-                            } else {
-                                self.currentOption = optionsElement.firstChild;
-                            }
-                            self.currentOption.classList.add ("combobox-option-hover");
-
+                            /*
                             // if the newly selected current option is not visible, set the scroll
                             // pos to make it visible, and tell the options not to respond to
                             // mouseover events until the mouse moves
@@ -182,12 +162,17 @@ Bedrock.ComboBox = function () {
                                 self.allowMouseover = false;
                                 optionsElement.scrollTop = (self.currentOption.offsetTop - optionsElement.offsetHeight) + self.currentOption.offsetHeight;
                             }
+                            */
+                            self.optionsTable.goNext();
                             break;
                         }
                         case "Enter": {
-                            if (self.currentOption != null) {
+                            self.optionsTable.select();
+                            /*
+                            if (self.currentOption !== null) {
                                 inputElement.value = self.currentOption.getAttribute ("data-value");
                             }
+                            */
                             self.callOnChange ();
                             inputElement.blur ();
                             break;
@@ -259,8 +244,9 @@ Bedrock.ComboBox = function () {
         // try doing this on a document fragment to prevent lots of dom updates
         let fragment = document.createDocumentFragment();
 
-        // get the current value as a regex object for rapid matching
-        let inputElementValue = this.useRegExp ? this.inputElement.value : this.inputElement.value.replace (/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+        // get the current value as a regex object for rapid matching - note that
+        // if we don't want regexp, all regexp characters must be escaped
+        let inputElementValue = this.useRegExp ? this.inputElement.value : this.inputElement.value.replace (/[\-\[\]\{\}\(\)\*\+\?\.,\\\^\$\|#\s]/g, "\\$&");
         let regExp = new RegExp (inputElementValue, 'i');
 
         // take the inputElement value and use it to filter the list
@@ -316,12 +302,12 @@ Bedrock.ComboBox = function () {
             }
         }
         if (usePagedDisplay === true) {
-            PagedDisplay.Table.new ({
+            this.optionsTable = PagedDisplay.Table.new ({
                 container: optionsElement,
                 records: optionList,
                 select: [
-                    { name: "display", type: PagedDisplay.EntryType.LEFT_JUSTIFY },
-                    { name: "label", type: PagedDisplay.EntryType.RIGHT_JUSTIFY }
+                    { name: "display", type: PagedDisplay.EntryType.LEFT_JUSTIFY, class: "combobox-option" },
+                    { name: "label", type: PagedDisplay.EntryType.RIGHT_JUSTIFY, class: "combobox-option-label" }
                 ],
                 styles: this.styles,
                 onclick: function (record) {
