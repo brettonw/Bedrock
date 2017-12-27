@@ -37,15 +37,15 @@ Bedrock.PagedDisplay = function () {
     };
 
     // entry types
-    const EntryType = $.EntryType = Enum.create ([
+    const EntryType = $.EntryType = Enum.create (
         "LEFT_JUSTIFY",         // left-justified
         "CENTER_JUSTIFY",       // centered
         "RIGHT_JUSTIFY",        // right-justified
         "IMAGE"                 // a url for an image (center justified)
-    ]);
+    );
 
     // style names and the default style names object
-    const Style = $.Style = Enum.create ([
+    const Style = $.Style = Enum.create (
         "HEADER_ROW",
         "HEADER_ENTRY",
         "HEADER_ENTRY_TEXT",
@@ -55,7 +55,7 @@ Bedrock.PagedDisplay = function () {
         "TABLE_ROW_ENTRY_TEXT",
         "ODD",
         "HOVER"
-    ]);
+    );
 
     const defaultStyles = Object.create (null);
     defaultStyles[Style.HEADER_ROW] = "bedrock-paged-display-header-row";
@@ -131,10 +131,10 @@ Bedrock.PagedDisplay = function () {
                     this.currentRow = null;
                     this.allowMouseover = true;
                 } else {
-                    console.log ("'container' must be a valid element with an id (which is used as the base name for rows).");
+                    LOG (ERROR, "'container' must be a valid element with an id (which is used as the base name for rows).");
                 }
             } else {
-                console.log ("'container' is a required parameter. it may be an element or a valid element id.");
+                LOG (ERROR, "'container' is a required parameter. it may be an element or a valid element id.");
             }
 
             return this;
@@ -182,11 +182,14 @@ Bedrock.PagedDisplay = function () {
 
             // utility functions that use special knowledge of the size of a
             // page to decide if the page or row is visible
+            const Visible = Enum.create ( "NOT_VISIBLE", "PARTIALLY_VISIBLE", "COMPLETELY_VISIBLE" );
             let rangeIsVisible = function (start, end) {
                 const scrollTop = container.scrollTop;
                 start = (start * rowHeight) - scrollTop;
                 end = (end * rowHeight) - scrollTop;
-                return (end >= 0) && (start <= container.clientHeight);
+                return ((end >= 0) && (start <= container.clientHeight)) ?
+                    (((start >= 0) && (end < container.clientHeight)) ? Visible.COMPLETELY_VISIBLE : Visible.PARTIALLY_VISIBLE) :
+                    Visible.NOT_VISIBLE;
             };
 
             let getRowInfo = function (rowId) {
@@ -195,7 +198,7 @@ Bedrock.PagedDisplay = function () {
 
             let rowIsVisible = function (rowId) {
                 let row = getRowInfo (rowId);
-                return rangeIsVisible (row, row + 1);
+                return (rangeIsVisible (row, row + 1) === Visible.COMPLETELY_VISIBLE);
             };
 
             let getPageInfo = function (pageId) {
@@ -210,7 +213,7 @@ Bedrock.PagedDisplay = function () {
 
             let pageIsVisible = function (page) {
                 let pageInfo = getPageInfo (page.id);
-                return rangeIsVisible(pageInfo.start, pageInfo.end);
+                return (rangeIsVisible(pageInfo.start, pageInfo.end) !== Visible.NOT_VISIBLE);
             };
 
             let go = function (defaultRowId, add, scroll) {
@@ -237,7 +240,7 @@ Bedrock.PagedDisplay = function () {
                 self.currentRow.classList.add (styles[Style.HOVER]);
 
                 // and finally, check to see if the row is visible
-                if (! rangeIsVisible(rowId, rowId + 1)) {
+                if (! rowIsVisible (rowId)) {
                     // gotta scroll to make it visible, and tell the rows not
                     // to respond to mouseover events until the mouse moves
                     self.allowMouseover = false;
@@ -248,7 +251,9 @@ Bedrock.PagedDisplay = function () {
             // go next, go prev... for key-press access
             self.goNext = function () {
                 go (0, 1, function (rowId) {
-                    return rowId * rowHeight;
+                    // optionsElement.scrollTop = (self.currentOption.offsetTop - optionsElement.offsetHeight) + self.currentOption.offsetHeight;
+                    return ((rowId + 1) * rowHeight) - container.clientHeight
+                    //return rowId * rowHeight;
                 });
             };
 
@@ -324,21 +329,18 @@ Bedrock.PagedDisplay = function () {
                             return false;
                         },
                         onmouseover: function () {
-                            //console.log ("onmouseover (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
+                            //LOG (INFO, "onmouseover (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
                             if (self.allowMouseover === true) {
                                 if (self.currentRow !== null) {
-                                    this.classList.remove (styles[Style.HOVER]);
+                                    self.currentRow.classList.remove (styles[Style.HOVER]);
                                 }
                                 self.currentRow = this;
-                                this.classList.add (styles[Style.HOVER]);
+                                self.currentRow.classList.add (styles[Style.HOVER]);
                             }
-                            self.allowMouseover = true;
                         },
-                        onmouseout: function () {
-                            //console.log ("onmouseout (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
-                            if (self.allowMouseover === true) {
-                                this.classList.remove (styles[Style.HOVER]);
-                            }
+                        onmousemove: function () {
+                            //LOG (INFO, "onmousemove (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
+                            self.allowMouseover = true;
                         }
                     });
 

@@ -225,7 +225,7 @@ Bedrock.ServiceDescriptor = function () {
                     functionBody += '    });\n';
                     functionParameters += ")";
 
-                    console.log (functionName + " " + functionParameters + ";\n");
+                    LOG (INFO, functionName + " " + functionParameters + ";\n");
 
                     let functionString = "return function " + functionParameters + " {\n" +functionBody + "};\n";
                     api[functionName] = new Function (functionString) ();

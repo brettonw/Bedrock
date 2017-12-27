@@ -1,5 +1,5 @@
 Bedrock.Enum = {
-    create: function (names) {
+    create: function () {
         let _ = Object.create (null);
 
         // function to create an enumerated object
@@ -12,6 +12,7 @@ Bedrock.Enum = {
         };
 
         // create the enumerated values, which are Objects of this type already populated
+        let names = [].slice.call (arguments);
         let enumeratedValues = [];
         for (let name of names) {
             let enumeratedValue = make (name, enumeratedValues.length);

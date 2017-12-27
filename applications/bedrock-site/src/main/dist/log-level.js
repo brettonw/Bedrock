@@ -1,10 +1,5 @@
 Bedrock.LogLevel = function () {
-    let _ = Object.create (null);
-
-    _.TRACE = 0;
-    _.INFO = 1;
-    _.WARNNG = 2;
-    _.ERROR = 3;
+    let _ = Bedrock.Enum.create ("TRACE", "INFO", "WARNING", "ERROR");
 
     // default
     let logLevel = _.ERROR;
