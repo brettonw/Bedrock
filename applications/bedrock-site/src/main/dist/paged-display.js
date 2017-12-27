@@ -46,6 +46,7 @@ Bedrock.PagedDisplay = function () {
 
     // style names and the default style names object
     const Style = $.Style = Enum.create (
+        "HEADER",
         "HEADER_ROW",
         "HEADER_ENTRY",
         "HEADER_ENTRY_TEXT",
@@ -58,6 +59,7 @@ Bedrock.PagedDisplay = function () {
     );
 
     const defaultStyles = Object.create (null);
+    defaultStyles[Style.HEADER] = "bedrock-paged-display-header";
     defaultStyles[Style.HEADER_ROW] = "bedrock-paged-display-header-row";
     defaultStyles[Style.HEADER_ENTRY] = "bedrock-paged-display-header-entry";
     defaultStyles[Style.HEADER_ENTRY_TEXT] = "bedrock-paged-display-header-entry-text";
@@ -107,6 +109,10 @@ Bedrock.PagedDisplay = function () {
                         if ((entry.type === undefined) || (EntryType[entry.type] === undefined)) {
                             entry.type = EntryType.CENTER_JUSTIFY;
                         }
+                        if (entry.width === undefined) {
+                            entry.width = 1.0 / select.length;
+                        }
+                        entry.width = Math.floor (entry.width * 100) + "%";
                     }
 
                     // "styles" should be an object containing style names that will be
@@ -359,7 +365,7 @@ Bedrock.PagedDisplay = function () {
                             entryTextParams.style = entry.style;
                         }
                         rowBuilder
-                            .begin ("div", { class: styles[Style.TABLE_ROW_ENTRY] })
+                            .begin ("div", { class: styles[Style.TABLE_ROW_ENTRY], style: { width: entry.width } })
                                 .add ("div", entryTextParams)
                             .end ();
                     }
@@ -388,10 +394,11 @@ Bedrock.PagedDisplay = function () {
             const select = this.select;
             const styles = this.styles;
 
-            let headerBuilder = Html.Builder.begin ("div", { class: styles[Style.HEADER_ROW] });
+            let headerBuilder = Html.Builder.begin ("div", { class: styles[Style.HEADER] });
+            let headerRowBuilder = headerBuilder.begin ("div", { class: styles[Style.HEADER_ROW] });
             for (let entry of select) {
-                headerBuilder
-                    .begin ("div", { class: styles[Style.HEADER_ENTRY] })
+                headerRowBuilder
+                    .begin ("div", { class: styles[Style.HEADER_ENTRY], style: { width: entry.width } })
                     .add ("div", { class: styles[Style.HEADER_ENTRY_TEXT], innerHTML: entry.displayName })
                     .end ();
             }

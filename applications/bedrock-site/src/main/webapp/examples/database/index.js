@@ -14,6 +14,17 @@ let main = function () {
                 Bedrock.PagedDisplay.Table.new ({
                     container: "bedrock-database-display",
                     records: db,
+                    select: [
+                        { name: "HR", displayName: "ID", width: 0.05 },
+                        { name: "RA", width: 0.1 },
+                        { name: "Dec", width: 0.1 },
+                        { name: "C", displayName: "Con", width: 0.05 },
+                        { name: "B", displayName: "Bay", width: 0.05 },
+                        { name: "F", displayName: "Flam", width: 0.05 },
+                        { name: "V", displayName: "Mag", width: 0.05 },
+                        { name: "K", displayName: "Temp", width: 0.05 },
+                        { name: "N", displayName: "Name", width: 0.40 }
+                    ],
                     onclick: function (record) {
                         let show = function (name, pre=" ") {
                             return (record[name] !== undefined) ? pre + record[name] : "";

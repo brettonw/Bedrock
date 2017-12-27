@@ -63,18 +63,21 @@ li {
 
 /* Paged Display default styling tags */
 
-.bedrock-paged-display-header-row {
-    padding: 4px;
-    height:26px;
+.bedrock-paged-display-header {
     border: solid;
     border-width: 0;
     border-bottom-width: 1px;
     border-color: #999;
+    width: 100%;
+}
+
+.bedrock-paged-display-header-row {
+    padding: 4px;
+    width: calc(100% - 12px);
 }
 
 .bedrock-paged-display-header-entry {
     display: inline-block;
-    width: 80px;
     text-align: center;
 }
 
@@ -100,6 +103,19 @@ li {
     height: calc(100% - 26px);
 }
 
+.bedrock-paged-display-table::-webkit-scrollbar {
+    width: 12px;
+}
+
+.bedrock-paged-display-table::-webkit-scrollbar-track{
+    background: #eee;
+}
+
+.bedrock-paged-display-table::-webkit-scrollbar-thumb{
+    width: 12px;
+    background: #aaa;
+}
+
 .bedrock-paged-display-table-row {
     padding: 5px 4px 0px 4px; /* top right bottom left */
     color: black;
@@ -109,7 +125,6 @@ li {
 .bedrock-paged-display-table-row-entry {
     display: inline-block;
     height: 100%;
-    width: 80px;
     text-align: center;
 }
 
