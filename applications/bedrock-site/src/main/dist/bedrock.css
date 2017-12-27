@@ -69,10 +69,11 @@ li {
     border-bottom-width: 1px;
     border-color: #999;
     width: 100%;
+    height: 26px;
 }
 
 .bedrock-paged-display-header-row {
-    padding: 4px;
+    padding: 4px 4px 0px 4px;
     width: calc(100% - 12px);
 }
 
