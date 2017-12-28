@@ -4,14 +4,7 @@
 //     a = b : zero
 //     a > b : positive
 Bedrock.CompareFunctions = function () {
-    let $ = Object.create (null);
-
-    // constants for the interface
-    $.NUMERIC = "numeric";
-    $.ALPHABETIC = "alphabetic";
-    $.CHRONOLOGIC = "chronologic";
-    $.AUTO = "auto";
-    $.WILDCARD = "*";
+    let $ = Bedrock.Enum.create ("NUMERIC", "ALPHABETIC", "CHRONOLOGIC", "AUTO");
 
 	// this is repeated several times, but I don't want it to be a function call
 	#define	NULL_CHECK															\
@@ -44,11 +37,11 @@ Bedrock.CompareFunctions = function () {
 		return compareAlphabetic (a, b, asc);
 	};
 	
-	$.date = function (a = null, b = null, asc) {
+	$.chronologic = function (a = null, b = null, asc) {
 		NULL_CHECK;
 		
 		// convert the dates/timestamps to numerical values for comparison
-		return compareNumeric (new Date (a).valueOf (), new Date (b).valueOf ());
+		return compareNumeric (new Date (a).valueOf (), new Date (b).valueOf (), asc);
 	};
 	
 	$.auto = function (a = null, b = null, asc) {
@@ -56,7 +49,7 @@ Bedrock.CompareFunctions = function () {
 		
 		// try to compare the values as numerical if we can
 		let na = Number (a), nb = Number (b);
-		if ((na == a.toString ()) && (nb == b.toString ())) {
+		if ((na.toString () === a.toString ()) && (nb.toString () === b.toString ())) {
 			return compareNumeric (na, nb, asc);
 		}
 		
@@ -65,26 +58,18 @@ Bedrock.CompareFunctions = function () {
 	};
 	
 	$.get = function (type = $.AUTO) {
-		switch (type.toLowerCase ()) {
+		switch (type) {
 			case $.NUMERIC:
-			case "number":
-			case "digits":
 				return this.numeric;
 				
 			case $.ALPHABETIC:
-			case "text":
-			case "string":
 				return this.alphabetic;
 				
 			case $.CHRONOLOGIC:
-			case "date":
-			case "timestamp":
-				return this.date;
-				
+				return this.chronologic;
+
+            default:
 			case $.AUTO:
-			case "any":
-			case $.WILDCARD:
-			default:
 				return this.auto;
 		}
 		throw "Unknown type (" + type + ")";
