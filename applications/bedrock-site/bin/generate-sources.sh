@@ -21,8 +21,8 @@ pushd "$SRC_DIR";
 cat                                 \
     bedrock.js                      \
     $VERSION_FILE                   \
-    log-level.js                    \
     enum.js                         \
+    log-level.js                    \
     base.js                         \
     utility.js                      \
     http.js                         \

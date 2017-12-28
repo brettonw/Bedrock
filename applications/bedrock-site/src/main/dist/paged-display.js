@@ -21,6 +21,8 @@ Bedrock.PagedDisplay = function () {
 
     // 3 - dynamically compute the column widths
 
+    // 3.5 - allow columns to be individually styled, including column widths
+
     // 4 - user selectable style classes based on input parameters
 
     let getAllFieldNames = $.getAllFieldNames = function (records) {
@@ -35,15 +37,16 @@ Bedrock.PagedDisplay = function () {
     };
 
     // entry types
-    const EntryType = $.EntryType = Enum.create ([
+    const EntryType = $.EntryType = Enum.create (
         "LEFT_JUSTIFY",         // left-justified
         "CENTER_JUSTIFY",       // centered
         "RIGHT_JUSTIFY",        // right-justified
         "IMAGE"                 // a url for an image (center justified)
-    ]);
+    );
 
     // style names and the default style names object
-    const Style = $.Style = Enum.create ([
+    const Style = $.Style = Enum.create (
+        "HEADER",
         "HEADER_ROW",
         "HEADER_ENTRY",
         "HEADER_ENTRY_TEXT",
@@ -53,9 +56,10 @@ Bedrock.PagedDisplay = function () {
         "TABLE_ROW_ENTRY_TEXT",
         "ODD",
         "HOVER"
-    ]);
+    );
 
     const defaultStyles = Object.create (null);
+    defaultStyles[Style.HEADER] = "bedrock-paged-display-header";
     defaultStyles[Style.HEADER_ROW] = "bedrock-paged-display-header-row";
     defaultStyles[Style.HEADER_ENTRY] = "bedrock-paged-display-header-entry";
     defaultStyles[Style.HEADER_ENTRY_TEXT] = "bedrock-paged-display-header-entry-text";
@@ -85,7 +89,8 @@ Bedrock.PagedDisplay = function () {
 
                     // "select" should be an array of objects specifying the name
                     // of the field, its display name, and its type (in desired
-                    // display order)
+                    // display order) - the user either supplies all columns, or
+                    // none
                     let select;
                     if (parameters.select === undefined) {
                         select = this.select = [];
@@ -104,6 +109,10 @@ Bedrock.PagedDisplay = function () {
                         if ((entry.type === undefined) || (EntryType[entry.type] === undefined)) {
                             entry.type = EntryType.CENTER_JUSTIFY;
                         }
+                        if (entry.width === undefined) {
+                            entry.width = 1.0 / select.length;
+                        }
+                        entry.width = Math.floor (entry.width * 100) + "%";
                     }
 
                     // "styles" should be an object containing style names that will be
@@ -128,83 +137,35 @@ Bedrock.PagedDisplay = function () {
                     this.currentRow = null;
                     this.allowMouseover = true;
                 } else {
-                    console.log ("'container' must be a valid element with an id (which is used as the base name for rows).");
+                    LOG (ERROR, "'container' must be a valid element with an id (which is used as the base name for rows).");
                 }
             } else {
-                console.log ("'container' is a required parameter. it may be an element or a valid element id.");
+                LOG (ERROR, "'container' is a required parameter. it may be an element or a valid element id.");
             }
 
             return this;
         };
 
-        _.makeTable = function (container = this.container) {
+        _.makeTable = function () {
+            const container = this.container;
             const select = this.select;
             const styles = this.styles;
             const self = this;
 
-            // capture some keys (up/down, for instance)
-            container.onkeydown = function (event) {
-                switch (event.key) {
-                    case "ArrowUp": {
-                        /*
-                        if (self.currentRow != null) {
-                            self.currentRow.classList.remove (styles[Style.HOVER]);
-                            if (self.currentRow.previousSibling != null) {
-                                self.currentRow = self.currentRow.previousSibling;
-                            } else {
-                                self.currentRow = optionsElement.lastChild.lastChild;
-                            }
-                        } else {
-                            self.currentRow = optionsElement.lastChild;
-                        }
-                        self.currentRow.classList.add (styles[Style.HOVER]);
-
-                        // if the newly selected current option is not visible, set the scroll
-                        // pos to make it visible, and tell the options not to respond to
-                        // mouseover events until the mouse moves
-                        if (!Html.elementIsInView (self.currentRow, optionsElement)) {
-                            self.allowMouseover = false;
-                            optionsElement.scrollTop = self.currentRow.offsetTop;
-                        }
-                        */
-                        break;
-                    }
-                    case "ArrowDown": {
-                        goNext();
-                        break;
-                    }
-                    case "Enter": {
-                        /*
-                        if (self.currentRow != null) {
-                            inputElement.value = self.currentRow.getAttribute ("data-value");
-                        }
-                        self.callOnChange ();
-                        inputElement.blur ();
-                        */
-                        break;
-                    }
-                    case "Escape": {
-                        //inputElement.blur ();
-                        break;
-                    }
-                    default:
-                        return true;
-                }
-                return false;
-            };
-            
             // utility function to compute the container height, just helps keep
-            // the code a bit cleaner when I use it
-            let getContainerHeight = (rowHeight) => {
+            // the code a bit cleaner when I use it - this is a bit stilted code-
+            // wise because the actual return value from some of these styles
+            // might not be a number at all
+            let getContainerHeight = (minHeight) => {
                 let containerHeight = container.offsetHeight;
-                if ((parseInt (containerHeight.toString ()) >= rowHeight) === false) {
+                if ((parseInt (containerHeight.toString ()) >= minHeight) === false) {
                     containerHeight = window.getComputedStyle (container).getPropertyValue ("height");
                 }
-                if ((parseInt (containerHeight.toString ()) >= rowHeight) === false) {
+                if ((parseInt (containerHeight.toString ()) >= minHeight) === false) {
                     containerHeight = window.getComputedStyle (container).getPropertyValue ("max-height");
                 }
-                if ((parseInt (containerHeight.toString ()) >= rowHeight) === false) {
-                    containerHeight = rowHeight;
+                if ((parseInt (containerHeight.toString ()) >= minHeight) === false) {
+                    containerHeight = minHeight;
                 }
                 return parseInt (containerHeight.toString ());
             };
@@ -227,11 +188,14 @@ Bedrock.PagedDisplay = function () {
 
             // utility functions that use special knowledge of the size of a
             // page to decide if the page or row is visible
+            const Visible = Enum.create ( "NOT_VISIBLE", "PARTIALLY_VISIBLE", "COMPLETELY_VISIBLE" );
             let rangeIsVisible = function (start, end) {
                 const scrollTop = container.scrollTop;
                 start = (start * rowHeight) - scrollTop;
                 end = (end * rowHeight) - scrollTop;
-                return (end >= 0) && (start <= container.clientHeight);
+                return ((end >= 0) && (start <= container.clientHeight)) ?
+                    (((start >= 0) && (end < container.clientHeight)) ? Visible.COMPLETELY_VISIBLE : Visible.PARTIALLY_VISIBLE) :
+                    Visible.NOT_VISIBLE;
             };
 
             let getRowInfo = function (rowId) {
@@ -240,7 +204,7 @@ Bedrock.PagedDisplay = function () {
 
             let rowIsVisible = function (rowId) {
                 let row = getRowInfo (rowId);
-                return rangeIsVisible (row, row + 1);
+                return (rangeIsVisible (row, row + 1) === Visible.COMPLETELY_VISIBLE);
             };
 
             let getPageInfo = function (pageId) {
@@ -255,19 +219,18 @@ Bedrock.PagedDisplay = function () {
 
             let pageIsVisible = function (page) {
                 let pageInfo = getPageInfo (page.id);
-                return rangeIsVisible(pageInfo.start, pageInfo.end);
+                return (rangeIsVisible(pageInfo.start, pageInfo.end) !== Visible.NOT_VISIBLE);
             };
 
-            // go next, go prev... for key-press access
-            let goNext = function () {
+            let go = function (defaultRowId, add, scroll) {
                 // default to row 0
-                let rowId = 0;
+                let rowId = defaultRowId;
 
                 // deselect the current row if there is one
                 if (self.currentRow !== null) {
                     // update the next row...
-                    rowId = (getRowInfo (self.currentRow.id) + 1) % records.length;
-                    self.currentRow.remove (styles[Style.HOVER]);
+                    rowId = ((getRowInfo (self.currentRow.id) + add) + records.length) % records.length;
+                    self.currentRow.classList.remove (styles[Style.HOVER]);
                 }
 
                 // what page is the new element on, and is it populated?
@@ -279,23 +242,37 @@ Bedrock.PagedDisplay = function () {
 
                 // get the relative offset and get the actual row
                 let relativeIndex = rowId - (pageId * pageSize);
-                let row = page.children[0].children[relativeIndex];
-                row.classList.add (styles[Style.HOVER]);
+                self.currentRow = page.children[0].children[relativeIndex];
+                self.currentRow.classList.add (styles[Style.HOVER]);
 
                 // and finally, check to see if the row is visible
-                if (! rangeIsVisible(rowId, rowId + 1)) {
+                if (! rowIsVisible (rowId)) {
                     // gotta scroll to make it visible, and tell the rows not
                     // to respond to mouseover events until the mouse moves
                     self.allowMouseover = false;
-                    container.scrollTop = rowId * rowHeight;
+                    container.scrollTop = scroll (rowId);
                 }
             };
 
-            // function to select a row
-            let setCurrentRow = function (rowIndex) {
-                // figure out what page the rowIndex refers to, check and see if it's
-                // a populated page
+            // go next, go prev... for key-press access
+            self.goNext = function () {
+                go (0, 1, function (rowId) {
+                    // optionsElement.scrollTop = (self.currentOption.offsetTop - optionsElement.offsetHeight) + self.currentOption.offsetHeight;
+                    return ((rowId + 1) * rowHeight) - container.clientHeight
+                    //return rowId * rowHeight;
+                });
+            };
 
+            self.goPrev = function () {
+                go (records.length - 1, -1, function (rowId) {
+                    return rowId * rowHeight;
+                });
+            };
+
+            self.select = function () {
+                if (self.currentRow !== null) {
+                    self.currentRow.onmousedown();
+                }
             };
 
             // the main worker function - when the container is scrolled, figure out which
@@ -358,32 +335,38 @@ Bedrock.PagedDisplay = function () {
                             return false;
                         },
                         onmouseover: function () {
-                            //console.log ("onmouseover (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
+                            //LOG (INFO, "onmouseover (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
                             if (self.allowMouseover === true) {
                                 if (self.currentRow !== null) {
-                                    this.classList.remove (styles[Style.HOVER]);
+                                    self.currentRow.classList.remove (styles[Style.HOVER]);
                                 }
                                 self.currentRow = this;
-                                this.classList.add (styles[Style.HOVER]);
+                                self.currentRow.classList.add (styles[Style.HOVER]);
                             }
-                            self.allowMouseover = true;
                         },
-                        onmouseout: function () {
-                            //console.log ("onmouseout (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
-                            if (self.allowMouseover === true) {
-                                this.classList.remove (styles[Style.HOVER]);
-                            }
+                        onmousemove: function () {
+                            //LOG (INFO, "onmousemove (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
+                            self.allowMouseover = true;
                         }
                     });
+
+                    // populate the row entries
                     for (let entry of select) {
                         let value = (entry.name in record) ? record[entry.name] : "";
-                        value = (value !== undefined) ? value : "";
+                        let entryClass = [styles[entry.type], styles[Style.TABLE_ROW_ENTRY_TEXT]];
+                        if (entry.class !== undefined) {
+                            entryClass = entryClass.concat(Array.isArray(entry.class) ? entry.class : entry.class.split (","));
+                        }
+                        let entryTextParams = {
+                            class: entryClass,
+                            innerHTML: (value !== undefined) ? value : ""
+                        };
+                        if (entry.style !== undefined) {
+                            entryTextParams.style = entry.style;
+                        }
                         rowBuilder
-                            .begin ("div", { class: styles[Style.TABLE_ROW_ENTRY] })
-                            .add ("div", {
-                                class: [styles[entry.type], styles[Style.TABLE_ROW_ENTRY_TEXT]],
-                                innerHTML: value
-                            })
+                            .begin ("div", { class: styles[Style.TABLE_ROW_ENTRY], style: { width: entry.width } })
+                                .add ("div", entryTextParams)
                             .end ();
                     }
                     pageBuilder.end ();
@@ -403,7 +386,7 @@ Bedrock.PagedDisplay = function () {
             }
             container.appendChild (pageContainerBuilder.end ());
             container.onscroll (null);
-            return container;
+            return this;
         };
 
         _.makeTableHeader = function () {
@@ -411,10 +394,11 @@ Bedrock.PagedDisplay = function () {
             const select = this.select;
             const styles = this.styles;
 
-            let headerBuilder = Html.Builder.begin ("div", { class: styles[Style.HEADER_ROW] });
+            let headerBuilder = Html.Builder.begin ("div", { class: styles[Style.HEADER] });
+            let headerRowBuilder = headerBuilder.begin ("div", { class: styles[Style.HEADER_ROW] });
             for (let entry of select) {
-                headerBuilder
-                    .begin ("div", { class: styles[Style.HEADER_ENTRY] })
+                headerRowBuilder
+                    .begin ("div", { class: styles[Style.HEADER_ENTRY], style: { width: entry.width } })
                     .add ("div", { class: styles[Style.HEADER_ENTRY_TEXT], innerHTML: entry.displayName })
                     .end ();
             }
@@ -428,8 +412,8 @@ Bedrock.PagedDisplay = function () {
             this.makeTableHeader ();
 
             // add the table to a sub element
-            let listContainer = Html.addElement (this.container, "div", { id: this.container.id + "-table", class: this.styles[Style.TABLE] });
-            return this.makeTable (listContainer);
+            this.container = Html.addElement (this.container, "div", { id: this.container.id + "-table", class: this.styles[Style.TABLE] });
+            return this.makeTable ();
         };
 
         return _;

@@ -89,7 +89,7 @@ Bedrock.ComboBox = function () {
                         inputElement = Html.addElement (parentElement, "input", inputElementParameters);
                     } else {
                         // fatal error, don't know where to create the input
-                        console.log ("ERROR: expected 'parentElementId' or 'parentElement'.");
+                        LOG (ERROR, "expected 'parentElementId' or 'parentElement'.");
                         return null;
                     }
                 } else {
@@ -98,7 +98,7 @@ Bedrock.ComboBox = function () {
                 }
             } else {
                 // fatal error, no id was supplied, and none was findable
-                console.log ("ERROR: expected 'inputElementId' or 'inputElement'.");
+                LOG (ERROR, "ERROR: expected 'inputElementId' or 'inputElement'.");
                 return null;
             }
 
@@ -141,53 +141,15 @@ Bedrock.ComboBox = function () {
                 inputElement.onkeydown = function (event) {
                     switch (event.key) {
                         case "ArrowUp": {
-                            if (self.currentOption !== null) {
-                                self.currentOption.classList.remove ("combobox-option-hover");
-                                if (self.currentOption.previousSibling !== null) {
-                                    self.currentOption = self.currentOption.previousSibling;
-                                } else {
-                                    self.currentOption = optionsElement.lastChild;
-                                }
-                            } else {
-                                self.currentOption = optionsElement.lastChild;
-                            }
-                            self.currentOption.classList.add ("combobox-option-hover");
-
-                            // if the newly selected current option is not visible, set the scroll
-                            // pos to make it visible, and tell the options not to respond to
-                            // mouseover events until the mouse moves
-                            if (!Html.elementIsInView (self.currentOption, optionsElement)) {
-                                self.allowMouseover = false;
-                                optionsElement.scrollTop = self.currentOption.offsetTop;
-                            }
+                            self.optionsTable.goPrev();
                             break;
                         }
                         case "ArrowDown": {
-                            if (self.currentOption !== null) {
-                                self.currentOption.classList.remove ("combobox-option-hover");
-                                if (self.currentOption.nextSibling !== null) {
-                                    self.currentOption = self.currentOption.nextSibling;
-                                } else {
-                                    self.currentOption = optionsElement.firstChild;
-                                }
-                            } else {
-                                self.currentOption = optionsElement.firstChild;
-                            }
-                            self.currentOption.classList.add ("combobox-option-hover");
-
-                            // if the newly selected current option is not visible, set the scroll
-                            // pos to make it visible, and tell the options not to respond to
-                            // mouseover events until the mouse moves
-                            if (!Html.elementIsInView (self.currentOption, optionsElement)) {
-                                self.allowMouseover = false;
-                                optionsElement.scrollTop = (self.currentOption.offsetTop - optionsElement.offsetHeight) + self.currentOption.offsetHeight;
-                            }
+                            self.optionsTable.goNext();
                             break;
                         }
                         case "Enter": {
-                            if (self.currentOption != null) {
-                                inputElement.value = self.currentOption.getAttribute ("data-value");
-                            }
+                            self.optionsTable.select();
                             self.callOnChange ();
                             inputElement.blur ();
                             break;
@@ -229,7 +191,7 @@ Bedrock.ComboBox = function () {
             }
         } else {
             // error out
-            console.log ("ERROR: 'inputElementId' is required.");
+            LOG (ERROR, "ERROR: 'inputElementId' is required.");
             return null;
         }
 
@@ -256,84 +218,38 @@ Bedrock.ComboBox = function () {
         // clear out the options (fragment, should be one op)
         Html.removeAllChildren(optionsElement);
 
-        // try doing this on a document fragment to prevent lots of dom updates
-        let fragment = document.createDocumentFragment();
-
-        // get the current value as a regex object for rapid matching
-        let inputElementValue = this.useRegExp ? this.inputElement.value : this.inputElement.value.replace (/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+        // get the current value as a regex object for rapid matching - note that
+        // if we don't want regexp, all regexp characters must be escaped
+        let inputElementValue = this.useRegExp ? this.inputElement.value : this.inputElement.value.replace (/[\-\[\]\{\}\(\)\*\+\?\.,\\\^\$\|#\s]/g, "\\$&");
         let regExp = new RegExp (inputElementValue, 'i');
 
         // take the inputElement value and use it to filter the list
-        let usePagedDisplay = true;
         let optionList = [];
         for (let option of this.options) {
             if (option.matchTarget.match (regExp)) {
-                if (usePagedDisplay === true) {
-                    optionList.push ({
-                        "value": option.value,
-                        "display": (option.value.length > 32) ? (option.value.substr (0, 30) + "...") : option.value,
-                        "label": option.label
-                    });
-                } else {
-                    let comboBoxOption = Html.addElement (fragment, "div", {
-                        class: "combobox-option",
-                        onmousedown: function () {
-                            inputElement.value = option.value;
-                            self.callOnChange();
-                            return true;
-                        },
-                        onmouseover: function () {
-                            //console.log ("onmouseover (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
-                            if (self.allowMouseover === true) {
-                                if (self.currentOption != null) {
-                                    self.currentOption.classList.remove ("combobox-option-hover");
-                                }
-                                self.currentOption = this;
-                                this.classList.add ("combobox-option-hover");
-                            }
-                            self.allowMouseover = true;
-                        },
-                        onmouseout: function () {
-                            //console.log ("onmouseout (" + ((self.allowMouseover === true) ? "YES" : "NO") + ")");
-                            if (self.allowMouseover === true) {
-                                this.classList.remove ("combobox-option-hover");
-                            }
-                        }
-                    });
-                    comboBoxOption.setAttribute("data-value", option.value);
-
-                    // cap the display at 32 chars
-                    let display = (option.value.length > 32) ? (option.value.substr(0, 30) + "...") : option.value;
-
-                    //comboBoxOption.innerHTML = ("label" in option) ? option.label : option.value;
-                    if ("label" in option) {
-                        Html.addElement (comboBoxOption, "div", { style: { float: "left" }}).innerHTML = display;
-                        Html.addElement (comboBoxOption, "div", { class: "combobox-option-label" }).innerHTML = option.label;
-                    } else {
-                        comboBoxOption.innerHTML = display;
-                    }
-                }
+                optionList.push ({
+                    "value": option.value,
+                    "display": (option.value.length > 32) ? (option.value.substr (0, 30) + "...") : option.value,
+                    "label": option.label
+                });
             }
         }
-        if (usePagedDisplay === true) {
-            PagedDisplay.Table.new ({
-                container: optionsElement,
-                records: optionList,
-                select: [
-                    { name: "display", type: PagedDisplay.EntryType.LEFT_JUSTIFY },
-                    { name: "label", type: PagedDisplay.EntryType.RIGHT_JUSTIFY }
-                ],
-                styles: this.styles,
-                onclick: function (record) {
-                    inputElement.value = record.value;
-                    self.callOnChange();
-                    return true;
-                }
-            }).makeTable ();
-        } else {
-            // add the fragment to the options element
-            optionsElement.appendChild(fragment);
-        }
+
+        // now create the paged display
+        this.optionsTable = PagedDisplay.Table.new ({
+            container: optionsElement,
+            records: optionList,
+            select: [
+                { name: "display", type: PagedDisplay.EntryType.LEFT_JUSTIFY, class: "combobox-option" },
+                { name: "label", type: PagedDisplay.EntryType.RIGHT_JUSTIFY, class: "combobox-option-label" }
+            ],
+            styles: this.styles,
+            onclick: function (record) {
+                inputElement.value = record.value;
+                self.callOnChange();
+                return true;
+            }
+        }).makeTable ();
 
         return this;
     };
