@@ -96,6 +96,9 @@ Bedrock.Html = function () {
                 }
             }
         }
+
+        // fallback, try to create a div with the given selector and then measure it
+
         return undefined;
     };
 
