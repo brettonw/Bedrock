@@ -81,7 +81,8 @@ Bedrock.Html = function () {
     };
 
     /**
-     * Utility function to retrieve a style value from the stylesheets
+     * Utility function to retrieve a style value from the stylesheets collection.
+     * Note: this only works if the stylesheet was loaded locally or securely
      * @param selector the name of the class to fetch a style value from
      * @param style the name of the style to fetch
      * @returns {string} the found style value, or undefined

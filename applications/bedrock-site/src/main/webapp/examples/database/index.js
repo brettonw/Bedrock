@@ -7,6 +7,15 @@ let main = function () {
     Bedrock.Http.get ("bsc5-short.json?" + now, function (records) {
         console.log ("Database loaded.");
 
+        // sort the records as an example
+        let CF = Bedrock.CompareFunctions;
+        records = Bedrock.DatabaseOperations.Sort.new ({ fields:[
+                { name:"C", asc:true, type: CF.ALPHABETIC },
+                { name:"B", asc:true, type: CF.ALPHABETIC },
+                { name:"RA", asc:true, type: CF.ALPHABETIC },
+                { name:"Dec", asc:true, type: CF.ALPHABETIC }
+            ] }).perform (records);
+
         // build the database filter
         Bedrock.Database.Container.new ({
             database: records,

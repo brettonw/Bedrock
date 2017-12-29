@@ -227,11 +227,6 @@ li {
     overflow-x: hidden;
 }
 
-.combobox-option-hover {
-    color: white;
-    background-color: mediumblue;
-}
-
 .bedrock-combobox-paged-display-table {
     overflow-y: scroll;
     height: 100%;
