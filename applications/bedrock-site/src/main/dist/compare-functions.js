@@ -17,10 +17,10 @@ Bedrock.CompareFunctions = function () {
 		
 	let compareNumeric = function (a, b, asc) {
 		// compare the values as numeric entities
-		return asc ? (a - b) : (b - a)
+		return asc ? (a - b) : (b - a);
 	};
 		
-	$.numeric = function (a = null, b = null, asc) {
+	$.numeric = function (a = null, b = null, asc = true) {
 		NULL_CHECK;
 		return compareNumeric (a, b, asc);
 	};
@@ -32,19 +32,19 @@ Bedrock.CompareFunctions = function () {
 		return asc ? ra.localeCompare (rb) : rb.localeCompare (ra);
 	};
 	
-	$.alphabetic = function (a = null, b = null, asc) {
+	$.alphabetic = function (a = null, b = null, asc = true) {
 		NULL_CHECK;
 		return compareAlphabetic (a, b, asc);
 	};
 	
-	$.chronologic = function (a = null, b = null, asc) {
+	$.chronologic = function (a = null, b = null, asc = true) {
 		NULL_CHECK;
 		
 		// convert the dates/timestamps to numerical values for comparison
 		return compareNumeric (new Date (a).valueOf (), new Date (b).valueOf (), asc);
 	};
 	
-	$.auto = function (a = null, b = null, asc) {
+	$.auto = function (a = null, b = null, asc = true) {
 		NULL_CHECK;
 		
 		// try to compare the values as numerical if we can
