@@ -254,6 +254,7 @@ li {
     overflow-y: hidden;
     margin: 0 2px;
     padding: 0 3px;
+    white-space: nowrap;
 }
 
 .bedrock-combobox-paged-display-odd {
