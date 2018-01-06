@@ -19,7 +19,7 @@ let main = function () {
         // build the database filter
         Bedrock.Database.Container.new ({
             database: records,
-            filterValues: [{ name: "C" }],
+            filterValues: [{ field: "C" }],
             onUpdate: function (db) {
                 Bedrock.PagedDisplay.Table.new ({
                     container: "bedrock-database-display",

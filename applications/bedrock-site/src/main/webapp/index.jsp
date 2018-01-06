@@ -10,7 +10,7 @@
 
 <body>
 <div id="help">
-<h1>Bedrock v.<%=Service.getBedrockVersion ()%></h1>
+    <h1>Bedrock v.<%=Service.getBedrockVersion ()%></h1>
     <div class="container-div">
         <h2>About</h2>
         <div class="description-div">
@@ -40,7 +40,13 @@
 
         <h2>Examples</h2>
         <div class="description-div">
-            Take a look at the <a href="examples">examples</a> of the usages for various Bedrock components.</p>
+            <ul>
+                <li><a href="examples/combobox.html">ComboBox</a></li>
+                <li><a href="examples/database">Database</a></li>
+                <li><a href="examples/forms.html">Forms</a></li>
+                <li><a href="examples/html.html">HTML</a></li>
+                <li><a href="examples/http.html">HTTP</a></li>
+            </ul>
         </div>
     </div>
 </div>
