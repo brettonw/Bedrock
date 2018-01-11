@@ -33,11 +33,12 @@
             </ul>
 
             <h3>Javascript</h3>
-            Usage:<pre>&lt;link rel="stylesheet" href="https://bedrock.brettonw.com/dist/<%=Service.getBedrockVersion ()%>/bedrock.css"/>
-&lt;script src="https://bedrock.brettonw.com/dist/<%=Service.getBedrockVersion ()%>/bedrock.js">&lt;/script></pre>
             <ul>
                 <li><a href="dist/latest/docs/bedrock/">Bedrock</a></li>
             </ul>
+            Usage:
+            <pre style="font-size:10px;">&lt;link rel="stylesheet" href="https://bedrock.brettonw.com/dist/<%=Service.getBedrockVersion ()%>/bedrock.css"/>
+&lt;script src="https://bedrock.brettonw.com/dist/<%=Service.getBedrockVersion ()%>/bedrock.js">&lt;/script></pre>
         </div>
 
         <h2>Examples</h2>
