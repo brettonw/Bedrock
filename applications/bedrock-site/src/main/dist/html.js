@@ -51,6 +51,14 @@ Bedrock.Html = function () {
                     }
                     break;
                 }
+                case "attribute":
+                case "attributes":{
+                    let attributes = options[optionName];
+                    for (let attributeName of Object.keys (attributes)) {
+                        element.setAttribute (attributeName, attributes[attributeName]);
+                    }
+                    break;
+                }
                 default: {
                     element[optionName] = options[optionName];
                     break;
