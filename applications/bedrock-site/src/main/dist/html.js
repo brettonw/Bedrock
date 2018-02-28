@@ -36,10 +36,10 @@ Bedrock.Html = function () {
         if (tagSplit.length == 2) {
             // figure out which one has a ":" in it - that's the namespace
             if (tagSplit[0].indexOf(":") > 0) {
-                namespace = tagSplit[0];
+                uri = tagSplit[0];
                 tag = tagSplit[1];
             } else if (tagSplit[1].indexOf(":") > 0) {
-                namespace = tagSplit[1];
+                uri = tagSplit[1];
                 tag = tagSplit[0];
             }
         }
