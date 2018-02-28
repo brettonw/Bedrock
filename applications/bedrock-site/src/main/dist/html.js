@@ -30,7 +30,22 @@ Bedrock.Html = function () {
     };
 
     $.makeElement = function (tag, options) {
-        let element = document.createElement (tag);
+        // check to see if tag includes a namespace url, we allow separation by semicolon
+        let tagSplit = tag.split(";", 2);
+        let uri = "";
+        if (tagSplit.length == 2) {
+            // figure out which one has a ":" in it - that's the namespace
+            if (tagSplit[0].indexOf(":") > 0) {
+                namespace = tagSplit[0];
+                tag = tagSplit[1];
+            } else if (tagSplit[1].indexOf(":") > 0) {
+                namespace = tagSplit[1];
+                tag = tagSplit[0];
+            }
+        }
+
+        // create the tag and add the options, appropriately
+        let element = (uri.length > 0) ? document.createElementNS(uri, tag) : document.createElement (tag);
         let optionNames = Object.keys (options);
         for (let optionName of optionNames) {
             switch (optionName) {
@@ -48,6 +63,16 @@ Bedrock.Html = function () {
                 case "style": {
                     for (let style of Object.keys (options.style)) {
                         element.style[style] = options.style[style];
+                    }
+                    break;
+                }
+                case "attribute":
+                case "attributes":{
+                    // the .attribute form of access is preferred, but for non-standard elements, as
+                    // in SVG node attributes, this is the supported method
+                    let attributes = options[optionName];
+                    for (let attributeName of Object.keys (attributes)) {
+                        element.setAttribute (attributeName, attributes[attributeName]);
                     }
                     break;
                 }

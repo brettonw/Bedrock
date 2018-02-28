@@ -139,6 +139,7 @@ li {
     font-size: 10px;
     line-height: 10px;
     vertical-align: top;
+    white-space: nowrap;
 }
 
 .bedrock-paged-display-odd {
