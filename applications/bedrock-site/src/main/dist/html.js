@@ -61,8 +61,8 @@ Bedrock.Html = function () {
                     break;
                 }
                 case "style": {
-                    for (let style of Object.keys (options.style)) {
-                        element.style[style] = options.style[style];
+                    for (let styleName of Object.keys (options.style)) {
+                        element.style[styleName] = options.style[styleName];
                     }
                     break;
                 }
@@ -73,6 +73,16 @@ Bedrock.Html = function () {
                     let attributes = options[optionName];
                     for (let attributeName of Object.keys (attributes)) {
                         element.setAttribute (attributeName, attributes[attributeName]);
+                    }
+                    break;
+                }
+                case "event":
+                case "events":{
+                    // firefox and chrome handle these things differently, so this is an
+                    // effort to provide common handling
+                    let events = options[optionName];
+                    for (let eventName of Object.keys (events)) {
+                        element.addEventListener(eventName, events[eventName], false);
                     }
                     break;
                 }
