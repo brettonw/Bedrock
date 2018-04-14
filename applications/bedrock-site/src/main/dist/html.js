@@ -124,12 +124,18 @@ Bedrock.Html = function () {
      */
     $.getCssSelectorStyle = function (selector, style) {
         for (let styleSheet of document.styleSheets) {
-            if (styleSheet.cssRules !== null) {
-                for (let cssRule of styleSheet.cssRules) {
-                    if (cssRule.selectorText && (cssRule.selectorText === selector)) {
-                        return cssRule.style[style];
+            try {
+                if (styleSheet.cssRules !== null) {
+                    for (let cssRule of styleSheet.cssRules) {
+                        if (cssRule.selectorText && (cssRule.selectorText === selector)) {
+                            return cssRule.style[style];
+                        }
                     }
                 }
+            }
+            catch (exception) {
+                // really, just trap this since it's a security problem that chrome fixed by
+                // throwing an exception
             }
         }
         return undefined;
