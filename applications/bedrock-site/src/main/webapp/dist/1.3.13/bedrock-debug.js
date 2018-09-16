@@ -1671,7 +1671,7 @@ Bedrock.Comparable = function () {
             for (let fieldComparable of this.fieldComparables) {
                 let sortResult = fieldComparable.compare(recordA, recordB);
                 if (sortResult != 0) {
-                    return fieldComparable.ascending ? sortResult : -sortResult;
+                    return sortResult;
                 }
             }
             return 0;
