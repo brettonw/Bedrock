@@ -1,1 +1,0 @@
-typeSearchIndex = [{"p":"com.brettonw.bedrock","l":"Base"}]
