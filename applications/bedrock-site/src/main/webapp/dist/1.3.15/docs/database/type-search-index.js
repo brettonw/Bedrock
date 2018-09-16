@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"com.brettonw.bedrock.database","l":"Interface"},{"p":"com.brettonw.bedrock.database","l":"MongoDatabase"}]
