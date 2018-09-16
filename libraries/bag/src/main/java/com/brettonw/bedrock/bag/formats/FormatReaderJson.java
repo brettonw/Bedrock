@@ -57,7 +57,7 @@ public class FormatReaderJson extends FormatReaderParsed implements ArrayFormatR
     public BagObject readBagObject () {
         // <Object> ::= { } | { <Members> }
         BagObject bagObject = new BagObject ();
-        return (expect('{') && readMembers (bagObject) && require('}')) ? bagObject : null;
+        return (expect('{') && readMembers (bagObject) && require(expect ('}'), "Valid pair (<String>:<Value>) or '}'")) ? bagObject : null;
     }
 
     private boolean readMembers (BagObject bagObject) {
@@ -65,7 +65,7 @@ public class FormatReaderJson extends FormatReaderParsed implements ArrayFormatR
         boolean result = true;
         if (readPair (bagObject)) {
             while (expect (',')) {
-                result = require (readPair (bagObject), "Valid pair");
+                result = require (readPair (bagObject), "Valid pair (<String>:<Value>)");
             }
         }
         return result;
@@ -91,8 +91,7 @@ public class FormatReaderJson extends FormatReaderParsed implements ArrayFormatR
     private boolean readPair (BagObject bagObject) {
         // <Pair> ::= <String> : <Value>
         String key = readString ();
-        return (key != null) && (key.length () > 0) &&
-                require (':') && require (storeValue (bagObject, key), "Valid value");
+        return (key != null) && (key.length () > 0) && require (':') && require (storeValue (bagObject, key), "Valid value");
     }
 
     private static final char BARE_VALUE_STOP_CHARS[] = sortString (" \u00a0\t\n:{}[]\",");
@@ -133,17 +132,24 @@ public class FormatReaderJson extends FormatReaderParsed implements ArrayFormatR
             // digest the string, and be sure to eat the end quote
             int start = consumeUntilStop (QUOTED_STRING_STOP_CHARS);
             result = input.substring (start, index++);
-        } else {
-            // technically, we're being sloppy allowing bare values where quoted strings are
-            // expected, but it's part of the simplified structure we support. This allows us to
-            // read valid JSON files without handling every single case.
-            int start = consumeUntilStop (BARE_VALUE_STOP_CHARS);
-
-            // capture the result if we actually consumed some characters
-            if (index > start) {
-                result = input.substring (start, index);
-            }
         }
+        return result;
+    }
+
+    private String readBareValue () {
+        // " chars " | <chars>
+        String result = null;
+
+        // technically, we're being sloppy allowing bare values in some cases where quoted strings
+        // are the standard, but it's part of the simplified structure we support. This allows us to
+        // read valid JSON files without handling every single pedantic case.
+        int start = consumeUntilStop (BARE_VALUE_STOP_CHARS);
+
+        // capture the result if we actually consumed some characters
+        if (index > start) {
+            result = input.substring (start, index);
+        }
+
         return result;
     }
 
@@ -154,18 +160,10 @@ public class FormatReaderJson extends FormatReaderParsed implements ArrayFormatR
         Object value = null;
         if (check ()) {
             switch (input.charAt (index)) {
-                case '{':
-                    value = readBagObject ();
-                    break;
-
-                case '[':
-                    value = readBagArray ();
-                    break;
-
-                case '"':
-                default:
-                    value = readString ();
-                    break;
+                case '{': value = readBagObject (); break;
+                case '[': value = readBagArray (); break;
+                case '"': value = readString (); break;
+                default: value = readBareValue (); break;
             }
         }
         return value;
