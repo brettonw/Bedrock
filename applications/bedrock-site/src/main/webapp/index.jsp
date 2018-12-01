@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/png" href="img/icon.png?v=1"/>
     <link rel="stylesheet" href="dist/latest/bedrock.css" />
+    <meta name="viewport" content="width=900,initial-scale=1,user-scalable=yes"/>
     <title>Bedrock v.<%=Service.getBedrockVersion ()%></title>
 </head>
 
