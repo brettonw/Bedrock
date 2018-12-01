@@ -11,7 +11,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -302,37 +301,5 @@ public class TestServletContext implements ServletContext {
     @Override
     public String getVirtualServerName () {
         return null;
-    }
-
-    @Override
-    public ServletRegistration.Dynamic addJspFile (String s, String s1) {
-        return null;
-    }
-
-    @Override
-    public int getSessionTimeout () {
-        return 0;
-    }
-
-    @Override
-    public void setSessionTimeout (int i) {
-    }
-
-    @Override
-    public String getRequestCharacterEncoding () {
-        return StandardCharsets.UTF_8.name ();
-    }
-
-    @Override
-    public void setRequestCharacterEncoding (String s) {
-    }
-
-    @Override
-    public String getResponseCharacterEncoding () {
-        return StandardCharsets.UTF_8.name ();
-    }
-
-    @Override
-    public void setResponseCharacterEncoding (String s) {
     }
 }
