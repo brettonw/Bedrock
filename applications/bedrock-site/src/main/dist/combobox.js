@@ -72,7 +72,8 @@ Bedrock.ComboBox = function () {
                             classes: ["combobox-input"],
                             id: inputElementId,
                             placeholder: inputElementId, // a reasonable default
-                            type: "text"
+                            type: "text",
+                            autocomplete: "off"
                         };
 
                         // depending on whether there is "class" in the parameters

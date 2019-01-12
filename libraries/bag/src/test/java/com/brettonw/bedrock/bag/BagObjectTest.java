@@ -155,11 +155,7 @@ public class BagObjectTest {
     @Test
     public void testHandAuthoredJson() {
             // test a reconstruction from a hand-authored JSON string
-<<<<<<< HEAD
-            String jsonString = " { Married:\"true\",   \"Children\": [] ,       \"First Name\": \"Bretton\" , \"Last Name\" : \"Wade\" , \"Weight\":\"220.5\", Size:8 }";
-=======
             String jsonString = " { \"Married\":\"true\",   \"Children\": [] ,       \"First Name\": \"Bretton\" , \"Last Name\" : \"Wade\" , \"Weight\":\"220.5\", \"Size\":8 }";
->>>>>>> b2b49bdbace29e1257f6af472f886de04d85c4d3
             BagObject bagObject = BagObjectFrom.string (jsonString, MimeType.JSON);
             BagTest.report (bagObject.getString ("Last Name"), "Wade", "BagObject - reconstitute from a hand-crafted string should pass");
             BagTest.report (bagObject.has ("Married"), true, "BagObject - check that a tag is present");
