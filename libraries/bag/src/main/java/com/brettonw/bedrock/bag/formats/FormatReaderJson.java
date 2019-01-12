@@ -57,7 +57,11 @@ public class FormatReaderJson extends FormatReaderParsed implements ArrayFormatR
     public BagObject readBagObject () {
         // <Object> ::= { } | { <Members> }
         BagObject bagObject = new BagObject ();
+<<<<<<< HEAD
         return (expect('{') && readMembers (bagObject) && require('}')) ? bagObject : null;
+=======
+        return (expect('{') && readMembers (bagObject) && require(expect ('}'), "Valid pair (<String>:<Value>) or '}'")) ? bagObject : null;
+>>>>>>> b2b49bdbace29e1257f6af472f886de04d85c4d3
     }
 
     private boolean readMembers (BagObject bagObject) {
@@ -65,7 +69,11 @@ public class FormatReaderJson extends FormatReaderParsed implements ArrayFormatR
         boolean result = true;
         if (readPair (bagObject)) {
             while (expect (',')) {
+<<<<<<< HEAD
                 result = require (readPair (bagObject), "Valid pair");
+=======
+                result = require (readPair (bagObject), "Valid pair (<String>:<Value>)");
+>>>>>>> b2b49bdbace29e1257f6af472f886de04d85c4d3
             }
         }
         return result;
@@ -91,8 +99,12 @@ public class FormatReaderJson extends FormatReaderParsed implements ArrayFormatR
     private boolean readPair (BagObject bagObject) {
         // <Pair> ::= <String> : <Value>
         String key = readString ();
+<<<<<<< HEAD
         return (key != null) && (key.length () > 0) &&
                 require (':') && require (storeValue (bagObject, key), "Valid value");
+=======
+        return (key != null) && (key.length () > 0) && require (':') && require (storeValue (bagObject, key), "Valid value");
+>>>>>>> b2b49bdbace29e1257f6af472f886de04d85c4d3
     }
 
     private static final char BARE_VALUE_STOP_CHARS[] = sortString (" \u00a0\t\n:{}[]\",");
@@ -133,6 +145,7 @@ public class FormatReaderJson extends FormatReaderParsed implements ArrayFormatR
             // digest the string, and be sure to eat the end quote
             int start = consumeUntilStop (QUOTED_STRING_STOP_CHARS);
             result = input.substring (start, index++);
+<<<<<<< HEAD
         } else {
             // technically, we're being sloppy allowing bare values where quoted strings are
             // expected, but it's part of the simplified structure we support. This allows us to
@@ -143,10 +156,32 @@ public class FormatReaderJson extends FormatReaderParsed implements ArrayFormatR
             if (index > start) {
                 result = input.substring (start, index);
             }
+=======
+>>>>>>> b2b49bdbace29e1257f6af472f886de04d85c4d3
         }
         return result;
     }
 
+<<<<<<< HEAD
+=======
+    private String readBareValue () {
+        // " chars " | <chars>
+        String result = null;
+
+        // technically, we're being sloppy allowing bare values in some cases where quoted strings
+        // are the standard, but it's part of the simplified structure we support. This allows us to
+        // read valid JSON files without handling every single pedantic case.
+        int start = consumeUntilStop (BARE_VALUE_STOP_CHARS);
+
+        // capture the result if we actually consumed some characters
+        if (index > start) {
+            result = input.substring (start, index);
+        }
+
+        return result;
+    }
+
+>>>>>>> b2b49bdbace29e1257f6af472f886de04d85c4d3
     private Object readValue () {
         // <Value> ::= <String> | <Object> | <Array>
         consumeWhiteSpace ();
@@ -154,6 +189,7 @@ public class FormatReaderJson extends FormatReaderParsed implements ArrayFormatR
         Object value = null;
         if (check ()) {
             switch (input.charAt (index)) {
+<<<<<<< HEAD
                 case '{':
                     value = readBagObject ();
                     break;
@@ -166,6 +202,12 @@ public class FormatReaderJson extends FormatReaderParsed implements ArrayFormatR
                 default:
                     value = readString ();
                     break;
+=======
+                case '{': value = readBagObject (); break;
+                case '[': value = readBagArray (); break;
+                case '"': value = readString (); break;
+                default: value = readBareValue (); break;
+>>>>>>> b2b49bdbace29e1257f6af472f886de04d85c4d3
             }
         }
         return value;

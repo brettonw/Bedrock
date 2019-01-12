@@ -11,7 +11,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -106,14 +105,17 @@ public class TestServletContext implements ServletContext {
 
     @Override
     public void log (String s) {
+
     }
 
     @Override
     public void log (Exception e, String s) {
+
     }
 
     @Override
     public void log (String s, Throwable throwable) {
+
     }
 
     @Override
@@ -248,6 +250,7 @@ public class TestServletContext implements ServletContext {
 
     @Override
     public void setSessionTrackingModes (Set<SessionTrackingMode> set) {
+
     }
 
     @Override
@@ -262,14 +265,17 @@ public class TestServletContext implements ServletContext {
 
     @Override
     public void addListener (String s) {
+
     }
 
     @Override
     public <T extends EventListener> void addListener (T t) {
+
     }
 
     @Override
     public void addListener (Class<? extends EventListener> aClass) {
+
     }
 
     @Override
@@ -289,6 +295,7 @@ public class TestServletContext implements ServletContext {
 
     @Override
     public void declareRoles (String... strings) {
+
     }
 
     @Override
