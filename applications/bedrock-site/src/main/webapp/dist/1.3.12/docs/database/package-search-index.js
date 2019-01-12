@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"com.brettonw.bedrock.database"}]
