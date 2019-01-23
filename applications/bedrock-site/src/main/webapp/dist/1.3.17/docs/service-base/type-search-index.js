@@ -1,1 +1,0 @@
-typeSearchIndex = [{"p":"com.brettonw.bedrock.service","l":"Base"},{"p":"com.brettonw.bedrock.service","l":"Event"},{"p":"com.brettonw.bedrock.service","l":"Handler"}]
