@@ -66,4 +66,8 @@ public class Service extends Base {
             event.error ("Invalid post data");
         }
     }
+
+    public void handleEventFetch (Event event) {
+        event.error ("NYI");
+    }
 }

@@ -6,7 +6,7 @@
             "version": {
                 "description": "Return the build version for the current WAR.",
                 "returns": {
-                    "display-name": {"description": "The display name of the service.", "required": true},
+                    "display-name": {"description": "Display name of the service.", "required": true},
                     "pom-version": {"description": "Build Version Number, e.g. '1.0.0'.", "required": true}
                 },
                 "example": {}
@@ -18,7 +18,7 @@
             "ip": {
                 "description": "Return the IP address of the requestor.",
                 "returns": {
-                    "ip": { "description": "The IP (v4) address of the requestor", "required": true }
+                    "ip": { "description": "IP (v4) address of the requestor", "required": true }
                 },
                 "example": {}
             },
@@ -31,7 +31,7 @@
             "headers": {
                 "description": "Return the request headers as a JSON object.",
                 "returns": {
-                    "host": { "description":"name of the host the request is to" },
+                    "host": { "description":"Name of the host the request is to" },
                     "user-agent": { "description":"Browser user agent" }
                 },
                 "example": {}
@@ -40,6 +40,16 @@
                 "description": "Repeat the contents of the query.",
                 "strict": false,
                 "example": { "param1": "xxx", "param2": "yyy" }
+            },
+            "fetch": {
+                "description": "Return the response from a requested URL",
+                "parameters": {
+                    "url": { "description": "Site to fetch", "required":  true }
+                },
+                "returns": {
+                    "response": {"description": "Response from requested site, escaped appropriately", "required":  true}
+                },
+                "example": { "url": "https://brettonw.com/index.html" }
             }
         }
     }
