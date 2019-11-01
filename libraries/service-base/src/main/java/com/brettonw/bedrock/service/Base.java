@@ -246,6 +246,8 @@ public class Base extends HttpServlet {
         String UTF_8 = StandardCharsets.UTF_8.name ();
         response.setContentType (MimeType.JSON + "; charset=" + UTF_8);
         response.setCharacterEncoding (UTF_8);
+        // XXX should this be configurable? this is to allow our content to be usable by Chrome and stop CORB from blocking requests...
+        response.addHeader ("X-Content-Type-Options", "nosniff");
         PrintWriter out = response.getWriter ();
         out.println (event.getResponse ().toString (MimeType.JSON));
         out.close ();
