@@ -13,6 +13,8 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Service extends Base {
     private static final Logger log = LogManager.getLogger (Service.class);
@@ -75,17 +77,26 @@ public class Service extends Base {
         }
     }
 
+    private String unescapeUrl (String urlString) {
+        Pattern pattern = Pattern.compile ("[^\\\\]%[0-9a-fA-F]{2}");
+        Matcher matcher = pattern.matcher (urlString);
+        StringBuffer sb = new StringBuffer (urlString.length ());
+        while (matcher.find ()) {
+            String group = matcher.group ();
+            String hexVal = matcher.group ().substring (2);
+            int intVal = Integer.parseInt (hexVal, 16);
+            String s = group.substring (0, 1) + (char) intVal;
+            matcher.appendReplacement (sb, s);
+        }
+        matcher.appendTail (sb);
+        return sb.toString ();
+    }
+
     public void handleEventFetch (Event event) {
         event.error ("NYI");
         try {
             // decode the URL
-            String urlString = event.getQuery ().getString (FETCH_URL)
-                .replace ("%20", " ")
-                .replace ("%22", "\"")
-                .replace ("%23", "#")
-                .replace ("%3a", ":")
-                .replace ("%3d", "=")
-                .replace ("%3f", "?");
+            String urlString = unescapeUrl (event.getQuery ().getString (FETCH_URL));
 
             // fetch the requested site and get its mime type (and subtypes)
             SourceAdapterHttp sourceAdapterHttp = new SourceAdapterHttp (urlString);
@@ -96,13 +107,13 @@ public class Service extends Base {
             // need to be escaped so the result can be rebuilt on the receiver side.
             if (mimeSubTypes[0].equals ("text") || mimeType.equals (MimeType.TEXT) || mimeType.equals (MimeType.XML)) {
                 String response = sourceAdapterHttp.getStringData ()
-                    .replace ("\\", "\\\\")
-                    .replace ("\n", "\\n")
-                    .replace ("\r", "\\r")
-                    .replace ("\f", "\\f")
-                    .replace ("\t", "\\t")
-                    .replace ("\b", "\\b")
-                    .replace ("\"", "\\\"");
+                    .replaceAll ("\\", "\\\\")
+                    .replaceAll ("\n", "\\n")
+                    .replaceAll ("\r", "\\r")
+                    .replaceAll ("\f", "\\f")
+                    .replaceAll ("\t", "\\t")
+                    .replaceAll ("\b", "\\b")
+                    .replaceAll ("\"", "\\\"");
                 event.ok (new BagObject ().put (FETCH_CONTENT, response).put (FETCH_MIME_TYPE, mimeType).put (FETCH_ESCAPE_TYPE, "text"));
             } else if (mimeType.equals (MimeType.JSON)) {
                 // straight JSON content can be embedded
