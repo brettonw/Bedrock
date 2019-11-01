@@ -84,6 +84,9 @@ public class Service_Test extends Service {
         BagObject query = BagObject.open (EVENT, FETCH).put (FETCH_URL, "https://bedrock.brettonw.com/api?event%3dok");
         BagObject response = tester.bagObjectFromGet (query);
         assertTrue (response.getString (STATUS).equals (OK));
+        query.put (FETCH_URL, "https://google.com");
+        response = tester.bagObjectFromGet (query);
+        assertTrue (response.getString (STATUS).equals (OK));
     }
 
     @Test

@@ -107,13 +107,13 @@ public class Service extends Base {
             // need to be escaped so the result can be rebuilt on the receiver side.
             if (mimeSubTypes[0].equals ("text") || mimeType.equals (MimeType.TEXT) || mimeType.equals (MimeType.XML)) {
                 String response = sourceAdapterHttp.getStringData ()
-                    .replaceAll ("\\", "\\\\")
-                    .replaceAll ("\n", "\\n")
-                    .replaceAll ("\r", "\\r")
-                    .replaceAll ("\f", "\\f")
-                    .replaceAll ("\t", "\\t")
-                    .replaceAll ("\b", "\\b")
-                    .replaceAll ("\"", "\\\"");
+                    .replace ("\\", "\\\\")
+                    .replace ("\n", "\\n")
+                    .replace ("\r", "\\r")
+                    .replace ("\f", "\\f")
+                    .replace ("\t", "\\t")
+                    .replace ("\b", "\\b")
+                    .replace ("\"", "\\\"");
                 event.ok (new BagObject ().put (FETCH_CONTENT, response).put (FETCH_MIME_TYPE, mimeType).put (FETCH_ESCAPE_TYPE, "text"));
             } else if (mimeType.equals (MimeType.JSON)) {
                 // straight JSON content can be embedded
