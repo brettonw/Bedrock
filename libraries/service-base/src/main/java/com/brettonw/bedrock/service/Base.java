@@ -241,33 +241,34 @@ public class Base extends HttpServlet {
         handleRequest (query, request, response);
     }
 
+    private void addCorsHeaders (HttpServletResponse response) {
+        // check to see if CORS is desired on this api
+        if (true) {
+            // the base CORS headers
+            response.setHeader ("Access-Control-Allow-Origin", "*");
+            response.setHeader ("Access-Control-Allow-Headers", "*");
+            response.setHeader ("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+        }
+    }
+
     @Override
     public void doOptions (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // XXX should this be configurable? this is to allow our content to be usable by Chrome and stop CORB from blocking requests...
-        response.setHeader ("X-Content-Type-Options", "nosniff");
-        response.setHeader ("Access-Control-Allow-Origin", "*");
-        //response.setHeader ("Access-Control-Allow-Credentials", "*");
-        //response.setHeader ("Access-Control-Max-Age", "3600");
-        //response.setHeader ("Access-Control-Expose-Headers", "*");
-        response.setHeader ("Access-Control-Allow-Headers", "*");
-        response.setHeader ("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+        addCorsHeaders (response);
         super.doOptions (request, response);
     }
 
     private void handleRequest (BagObject query, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // handle the event before we add headers and charsets so that exceptions are correctly
+        // reported back to the application container
         Event event = handleEvent (query, request);
         String UTF_8 = StandardCharsets.UTF_8.name ();
         response.setContentType (MimeType.JSON + "; charset=" + UTF_8);
         response.setCharacterEncoding (UTF_8);
 
-        // XXX should this be configurable? this is to allow our content to be usable by Chrome and stop CORB from blocking requests...
+        // tell the browsers we know what we are returning (JSON is "protected")
         response.setHeader ("X-Content-Type-Options", "nosniff");
-        response.setHeader ("Access-Control-Allow-Origin", "*");
-        //response.setHeader ("Access-Control-Allow-Credentials", "*");
-        //response.setHeader ("Access-Control-Max-Age", "3600");
-        //response.setHeader ("Access-Control-Expose-Headers", "*");
-        response.setHeader ("Access-Control-Allow-Headers", "*");
-        response.setHeader ("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+
+        addCorsHeaders (response);
 
         PrintWriter out = response.getWriter ();
         out.println (event.getResponse ().toString (MimeType.JSON));
