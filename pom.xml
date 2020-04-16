@@ -32,7 +32,7 @@
         <!-- Tomcat 8.5 v. 3.1.0 -->
         <!-- Tomcat 9.0 v. 4.0.0 -->
         <servlet.version>4.0.0</servlet.version>
-        <java.version>9</java.version>
+        <java.version>11</java.version>
     </properties>
 
     <scm>
@@ -57,7 +57,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.2</version>
+                <version>3.2.0</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -87,7 +87,7 @@
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.7</version>
+                <version>1.6.8</version>
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>ossrh</serverId>
