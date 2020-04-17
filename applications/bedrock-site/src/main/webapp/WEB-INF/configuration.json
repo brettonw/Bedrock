@@ -1,12 +1,12 @@
 {
     "schema": {
         "name": "Bedrock Service",
-        "description": "The Bedrock Service is a simple JSON repeater designed to demonstrate a simple API, and be used in test suites requiring JSON responses from a remote host, such as com.brettonw.bedrock.",
+        "description": "Bedrock Service is a simple JSON repeater designed to demonstrate a simple API and be used in test suites requiring JSON responses from a remote host, such as com.brettonw.bedrock.",
         "events": {
             "version": {
                 "description": "Return the build version for the current WAR.",
                 "returns": {
-                    "display-name": {"description": "The display name of the service.", "required": true},
+                    "display-name": {"description": "Display name of the service.", "required": true},
                     "pom-version": {"description": "Build Version Number, e.g. '1.0.0'.", "required": true}
                 },
                 "example": {}
@@ -18,21 +18,21 @@
             "ip": {
                 "description": "Return the IP address of the requestor.",
                 "returns": {
-                    "ip": { "description": "The IP (v4) address of the requestor", "required": true }
+                    "ip": { "description": "IP (v4) address of the requestor.", "required": true }
                 },
                 "example": {}
             },
             "post-data": {
                 "parameters": {
-                    "post-data": {"description": "POST data to be echoed", "required": true}
+                    "post-data": {"description": "POST data to be echoed.", "required": true}
                 },
                 "description": "Echo the contents of the post data."
             },
             "headers": {
-                "description": "Return the request headers as a JSON object.",
+                "description": "Return the request headers.",
                 "returns": {
-                    "host": { "description":"name of the host the request is to" },
-                    "user-agent": { "description":"Browser user agent" }
+                    "host": { "description":"Name of the host the request is to." },
+                    "user-agent": { "description":"Browser user agent." }
                 },
                 "example": {}
             },
@@ -40,6 +40,18 @@
                 "description": "Repeat the contents of the query.",
                 "strict": false,
                 "example": { "param1": "xxx", "param2": "yyy" }
+            },
+            "fetch": {
+                "description": "Return the content response from a requested URL.",
+                "parameters": {
+                    "url": { "description": "Site URL to fetch. The URL may need to be 'escaped' if it contains special characters. Use the unicode hexadecimal equivalent for certain special characters, such as '%3d' for '='.", "required":  true }
+                },
+                "returns": {
+                    "content": {"description": "Content response from requested site, escaped appropriately.", "required": true},
+                    "mime-type": {"description": "MIME type of the content.", "required": true},
+                    "escape-type": {"description": "Method of escaping/encoding content response to enable it to be enclosed in a JSON tag.", "required": true}
+                },
+                "example": { "url": "https://bedrock.brettonw.com/api?event%3dok" }
             }
         }
     }

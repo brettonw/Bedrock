@@ -16,6 +16,7 @@ public class Service_Test extends Service {
 
     public static final String ECHO = "echo";
     public static final String HEADERS = "headers";
+    public static final String FETCH = "fetch";
 
     Tester tester;
 
@@ -75,6 +76,16 @@ public class Service_Test extends Service {
     public void testGetHeaders () throws IOException {
         BagObject query = BagObject.open (EVENT, HEADERS);
         BagObject response = tester.bagObjectFromGet (query);
+        assertTrue (response.getString (STATUS).equals (OK));
+    }
+
+    @Test
+    public void testGetFetch () throws IOException {
+        BagObject query = BagObject.open (EVENT, FETCH).put (FETCH_URL, "https://bedrock.brettonw.com/api?event%3dok");
+        BagObject response = tester.bagObjectFromGet (query);
+        assertTrue (response.getString (STATUS).equals (OK));
+        query.put (FETCH_URL, "https://google.com");
+        response = tester.bagObjectFromGet (query);
         assertTrue (response.getString (STATUS).equals (OK));
     }
 
