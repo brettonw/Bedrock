@@ -72,12 +72,28 @@
                         </goals>
                     </execution>
                     <execution>
+                        <id>install</id>
+                        <phase>install</phase>
+                        <configuration>
+                            <target>
+                                <exec executable="bash" failonerror="true">
+                                    <arg value="-c" />
+                                    <arg value="bin/install.sh ${project.version}" />
+                                </exec>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
                         <id>deploy</id>
                         <phase>deploy</phase>
                         <configuration>
                             <target>
-                                <exec executable="eb" failonerror="true">
-                                    <arg value="deploy" />
+                                <exec executable="bash" failonerror="true">
+                                    <arg value="-c" />
+                                    <arg value="bin/deploy.sh ${project.version}" />
                                 </exec>
                             </target>
                         </configuration>
