@@ -1,5 +1,6 @@
 package com.brettonw.bedrock;
 
+import com.brettonw.bedrock.bag.BagArray;
 import com.brettonw.bedrock.bag.BagObject;
 import com.brettonw.bedrock.bag.BagObjectFrom;
 import com.brettonw.bedrock.servlet.Tester;
@@ -17,6 +18,7 @@ public class Service_Test extends Service {
     public static final String ECHO = "echo";
     public static final String HEADERS = "headers";
     public static final String FETCH = "fetch";
+    public static final String ECHO_ARRAY = "echo-array";
 
     Tester tester;
 
@@ -93,5 +95,12 @@ public class Service_Test extends Service {
     public void testEmptyGet () throws IOException {
         BagObject response = tester.bagObjectFromGet ("");
         assertTrue (response.getString (STATUS).equals (ERROR));
+    }
+
+    @Test
+    public void testGetArray () throws IOException {
+        BagObject query = BagObject.open (EVENT, ECHO_ARRAY);
+        BagArray response = tester.bagArrayFromGet (query);
+        assertTrue (response.getBagObject (0).getString (EVENT).equals (ECHO_ARRAY));
     }
 }

@@ -1,8 +1,6 @@
 package com.brettonw.bedrock.servlet;
 
-import com.brettonw.bedrock.bag.Bag;
-import com.brettonw.bedrock.bag.BagObject;
-import com.brettonw.bedrock.bag.BagObjectFrom;
+import com.brettonw.bedrock.bag.*;
 import com.brettonw.bedrock.bag.formats.MimeType;
 import com.brettonw.bedrock.servlet.test.TestRequest;
 import com.brettonw.bedrock.servlet.test.TestResponse;
@@ -113,4 +111,15 @@ public class Tester extends HttpServlet {
     public BagObject bagObjectFromPost (String queryString, Bag postData) throws IOException {
         return bagObjectFromFile (fileFromPost (queryString, postData));
     }
+
+    private BagArray bagArrayFromFile (File outputFile) {
+        BagArray bagArray = BagArrayFrom.file (outputFile);
+        outputFile.delete ();
+        return bagArray;
+    }
+
+    public BagArray bagArrayFromGet (BagObject query) throws IOException {
+        return bagArrayFromFile (fileFromGet (query));
+    }
+
 }

@@ -1,9 +1,6 @@
 package com.brettonw.bedrock;
 
-import com.brettonw.bedrock.bag.Bag;
-import com.brettonw.bedrock.bag.BagObject;
-import com.brettonw.bedrock.bag.BagObjectFrom;
-import com.brettonw.bedrock.bag.SourceAdapterHttp;
+import com.brettonw.bedrock.bag.*;
 import com.brettonw.bedrock.bag.formats.MimeType;
 import com.brettonw.bedrock.service.Base;
 import com.brettonw.bedrock.service.Event;
@@ -126,6 +123,9 @@ public class Service extends Base {
         } catch (IOException exception) {
             event.error ("Fetch FAILURE (" + exception.toString () + ")");
         }
+    }
 
+    public void handleEventEchoArray (Event event) {
+        event.respond (new BagArray ().add (event.getQuery ()));
     }
 }

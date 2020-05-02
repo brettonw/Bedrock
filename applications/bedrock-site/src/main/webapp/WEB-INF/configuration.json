@@ -41,6 +41,11 @@
                 "strict": false,
                 "example": { "param1": "xxx", "param2": "yyy" }
             },
+            "echo-array": {
+                "description": "Repeat the contents of the query as the first element of an array.",
+                "strict": false,
+                "example": { "param1": "xxx", "param2": "yyy" }
+            },
             "fetch": {
                 "description": "Return the content response from a requested URL.",
                 "parameters": {
