@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 # exit on any error
-set -e
+#set -e
 
 # get the project dir
 PROJECT_NAME="bedrock";
@@ -9,20 +9,18 @@ PROJECT_VERSION=$1;
 PROJECT_DIR="$(pwd)";
 echo "Project: $PROJECT_NAME@v$PROJECT_VERSION";
 
-# the src and target dirs
-SRC_DIR="$PROJECT_DIR/src/main";
-TARGET_DIR="$PROJECT_DIR/target";
+# docker setup
+DOCKER_COUNT=$(docker-machine ls | grep default | wc -l | xargs);
+if [ "$DOCKER_COUNT" -eq "1" ]; then
+  eval $(docker-machine env)
+  # get a few user params (AWS_ACCOUNT_ID, AWS_REGION, AWS_PROFILE)
+  . ~/.aws/bedrock.sh;
 
-. ~/.aws/bedrock.sh;
+  echo "Repository Name: $PROJECT_NAME";
+  DOCKER_REPOSITORY=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$PROJECT_NAME;
 
-DOCKER_REPOSITORY_NAME=bedrock;
-echo "Repository Name: $DOCKER_REPOSITORY_NAME";
-DOCKER_REPOSITORY=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$DOCKER_REPOSITORY_NAME;
-
-aws --profile $AWS_PROFILE ecr create-repository --repository-name $DOCKER_REPOSITORY_NAME;
-docker tag bedrock:$PROJECT_VERSION $DOCKER_REPOSITORY;
-aws --profile $AWS_PROFILE ecr get-login-password | docker login --username AWS --password-stdin $DOCKER_REPOSITORY;
-docker push $DOCKER_REPOSITORY;
-
-#aws --profile $AWS_PROFILE ecr delete-repository --repository-name $DOCKER_REPOSITORY_NAME --force
-
+  aws --profile $AWS_PROFILE ecr describe-repositories --repository-names $PROJECT_NAME || aws --profile $AWS_PROFILE ecr create-repository --repository-name $PROJECT_NAME
+  docker tag $PROJECT_NAME:$PROJECT_VERSION $DOCKER_REPOSITORY;
+  aws --profile $AWS_PROFILE ecr get-login-password | docker login --username AWS --password-stdin $DOCKER_REPOSITORY;
+  docker push $DOCKER_REPOSITORY;
+fi

@@ -10,11 +10,16 @@ PROJECT_DIR="$(pwd)";
 echo "Project: $PROJECT_NAME@v$PROJECT_VERSION";
 
 # the src and target dirs
-SRC_DIR="$PROJECT_DIR/src/main";
 TARGET_DIR="$PROJECT_DIR/target";
 
-cp -r $SRC_DIR/docker $TARGET_DIR/docker
-cp $TARGET_DIR/bedrock-site.war $TARGET_DIR/docker/ROOT.war
-pushd $TARGET_DIR/docker
-docker build --tag bedrock:$PROJECT_VERSION .
-popd
+# docker setup
+DOCKER_COUNT=$(docker-machine ls | grep default | wc -l | xargs);
+if [ "$DOCKER_COUNT" -eq "1" ]; then
+  eval $(docker-machine env)
+
+  cp -r $PROJECT_DIR/src/main/docker $TARGET_DIR/docker
+  cp $TARGET_DIR/bedrock-site.war $TARGET_DIR/docker/ROOT.war
+  pushd $TARGET_DIR/docker
+  docker build --tag $PROJECT_NAME:$PROJECT_VERSION .
+  popd
+fi

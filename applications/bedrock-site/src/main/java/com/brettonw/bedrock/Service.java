@@ -29,6 +29,10 @@ public class Service extends Base {
         event.respond (event.getQuery ());
     }
 
+    public void handleEventEchoArray (Event event) {
+        event.respond (new BagArray ().add (event.getQuery ()));
+    }
+
     public void handleEventIp (Event event) {
         HttpServletRequest request = event.getRequest ();
         String ip = request.getRemoteAddr ();
@@ -125,7 +129,4 @@ public class Service extends Base {
         }
     }
 
-    public void handleEventEchoArray (Event event) {
-        event.respond (new BagArray ().add (event.getQuery ()));
-    }
 }
