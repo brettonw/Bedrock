@@ -13,17 +13,12 @@ public class FromUrlTest {
 
     @Test
     public void testGet () throws IOException {
-        BagObject brettonw = BagObjectFrom.url ("http://bedrock.brettonw.com/api?event=ip", () -> null);
+        BagObject brettonw = BagObjectFrom.url ("https://bedrock.brettonw.com/api?event=ip", () -> null);
         BagTest.report (brettonw.getString ("response/ip") != null, true, "Got a valid BagObject");
 
         // XXX should add an array processor to the test API for when github throttles the API
-        /*
-        BagArray arrayEcho = BagArrayFrom.url ("http://bedrock.brettonw.com/api?event=echo-array", () -> null);
-        BagTest.report (repos.getCount () > 0, true, "Got a valid BagArray");
-        */
-
-        BagArray repos = BagArrayFrom.url ("https://api.github.com/users/brettonw/repos", () -> null);
-        BagTest.report (repos.getCount () > 0, true, "Got a valid BagArray");
+        BagArray arrayEcho = BagArrayFrom.url ("https://bedrock.brettonw.com/api?event=echo-array", () -> null);
+        BagTest.report (arrayEcho.getCount () > 0, true, "Got a valid BagArray");
     }
 
     @Test
