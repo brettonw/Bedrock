@@ -1,8 +1,8 @@
 #! /usr/bin/env bash
 
 # get the project dir
-PROJECT_NAME="bedrock";
-PROJECT_VERSION=$1;
+PROJECT_NAME=$1;
+PROJECT_VERSION=$2;
 PROJECT_DIR="$(pwd)";
 echo "Project: $PROJECT_NAME@v$PROJECT_VERSION";
 

@@ -20,7 +20,7 @@
     </properties>
 
     <build>
-        <finalName>bedrock-site</finalName>
+        <finalName>bedrock</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -33,7 +33,7 @@
                             <target>
                                 <exec executable="bash" failonerror="true">
                                     <arg value="-c" />
-                                    <arg value="bin/clean.sh ${project.version}" />
+                                    <arg value="bin/clean.sh &quot;${project.build.finalName} ${project.version}&quot;" />
                                 </exec>
                             </target>
                         </configuration>
@@ -48,7 +48,7 @@
                             <target>
                                 <exec executable="bash" failonerror="true">
                                     <arg value="-c" />
-                                    <arg value="bin/generate-sources.sh ${project.version}" />
+                                    <arg value="bin/generate-sources.sh &quot;${project.build.finalName} ${project.version}&quot;" />
                                 </exec>
                             </target>
                         </configuration>
@@ -63,7 +63,7 @@
                             <target>
                                 <exec executable="bash" failonerror="true">
                                     <arg value="-c" />
-                                    <arg value="bin/test.sh ${project.version}" />
+                                    <arg value="bin/test.sh &quot;${project.build.finalName} ${project.version}&quot;" />
                                 </exec>
                             </target>
                         </configuration>
@@ -78,7 +78,7 @@
                             <target>
                                 <exec executable="bash" failonerror="true">
                                     <arg value="-c" />
-                                    <arg value="bin/install.sh ${project.version}" />
+                                    <arg value="bin/install.sh &quot;${project.build.finalName} ${project.version}&quot;" />
                                 </exec>
                             </target>
                         </configuration>
@@ -93,7 +93,7 @@
                             <target>
                                 <exec executable="bash" failonerror="true">
                                     <arg value="-c" />
-                                    <arg value="bin/deploy.sh ${project.version}" />
+                                    <arg value="bin/deploy.sh &quot;${project.build.finalName} ${project.version}&quot;" />
                                 </exec>
                             </target>
                         </configuration>

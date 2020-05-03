@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-. bin/clean.sh $1
+. bin/clean.sh "$1"
 
 # ensure the target directory is are present
 echo "Generate Sources - create $TARGET_DIR";
