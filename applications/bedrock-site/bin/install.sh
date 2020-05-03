@@ -7,7 +7,7 @@ set -e
 PROJECT_NAME="bedrock";
 PROJECT_VERSION=$1;
 PROJECT_DIR="$(pwd)";
-echo "Project: $PROJECT_NAME@v$PROJECT_VERSION";
+echo "Install: Project ($PROJECT_NAME@v$PROJECT_VERSION)";
 
 # the src and target dirs
 TARGET_DIR="$PROJECT_DIR/target";
@@ -25,7 +25,6 @@ if [ "$DOCKER_COUNT" -eq "1" ]; then
   popd
 
   echo "Install: Finished";
-
 else
   echo "Install: FAILED to deploy from docker";
 fi
