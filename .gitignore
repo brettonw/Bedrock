@@ -13,6 +13,6 @@ buildNumber.properties
 .settings
 .project
 .cache*
-build.txt
+build*.txt
 /applications/bedrock-site/src/main/webapp/dist/*-SNAPSHOT
 /applications/bedrock-site/src/main/webapp/dist/latest

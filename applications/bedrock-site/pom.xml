@@ -23,16 +23,6 @@
         <finalName>bedrock</finalName>
         <plugins>
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.8</version>
-                <executions>
-                    <execution>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.8</version>
                 <executions>
@@ -43,7 +33,7 @@
                             <target>
                                 <exec executable="bash" failonerror="true">
                                     <arg value="-c" />
-                                    <arg value="bin/clean.sh &quot;${project.build.finalName} ${project.version}&quot;" />
+                                    <arg value="bin/clean.sh &quot;${project.build.finalName} ${project.version}&quot; | tee build-clean.txt" />
                                 </exec>
                             </target>
                         </configuration>
@@ -58,7 +48,7 @@
                             <target>
                                 <exec executable="bash" failonerror="true">
                                     <arg value="-c" />
-                                    <arg value="bin/generate-sources.sh &quot;${project.build.finalName} ${project.version}&quot;" />
+                                    <arg value="bin/generate-sources.sh &quot;${project.build.finalName} ${project.version}&quot; | tee build-generate-sources.txt" />
                                 </exec>
                             </target>
                         </configuration>
@@ -73,7 +63,7 @@
                             <target>
                                 <exec executable="bash" failonerror="true">
                                     <arg value="-c" />
-                                    <arg value="bin/test.sh &quot;${project.build.finalName} ${project.version}&quot;" />
+                                    <arg value="bin/test.sh &quot;${project.build.finalName} ${project.version}&quot; | tee build-test.txt" />
                                 </exec>
                             </target>
                         </configuration>
@@ -88,7 +78,7 @@
                             <target>
                                 <exec executable="bash" failonerror="true">
                                     <arg value="-c" />
-                                    <arg value="bin/install.sh &quot;${project.build.finalName} ${project.version}&quot;" />
+                                    <arg value="bin/install.sh &quot;${project.build.finalName} ${project.version}&quot; | tee build-install.txt" />
                                 </exec>
                             </target>
                         </configuration>
@@ -103,7 +93,7 @@
                             <target>
                                 <exec executable="bash" failonerror="true">
                                     <arg value="-c" />
-                                    <arg value="bin/deploy.sh &quot;${project.build.finalName} ${project.version}&quot;" />
+                                    <arg value="bin/deploy.sh &quot;${project.build.finalName} ${project.version}&quot; | tee build-deploy.txt" />
                                 </exec>
                             </target>
                         </configuration>

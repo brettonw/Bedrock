@@ -4,7 +4,9 @@
 PROJECT_NAME=$1;
 PROJECT_VERSION=$2;
 PROJECT_DIR="$(pwd)";
-echo "Project: $PROJECT_NAME@v$PROJECT_VERSION";
+echo;
+printf -v date '%(%Y-%m-%d %H:%M:%S)T' -1;
+echo "Project: $PROJECT_NAME@v$PROJECT_VERSION ($date)";
 
 # where are the sources
 SRC_DIR="$PROJECT_DIR/src/main/dist";
