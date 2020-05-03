@@ -1,13 +1,9 @@
 #! /usr/bin/env bash
 
+. bin/common.sh $1
+
 # exit on any error
 #set -e
-
-# get the project dir
-PROJECT_NAME="bedrock";
-PROJECT_VERSION=$1;
-PROJECT_DIR="$(pwd)";
-echo "Deploy: Project ($PROJECT_NAME@v$PROJECT_VERSION)";
 
 # docker setup
 DOCKER_COUNT=$(docker-machine ls | grep default | wc -l | xargs);
