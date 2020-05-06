@@ -22,7 +22,6 @@ public class MongoDatabase_Test {
     private String queryManyJson;
 
     public MongoDatabase_Test () throws Exception {
-
         testBagArray = new BagArray ()
                 .add (new BagObject ()
                         .put ("id", 1)

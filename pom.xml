@@ -27,6 +27,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mongodb.version>3.12.3</mongodb.version>
         <log4j.version>2.13.2</log4j.version>
         <junit.version>4.13</junit.version>
         <!-- Tomcat 9.0 v. 4.0.0 -->
