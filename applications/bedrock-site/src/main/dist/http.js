@@ -14,5 +14,18 @@ Bedrock.Http = function () {
         request.send ();
     };
 
+    $.post = function (queryString, postData, onSuccess) {
+        let request = new XMLHttpRequest ();
+        request.overrideMimeType ("application/json");
+        request.open ("POST", queryString, true);
+        request.onload = function (event) {
+            if (request.status === 200) {
+                let response = JSON.parse (this.responseText);
+                onSuccess (response);
+            }
+        };
+        request.send (postData);
+    };
+
     return $;
 } ();
