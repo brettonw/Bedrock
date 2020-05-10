@@ -10,10 +10,10 @@ let main = function () {
         // sort the records as an example
         let CF = Bedrock.CompareFunctions;
         records = Bedrock.DatabaseOperations.Sort.new ({ fields:[
-                { name:"C", asc:true, type: CF.ALPHABETIC },
-                { name:"B", asc:true, type: CF.ALPHABETIC },
-                { name:"RA", asc:true, type: CF.ALPHABETIC },
-                { name:"Dec", asc:true, type: CF.ALPHABETIC }
+                { name:"C", ascending:true, type: CF.ALPHABETIC },
+                { name:"B", ascending:true, type: CF.ALPHABETIC },
+                { name:"RA", ascending:true, type: CF.ALPHABETIC },
+                { name:"Dec", ascending:true, type: CF.ALPHABETIC }
             ] }).perform (records);
 
         // build the database filter
