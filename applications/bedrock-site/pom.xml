@@ -32,8 +32,9 @@
                         <configuration>
                             <target>
                                 <exec executable="bash" failonerror="true">
+                                    <redirector output="build-clean.txt" alwayslog="true"/>
                                     <arg value="-c" />
-                                    <arg value="bin/clean.sh &quot;${project.build.finalName} ${project.version}&quot; | tee build-clean.txt" />
+                                    <arg value="bin/clean.sh &quot;${project.build.finalName} ${project.version}&quot;" />
                                 </exec>
                             </target>
                         </configuration>
@@ -47,8 +48,9 @@
                         <configuration>
                             <target>
                                 <exec executable="bash" failonerror="true">
+                                    <redirector output="build-generate-sources.txt" alwayslog="true"/>
                                     <arg value="-c" />
-                                    <arg value="bin/generate-sources.sh &quot;${project.build.finalName} ${project.version}&quot; | tee build-generate-sources.txt" />
+                                    <arg value="bin/generate-sources.sh &quot;${project.build.finalName} ${project.version}&quot;" />
                                 </exec>
                             </target>
                         </configuration>
@@ -62,8 +64,9 @@
                         <configuration>
                             <target>
                                 <exec executable="bash" failonerror="true">
+                                    <redirector output="build-test.txt" alwayslog="true"/>
                                     <arg value="-c" />
-                                    <arg value="bin/test.sh &quot;${project.build.finalName} ${project.version}&quot; | tee build-test.txt" />
+                                    <arg value="bin/test.sh &quot;${project.build.finalName} ${project.version}&quot;" />
                                 </exec>
                             </target>
                         </configuration>
@@ -77,8 +80,9 @@
                         <configuration>
                             <target>
                                 <exec executable="bash" failonerror="true">
+                                    <redirector output="build-install.txt" alwayslog="true"/>
                                     <arg value="-c" />
-                                    <arg value="bin/install.sh &quot;${project.build.finalName} ${project.version}&quot; | tee build-install.txt" />
+                                    <arg value="bin/install.sh &quot;${project.build.finalName} ${project.version}&quot;.txt" />
                                 </exec>
                             </target>
                         </configuration>
@@ -92,8 +96,9 @@
                         <configuration>
                             <target>
                                 <exec executable="bash" failonerror="true">
+                                    <redirector output="build-deploy.txt" alwayslog="true"/>
                                     <arg value="-c" />
-                                    <arg value="bin/deploy.sh &quot;${project.build.finalName} ${project.version}&quot; | tee build-deploy.txt" />
+                                    <arg value="bin/deploy.sh &quot;${project.build.finalName} ${project.version}&quot;" />
                                 </exec>
                             </target>
                         </configuration>
