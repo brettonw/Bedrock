@@ -82,7 +82,7 @@
                                 <exec executable="bash" failonerror="true">
                                     <redirector output="build-install.txt" alwayslog="true"/>
                                     <arg value="-c" />
-                                    <arg value="bin/install.sh &quot;${project.build.finalName} ${project.version}&quot;.txt" />
+                                    <arg value="bin/install.sh &quot;${project.build.finalName} ${project.version}&quot;" />
                                 </exec>
                             </target>
                         </configuration>
