@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/png" href="img/icon.png?v=1"/>
-    <link rel="stylesheet" href="dist/latest/bedrock.css" />
+    <link rel="stylesheet" href="dist/<%= Service.getBedrockVersion() %>/bedrock.css"/>
     <meta name="viewport" content="width=920,initial-scale=1,user-scalable=yes"/>
     <title>Bedrock v.<%=Service.getBedrockVersion ()%></title>
 </head>
@@ -20,22 +20,22 @@
 
         <h2>Test Interface</h2>
         <div class="description-div">
-            This site features a <a href="interface.html">test interface</a> as an example of a simple Bedrock service.</p>
+            This site features a <a href="interface.jsp">test interface</a> as an example of a simple Bedrock service.</p>
         </div>
 
         <h2>Documentation</h2>
         <div class="description-div">
             <h3>Java</h3>
             <ul>
-                <li><a href="dist/latest/docs/bag/">Bag</a></li>
-                <li><a href="dist/latest/docs/database/">Database</a></li>
-                <li><a href="dist/latest/docs/service-base/">Service-Base</a></li>
-                <li><a href="dist/latest/docs/servlet-tester/">Servlet-Tester</a></li>
+                <li><a href="dist/<%= Service.getBedrockVersion() %>/docs/bag/">Bag</a></li>
+                <li><a href="dist/<%= Service.getBedrockVersion() %>/docs/database/">Database</a></li>
+                <li><a href="dist/<%= Service.getBedrockVersion() %>/docs/service-base/">Service-Base</a></li>
+                <li><a href="dist/<%= Service.getBedrockVersion() %>/docs/servlet-tester/">Servlet-Tester</a></li>
             </ul>
 
             <h3>Javascript</h3>
             <ul>
-                <li><a href="dist/latest/docs/bedrock/">Bedrock</a></li>
+                <li><a href="dist/<%= Service.getBedrockVersion() %>/docs/bedrock/">Bedrock</a></li>
             </ul>
             Usage:
             <pre style="font-size:10px;">&lt;link rel="stylesheet" href="https://bedrock.brettonw.com/dist/<%=Service.getBedrockVersion ()%>/bedrock.css"/>
@@ -45,11 +45,11 @@
         <h2>Examples</h2>
         <div class="description-div">
             <ul>
-                <li><a href="examples/combobox.html">ComboBox</a></li>
+                <li><a href="examples/combobox.jsp">ComboBox</a></li>
                 <li><a href="examples/database">Database</a></li>
-                <li><a href="examples/forms.html">Forms</a></li>
-                <li><a href="examples/html.html">HTML</a></li>
-                <li><a href="examples/http.html">HTTP</a></li>
+                <li><a href="examples/forms.jsp">Forms</a></li>
+                <li><a href="examples/html.jsp">HTML</a></li>
+                <li><a href="examples/http.jsp">HTTP</a></li>
             </ul>
         </div>
     </div>

@@ -1,9 +1,10 @@
+<%@ page import="com.brettonw.bedrock.Service" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Test</title>
-    <link rel="stylesheet" href="../dist/latest/bedrock.css?1"/>
+    <link rel="stylesheet" href="../dist/<%= Service.getBedrockVersion() %>/bedrock.css?1"/>
     <link rel="icon" type="image/png" href="../img/icon.png?1"/>
 </head>
 
@@ -42,7 +43,7 @@
 </body>
 </html>
 
-<script src="../dist/latest/bedrock-debug.js"></script>
+<script src="../dist/<%= Service.getBedrockVersion() %>/bedrock-debug.js"></script>
 <script>
     let options = ["a", "b", "c", "domineering", "profuse",
         "hollow", "caption", "save", "malicious", "marvelous", "mourn", "fabulous", "relieved",

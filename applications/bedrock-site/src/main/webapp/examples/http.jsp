@@ -1,3 +1,4 @@
+<%@ page import="com.brettonw.bedrock.Service" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>

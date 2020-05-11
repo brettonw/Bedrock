@@ -1,9 +1,10 @@
+<%@ page import="com.brettonw.bedrock.Service" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/png" href="../img/icon.png?v=1"/>
-    <link rel="stylesheet" href="../dist/latest/bedrock.css?1"/>
+    <link rel="stylesheet" href="../dist/<%= Service.getBedrockVersion() %>/bedrock.css?1"/>
     <title>Bedrock Test</title>
 </head>
 
@@ -12,11 +13,11 @@
 <h1>Bedrock Test</h1>
     <div class="container-div">
         <ul>
-            <li><a href="combobox.html">ComboBox</a></li>
-            <li><a href="database/index.html">Database</a></li>
-            <li><a href="forms.html">Forms</a></li>
-            <li><a href="html.html">HTML</a></li>
-            <li><a href="http.html">HTTP</a></li>
+            <li><a href="combobox.jsp">ComboBox</a></li>
+            <li><a href="database/">Database</a></li>
+            <li><a href="forms.jsp">Forms</a></li>
+            <li><a href="html.jsp">HTML</a></li>
+            <li><a href="http.jsp">HTTP</a></li>
         </ul>
     </div>
 </div>
