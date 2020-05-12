@@ -1,0 +1,5 @@
+{
+    "description": "Get the build version for the current WAR.",
+    "strict": false,
+    "example": {}
+}

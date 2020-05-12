@@ -97,6 +97,7 @@ public class Base extends HttpServlet {
 
             // common values for building the schema
             String help = Key.cat (EVENTS, HELP);
+            String version = Key.cat (EVENTS, VERSION);
 
             // try to fetch the schema
             if ((schema = configuration.getBagObject (SCHEMA)) != null) {
@@ -106,6 +107,11 @@ public class Base extends HttpServlet {
                 // add a 'help' event if one isn't supplied
                 if (! schema.has (help)) {
                     schema.put (help, BagObjectFrom.resource (getClass (), "/help.json"));
+                }
+
+                // add a 'version' event if one isn't supplied
+                if (! schema.has (version)) {
+                    schema.put (version, BagObjectFrom.resource (getClass (), "/version.json"));
                 }
 
                 // wire up the handlers specified in the schema - it is treated as authoritative so that
@@ -118,9 +124,10 @@ public class Base extends HttpServlet {
                 // there is no schema, so report the warning
                 log.warn ("Starting service with no schema.");
 
-                // create a bootstrap schema and add the help descriptor
+                // create a bootstrap schema and add the help and version descriptors
                 schema = BagObjectFrom.resource (getClass (), "/bootstrap.json");
                 schema.put (help, BagObjectFrom.resource (getClass (), "/help.json"));
+                schema.put (version, BagObjectFrom.resource (getClass (), "/version.json"));
 
                 // bootstrap/autowire... loop over all of the methods that match the target signature
                 // and install them as bootstraped generics
