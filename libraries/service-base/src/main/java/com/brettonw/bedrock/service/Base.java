@@ -274,12 +274,39 @@ public class Base extends HttpServlet {
 
         // tell the browsers we know what we are returning (JSON is "protected")
         response.setHeader ("X-Content-Type-Options", "nosniff");
-
         addCorsHeaders (response);
 
         PrintWriter out = response.getWriter ();
         out.println (event.getResponse ().toString (MimeType.JSON));
         out.close ();
+    }
+
+    private void validateParameters (BagObject query, boolean strict, BagObject parameterSpecification, BagArray validationErrors) {
+        if (strict) {
+            // loop over the query parameters to be sure they are all valid
+            String[] queryParameters = query.keys ();
+            for (int i = 0; i < queryParameters.length; ++i) {
+                String queryParameter = queryParameters[i];
+                if (!queryParameter.equals (EVENT)) {
+                    if ((parameterSpecification == null) || (!parameterSpecification.has (queryParameter))) {
+                        validationErrors.add ("Unspecified parameter: '" + queryParameter + "'");
+                    }
+                }
+            }
+        }
+
+        // loop over the parameter specification to be sure all of the required ones are present
+        if (parameterSpecification != null) {
+            String[] expectedParameters = parameterSpecification.keys ();
+            for (int i = 0; i < expectedParameters.length; ++i) {
+                String expectedParameter = expectedParameters[i];
+                if (parameterSpecification.getBoolean (Key.cat (expectedParameter, REQUIRED), () -> false)) {
+                    if (!query.has (expectedParameter)) {
+                        validationErrors.add ("Missing required parameter: '" + expectedParameter + "'");
+                    }
+                }
+            }
+        }
     }
 
     private Event handleEvent (BagObject query, HttpServletRequest request) {
@@ -295,28 +322,26 @@ public class Base extends HttpServlet {
                     BagObject parameterSpecification = eventSpecification.getBagObject (PARAMETERS);
                     boolean strict = eventSpecification.getBoolean (STRICT, () -> true);
                     BagArray validationErrors = new BagArray ();
+                    validateParameters(query, strict, parameterSpecification, validationErrors);
 
-                    if (strict) {
-                        // loop over the query parameters to be sure they are all valid
-                        String[] queryParameters = query.keys ();
-                        for (int i = 0; i < queryParameters.length; ++i) {
-                            String queryParameter = queryParameters[i];
-                            if (!queryParameter.equals (EVENT)) {
-                                if ((parameterSpecification == null) || (!parameterSpecification.has (queryParameter))) {
-                                    validationErrors.add ("Unspecified parameter: '" + queryParameter + "'");
-                                }
-                            }
-                        }
-                    }
-
-                    // loop over the parameter specification to be sure all of the required ones are present
-                    if (parameterSpecification != null) {
-                        String[] expectedParameters = parameterSpecification.keys ();
-                        for (int i = 0; i < expectedParameters.length; ++i) {
-                            String expectedParameter = expectedParameters[i];
-                            if (parameterSpecification.getBoolean (Key.cat (expectedParameter, REQUIRED), () -> false)) {
-                                if (!query.has (expectedParameter)) {
-                                    validationErrors.add ("Missing required parameter: '" + expectedParameter + "'");
+                    // validate the post-data parameters (if any)
+                    if ((parameterSpecification != null) && query.has(POST_DATA)) {
+                        // check to see if there is a parameter specification for the post data
+                        BagObject postDataEventSpecification = parameterSpecification.getBagObject(POST_DATA);
+                        if (postDataEventSpecification != null) {
+                            strict = postDataEventSpecification.getBoolean(STRICT, () -> true);
+                            BagObject postDataParameterSpecification = postDataEventSpecification.getBagObject(PARAMETERS);
+                            if (postDataParameterSpecification != null) {
+                                // if post data is an array - iterate over all of them
+                                BagArray queryPostDataArray = query.getBagArray(POST_DATA);
+                                if (queryPostDataArray != null) {
+                                    for (int i = 0, end = queryPostDataArray.getCount(); i < end; ++i) {
+                                        BagObject queryPostData = queryPostDataArray.getBagObject(i);
+                                        validateParameters(queryPostData, strict, postDataParameterSpecification, validationErrors);
+                                    }
+                                } else {
+                                    BagObject queryPostData = query.getBagObject(POST_DATA);
+                                    validateParameters(queryPostData, strict, postDataParameterSpecification, validationErrors);
                                 }
                             }
                         }
