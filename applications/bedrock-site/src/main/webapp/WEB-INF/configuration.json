@@ -46,6 +46,13 @@
                 "strict": false,
                 "example": { "param1": "xxx", "param2": "yyy" }
             },
+            "echo-post": {
+                "description": "Repeat the contents of the post-data.",
+                "strict": true,
+                "parameters": {
+                    "post-data": { "description": "POST data to be echoed.", "required": true, "strict": false}
+                }
+            },
             "fetch": {
                 "description": "Return the content response from a requested URL.",
                 "parameters": {

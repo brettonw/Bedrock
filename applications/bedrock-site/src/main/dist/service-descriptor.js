@@ -76,6 +76,11 @@ Bedrock.ServiceDescriptor = function () {
                 }
 
                 let odd;
+                let evenOddTitle = function (title) {
+                    odd = true;
+                    eventHTML += div ("even-odd-title", title);
+                    return odd;
+                };
                 let evenOdd = function (title, object) {
                     odd = true;
                     let names = Object.keys (object);
@@ -99,10 +104,30 @@ Bedrock.ServiceDescriptor = function () {
                 }
 
                 if (("strict" in event) && (event.strict == "false")) {
+                    if (! ("parameters" in event)) {
+                        evenOddTitle ("Parameters:");
+                    }
                     eventHTML += div ("even-odd-div" + (odd ? " odd" : ""),
                         div ("even-odd-name", "(any)") +
                         div ("even-odd-required", "OPTIONAL") +
                         div ("even-odd-description", "Event allows unspecified parameters."));
+                }
+
+                if (("parameters" in event) && ("post-data" in event.parameters)) {
+                    let postData = event.parameters["post-data"];
+                    if ("parameters" in postData) {
+                        evenOdd("Post Data:", postData.parameters);
+                    }
+
+                    if (("strict" in postData) && (postData.strict == "false")) {
+                        if (! ("parameters" in postData)) {
+                            evenOddTitle ("Post Data:");
+                        }
+                        eventHTML += div ("even-odd-div" + (odd ? " odd" : ""),
+                            div ("even-odd-name", "(any)") +
+                            div ("even-odd-required", "OPTIONAL") +
+                            div ("even-odd-description", "Event allows unspecified parameters."));
+                    }
                 }
 
                 if ("returns" in event) {

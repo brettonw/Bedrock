@@ -33,6 +33,22 @@ public class Service extends Base {
         event.respond (new BagArray ().add (event.getQuery ()));
     }
 
+    public void handleEventEchoPost (Event event) {
+        BagObject query = event.getQuery ();
+        // get the post data
+        Bag postData = query.getBagArray (POST_DATA);
+        if (postData == null) {
+            postData = query.getBagObject (POST_DATA);
+        }
+
+        // if we got valid post data...
+        if (postData != null) {
+            event.respond (postData);
+        } else {
+            event.error ("Invalid post data");
+        }
+    }
+
     public void handleEventIp (Event event) {
         HttpServletRequest request = event.getRequest ();
         String ip = request.getRemoteAddr ();
@@ -94,7 +110,6 @@ public class Service extends Base {
     }
 
     public void handleEventFetch (Event event) {
-        event.error ("NYI");
         try {
             // decode the URL
             String urlString = unescapeUrl (event.getQuery ().getString (FETCH_URL));
@@ -128,5 +143,4 @@ public class Service extends Base {
             event.error ("Fetch FAILURE (" + exception.toString () + ")");
         }
     }
-
 }
