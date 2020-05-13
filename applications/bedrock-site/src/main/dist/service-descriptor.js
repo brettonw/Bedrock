@@ -80,7 +80,7 @@ Bedrock.ServiceDescriptor = function () {
                         eventHTML += div ("even-odd-title", title);
                         for (let name of names) {
                             let element = object[name];
-                            let required = ("required" in element) ? element.required : false;
+                            let required = ("required" in element) ? (element.required === "true") : false;
                             eventHTML += div ("even-odd-div" + (odd ? " odd" : ""),
                                 div ("even-odd-name", name) +
                                 div ("even-odd-required", required ? "REQUIRED" : "OPTIONAL") +
@@ -97,7 +97,7 @@ Bedrock.ServiceDescriptor = function () {
                         evenOdd (title, object.parameters);
                     }
 
-                    if (("strict" in object) && (object.strict == "false")) {
+                    if (("strict" in object) && (object.strict === "false")) {
                         if (! ("parameters" in object)) {
                             evenOddTitle (title);
                         }
