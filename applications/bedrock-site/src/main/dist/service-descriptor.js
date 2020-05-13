@@ -136,7 +136,11 @@ Bedrock.ServiceDescriptor = function () {
                         if (response.length > 0) {
                             evenOdd("Response (Array):", response[0]);
                         } else {
-                            eventHTML += div ("even-odd-title", "Response: Array");
+                            evenOddTitle ("Response (Array):");
+                            eventHTML += div ("even-odd-div" + (odd ? " odd" : ""),
+                                div ("even-odd-name", "(any)") +
+                                div ("even-odd-required", "OPTIONAL") +
+                                div ("even-odd-description", "Unspecified."));
                         }
                     } else {
                         evenOdd("Response:", response);
