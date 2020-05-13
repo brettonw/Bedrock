@@ -20,6 +20,10 @@ let div = function (cssClass, content) {
     return block ("div", { "class": cssClass }, content);
 };
 
+let a = function (cssClass, href, content) {
+    return block ("a", { "class": cssClass, "href": href, "target": "_top" }, content);
+};
+
 Bedrock.Html = function () {
     let $ = Object.create (null);
 

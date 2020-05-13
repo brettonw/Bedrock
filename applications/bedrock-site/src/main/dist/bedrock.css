@@ -466,6 +466,7 @@ input[type=checkbox].form-input {
     float: right;
     line-height: 12px;
     vertical-align: top;
+    color: blue;
 }
 
 .event-description {
@@ -518,4 +519,32 @@ input[type=checkbox].form-input {
     color: #888;
     font-size: 10px;
     text-decoration: none;
+}
+
+div[id="bedrock-service-descriptor-hover-box"] {
+    z-index: 100;
+    width: 100%;
+    max-width: 900px;
+    height: 60%;
+    position: fixed;
+    top: 50px;
+    opacity: 0.95;
+    padding: 30px;
+    visibility: hidden;
+    background-color: transparent;
+}
+
+div[id="bedrock-service-descriptor-hover-box-buffer"] {
+    width: calc(100% - 60px);
+    height: 100%;
+    margin: auto;
+    background-color: white;
+    padding: 15px;
+    overflow: scroll;
+    border-width: 2px;
+    border-color: darkblue;
+    border-style: solid;
+}
+
+pre[id="bedrock-service-descriptor-hover-box-content"] {
 }

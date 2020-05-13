@@ -1,32 +1,6 @@
 Bedrock.ServiceDescriptor = function () {
     let $ = Object.create (null);
 
-    // Helper functions for emitting HTML from Javascript
-    let valid = function (value = null) {
-        return (value !== null);
-    };
-
-    let block = function (block, attributes, content) {
-        let result = "<" + block;
-        if (valid (attributes)) {
-            let attributeNames = Object.keys (attributes);
-            for (let attributeName of attributeNames) {
-                if (valid (attributes[attributeName])) {
-                    result += " " + attributeName + "=\"" + attributes[attributeName] + "\"";
-                }
-            }
-        }
-        return result + (valid (content) ? (">" + content + "</" + block + ">") : ("/>"));
-    };
-
-    let div = function (cssClass, content) {
-        return block ("div", { "class": cssClass }, content);
-    };
-
-    let a = function (cssClass, href, content) {
-        return block ("a", { "class": cssClass, "href": href, "target": "_top" }, content);
-    };
-
     $.get = function (queryString, onSuccess) {
         let request = new XMLHttpRequest ();
         request.overrideMimeType ("application/json");
@@ -38,6 +12,30 @@ Bedrock.ServiceDescriptor = function () {
             }
         };
         request.send ();
+    };
+
+    $.tryExample = function (exampleName) {
+        Bedrock.ServiceBase.get ({ event : "help" }, function (response) {
+            // get the example and explicitly set the event in it (it's typically omitted for simplicity in the configurations)
+            let example = response.events[exampleName].example;
+            example.event = exampleName;
+
+            let handleExampleResponse = function (exampleResponse) {
+                document.getElementById ("bedrock-service-descriptor-hover-box").style.visibility = "visible";
+                document.getElementById ("bedrock-service-descriptor-hover-box-content").innerHTML = JSON.stringify (exampleResponse, null, 4);
+            };
+
+            // if the example includes post data...
+            if ("post-data" in example) {
+                // separate the post data and issue the example request as a post
+                let postData = JSON.stringify (example["post-data"]);
+                delete example["post-data"];
+                Bedrock.Http.post (Bedrock.ServiceBase.getQuery (example), postData, handleExampleResponse);
+            } else {
+                // issue the example request as a get
+                Bedrock.Http.get(Bedrock.ServiceBase.getQuery (example), handleExampleResponse);
+            }
+        });
     };
 
     $.displaySpecification = function (specification) {
@@ -59,14 +57,7 @@ Bedrock.ServiceDescriptor = function () {
 
                 // if there is an example
                 if ("example" in event) {
-                    let url = "api?event=" + eventName;
-                    let example = event.example;
-                    let exampleKeys = Object.keys (example).sort ();
-                    for (let exampleKey of exampleKeys) {
-                        url += "&" + exampleKey + "=" + example[exampleKey];
-                    }
-                    //eventHTML = a ("try-it", url, " (" + url.replace (/&/g, "&amp;") + ")");
-                    eventHTML = a ("try-it", url, "[example]");
+                    eventHTML = block ("div", { class: "try-it", onclick: 'Bedrock.ServiceDescriptor.tryExample (&quot;' + eventName + '&quot;);' }, "[example]");
                 }
                 eventHTML = div ("event-name", eventName + eventHTML);
 
@@ -158,14 +149,26 @@ Bedrock.ServiceDescriptor = function () {
         }
         innerHTML += div ("content-center footer", "Built with " + a ("footer-link", "http://bedrock.brettonw.com", "Bedrock"));
 
+        // now add a floating pane that is invisible and install the click handler to hide it
+        innerHTML +=
+            block ("div", { id: "bedrock-service-descriptor-hover-box" },
+                block ("div", {id: "bedrock-service-descriptor-hover-box-buffer"},
+                    block("pre", {id: "bedrock-service-descriptor-hover-box-content"},"")
+                )
+            );
+        document.addEventListener('click', function(event) {
+            let hoverBoxElement = document.getElementById ("bedrock-service-descriptor-hover-box");
+            if (!hoverBoxElement.contains(event.target)) {
+                hoverBoxElement.style.visibility = "hidden";
+            }
+        });
+
         return innerHTML;
     };
 
     // a little black raincloud, of course
-    const API_EVENT_HELP = "api?event=help";
-    $.display = function (displayInDivId, url = API_EVENT_HELP) {
-        $.get (url, function (response) {
-            // if we retrieved the api.json from the service base, get the actual response
+    $.display = function (displayInDivId) {
+        Bedrock.ServiceBase.get ({event: "help"}, function (response) {
             response = (response.response !== undefined) ? response.response : response;
             document.getElementById(displayInDivId).innerHTML = Bedrock.ServiceDescriptor.displaySpecification (response);
         });
@@ -201,12 +204,14 @@ Bedrock.ServiceDescriptor = function () {
         }
     };
 
+    // create a client side object with all of the api's
     $.api = function (onSuccess, baseUrl = "", apiSource = "") {
         // condition the inputs
         baseUrl = (baseUrl === "") ? location.href.substr(0,location.href.lastIndexOf("/")) : baseUrl;
         baseUrl = baseUrl.replace (/\/$/g, "");
 
         // get the api
+        const API_EVENT_HELP = "api?event=help";
         let url = (apiSource === "") ? (baseUrl + "/" + API_EVENT_HELP) : apiSource;
         $.get (url, function (response) {
             // if we retrieved the api.json from the service base, get the actual response

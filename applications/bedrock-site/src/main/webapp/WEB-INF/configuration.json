@@ -39,6 +39,9 @@
                 "strict": true,
                 "parameters": {
                     "post-data": { "description": "POST data to be echoed.", "required": true, "strict": false}
+                },
+                "example": {
+                    "post-data": { "param1": "xxx", "param2": "yyy" }
                 }
             },
             "fetch": {

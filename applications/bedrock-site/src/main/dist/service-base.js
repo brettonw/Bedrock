@@ -25,5 +25,18 @@ Bedrock.ServiceBase = function () {
         $.getFromQuery ($.getQuery (parameters), onSuccess);
     };
 
+    $.postFromQuery = function (query, postData, onSuccess) {
+        Bedrock.Http.post (query, postData, function (response) {
+            LOG (INFO, query + " (status: " + response.status + ")");
+            if (response.status === "ok") {
+                onSuccess (response.response);
+            }
+        });
+    };
+
+    $.post = function (parameters, onSuccess) {
+        $.postromQuery ($.getQuery (parameters), postData, onSuccess);
+    };
+
     return $;
 } ();
