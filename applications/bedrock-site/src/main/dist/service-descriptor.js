@@ -125,21 +125,21 @@ Bedrock.ServiceDescriptor = function () {
                     listParameters ("Post Data:", event.parameters["post-data"]);
                 }
 
-                // returns
-                if ("returns" in event) {
-                    let returns = event.returns;
+                // response
+                if ("response" in event) {
+                    let response = event.response;
                     // return specification might be an array, indicating this event returns an
                     // array of something
-                    if (Array.isArray(returns)) {
+                    if (Array.isArray(response)) {
                         // return specification might be an empty array, or an array with a single
                         // proto object
-                        if (returns.length > 0) {
-                            evenOdd("Returns Array of:", returns[0]);
+                        if (response.length > 0) {
+                            evenOdd("Response (Array):", response[0]);
                         } else {
                             eventHTML += div ("even-odd-title", "Returns: Array");
                         }
                     } else {
-                        evenOdd("Returns:", returns);
+                        evenOdd("Response:", response);
                     }
                 }
 

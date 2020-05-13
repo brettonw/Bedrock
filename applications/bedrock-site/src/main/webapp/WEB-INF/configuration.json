@@ -9,14 +9,14 @@
             },
             "ip": {
                 "description": "Return the IP address of the requestor.",
-                "returns": {
+                "reponse": {
                     "ip": { "description": "IP (v4) address of the requestor.", "required": true }
                 },
                 "example": {}
             },
             "headers": {
                 "description": "Return the request headers.",
-                "returns": {
+                "reponse": {
                     "host": { "description":"Name of the host the request is to." },
                     "user-agent": { "description":"Browser user agent." }
                 },
@@ -44,7 +44,7 @@
                 "parameters": {
                     "url": { "description": "Site URL to fetch. The URL may need to be 'escaped' if it contains special characters. Use the unicode hexadecimal equivalent for certain special characters, such as '%3d' for '='.", "required":  true }
                 },
-                "returns": {
+                "reponse": {
                     "content": {"description": "Content response from requested site, escaped appropriately.", "required": true},
                     "mime-type": {"description": "MIME type of the content.", "required": true},
                     "escape-type": {"description": "Method of escaping/encoding content response to enable it to be enclosed in a JSON tag.", "required": true}
