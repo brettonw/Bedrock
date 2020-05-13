@@ -34,7 +34,7 @@ Bedrock.ServiceBase = function () {
         });
     };
 
-    $.post = function (parameters, onSuccess) {
+    $.post = function (parameters, postData, onSuccess) {
         $.postromQuery ($.getQuery (parameters), postData, onSuccess);
     };
 
