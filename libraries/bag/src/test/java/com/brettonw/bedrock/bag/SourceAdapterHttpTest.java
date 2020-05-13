@@ -24,7 +24,7 @@ public class SourceAdapterHttpTest {
                     .put ("login", "brettonw")
                     .put ("First Name", "Bretton")
                     .put ("Last Name", "Wade");
-            SourceAdapter sourceAdapter = new SourceAdapterHttp ("https://bedrock.brettonw.com/api?event=post-data", bagObject, MimeType.JSON);
+            SourceAdapter sourceAdapter = new SourceAdapterHttp ("https://bedrock.brettonw.com/api?event=echo-post", bagObject, MimeType.JSON);
             BagObject responseBagObject = BagObjectFrom.string (sourceAdapter.getStringData (), sourceAdapter.getMimeType ());
             BagTest.report (responseBagObject.getString ("login"), "brettonw", "Got a valid response");
         } catch (IOException exception ){
