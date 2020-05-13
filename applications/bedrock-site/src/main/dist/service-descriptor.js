@@ -81,6 +81,7 @@ Bedrock.ServiceDescriptor = function () {
                     eventHTML += div ("even-odd-title", title);
                     return odd;
                 };
+
                 let evenOdd = function (title, object) {
                     odd = true;
                     let names = Object.keys (object);
@@ -99,37 +100,32 @@ Bedrock.ServiceDescriptor = function () {
                     return odd;
                 };
 
-                if ("parameters" in event) {
-                    evenOdd ("Parameters:", event.parameters);
-                }
-
-                if (("strict" in event) && (event.strict == "false")) {
-                    if (! ("parameters" in event)) {
-                        evenOddTitle ("Parameters:");
-                    }
-                    eventHTML += div ("even-odd-div" + (odd ? " odd" : ""),
-                        div ("even-odd-name", "(any)") +
-                        div ("even-odd-required", "OPTIONAL") +
-                        div ("even-odd-description", "Event allows unspecified parameters."));
-                }
-
-                if (("parameters" in event) && ("post-data" in event.parameters)) {
-                    let postData = event.parameters["post-data"];
-                    if ("parameters" in postData) {
-                        evenOdd("Post Data:", postData.parameters);
+                let listParameters = function (title, object) {
+                    // parameters
+                    if ("parameters" in object) {
+                        evenOdd (title, object.parameters);
                     }
 
-                    if (("strict" in postData) && (postData.strict == "false")) {
-                        if (! ("parameters" in postData)) {
-                            evenOddTitle ("Post Data:");
+                    if (("strict" in object) && (object.strict == "false")) {
+                        if (! ("parameters" in object)) {
+                            evenOddTitle (title);
                         }
                         eventHTML += div ("even-odd-div" + (odd ? " odd" : ""),
                             div ("even-odd-name", "(any)") +
                             div ("even-odd-required", "OPTIONAL") +
                             div ("even-odd-description", "Event allows unspecified parameters."));
                     }
+                };
+
+                // parameters
+                listParameters ("Parameters:", event);
+
+                // post-data
+                if (("parameters" in event) && ("post-data" in event.parameters)) {
+                    listParameters ("Post Data:", event.parameters["post-data"]);
                 }
 
+                // returns
                 if ("returns" in event) {
                     let returns = event.returns;
                     // return specification might be an array, indicating this event returns an
