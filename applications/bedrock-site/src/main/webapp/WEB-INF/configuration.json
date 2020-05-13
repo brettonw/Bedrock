@@ -14,12 +14,6 @@
                 },
                 "example": {}
             },
-            "post-data": {
-                "parameters": {
-                    "post-data": {"description": "POST data to be echoed.", "required": true, "strict": false}
-                },
-                "description": "Echo the contents of the post data."
-            },
             "headers": {
                 "description": "Return the request headers.",
                 "returns": {

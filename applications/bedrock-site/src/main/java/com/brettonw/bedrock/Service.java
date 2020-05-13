@@ -78,22 +78,6 @@ public class Service extends Base {
         event.ok (responseBagObject);
     }
 
-    public void handleEventPostData (Event event) {
-        BagObject query = event.getQuery ();
-        // get the post data
-        Bag postData = query.getBagArray (POST_DATA);
-        if (postData == null) {
-            postData = query.getBagObject (POST_DATA);
-        }
-
-        // if we got valid post data...
-        if (postData != null) {
-            event.respond (postData);
-        } else {
-            event.error ("Invalid post data");
-        }
-    }
-
     private String unescapeUrl (String urlString) {
         Pattern pattern = Pattern.compile ("[^\\\\]%[0-9a-fA-F]{2}");
         Matcher matcher = pattern.matcher (urlString);
