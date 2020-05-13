@@ -2,15 +2,16 @@
     "description": "Bootstrap - This service was started without a schema. The following events are supported:",
     "events": {
         "version": {
-            "description": "Return the build version for the current WAR.",
+            "description": "Get the build version for the current WAR.",
+            "strict": true,
             "response": {
-                "display-name": {"description": "The display name of the service.", "required": true},
+                "display-name": {"description": "Display name of the service.", "required": true},
                 "pom-version": {"description": "Build Version Number, e.g. '1.0.0'.", "required": true}
             },
             "example": {}
         },
         "ok": {
-            "description": "Ok.",
+            "description": "Get an empty response, with status Ok.",
             "strict": false,
             "example": {}
         },
