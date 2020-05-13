@@ -3,7 +3,7 @@
 
     <groupId>com.brettonw.bedrock</groupId>
     <artifactId>bedrock</artifactId>
-    <version>1.5.11-SNAPSHOT</version>
+    <version>1.5.11</version>
     <packaging>pom</packaging>
 
     <name>Bedrock</name>
