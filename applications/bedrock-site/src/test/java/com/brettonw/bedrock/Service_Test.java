@@ -19,6 +19,7 @@ public class Service_Test extends Service {
     public static final String HEADERS = "headers";
     public static final String FETCH = "fetch";
     public static final String ECHO_ARRAY = "echo-array";
+    public static final String ECHO_POST = "echo-post";
 
     Tester tester;
 
@@ -51,13 +52,6 @@ public class Service_Test extends Service {
     }
 
     @Test
-    public void testGetPostData () throws IOException {
-        BagObject query = BagObject.open (EVENT, POST_DATA);
-        BagObject response = tester.bagObjectFromGet (query);
-        assertTrue (response.getString (STATUS).equals (ERROR));
-    }
-
-    @Test
     public void testPostEcho () throws IOException {
         BagObject query = BagObject.open (EVENT, ECHO);
         BagObject postData = BagObjectFrom.resource (getClass (), "/testPost.json");
@@ -67,8 +61,15 @@ public class Service_Test extends Service {
     }
 
     @Test
-    public void testPostPostData () throws IOException {
-        BagObject query = BagObject.open (EVENT, POST_DATA);
+    public void testGetEchoPost () throws IOException {
+        BagObject query = BagObject.open (EVENT, ECHO_POST);
+        BagObject response = tester.bagObjectFromGet (query);
+        assertTrue (response.getString (STATUS).equals (ERROR));
+    }
+
+    @Test
+    public void testPostEchoPost () throws IOException {
+        BagObject query = BagObject.open (EVENT, ECHO_POST);
         BagObject postData = BagObjectFrom.resource (getClass (), "/testPost.json");
         BagObject response = tester.bagObjectFromPost (query, postData);
         assertTrue (response.equals (postData));
