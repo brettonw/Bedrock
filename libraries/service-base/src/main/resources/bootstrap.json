@@ -3,7 +3,7 @@
     "events": {
         "version": {
             "description": "Return the build version for the current WAR.",
-            "reponse": {
+            "response": {
                 "display-name": {"description": "The display name of the service.", "required": true},
                 "pom-version": {"description": "Build Version Number, e.g. '1.0.0'.", "required": true}
             },

@@ -1,6 +1,11 @@
 {
     "description": "Get the schema description.",
-    "strict": false,
+    "strict": true,
+    "response": {
+        "name": {"description": "Display name of the service.", "required": true},
+        "description": {"description": "Short description of the service.", "required": true},
+        "events": {"description": "Events the service responds to.", "required": true}
+    },
     "example": {}
 }
 

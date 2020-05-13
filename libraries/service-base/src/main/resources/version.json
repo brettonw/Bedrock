@@ -1,6 +1,6 @@
 {
-    "description": "Return the build version for the current WAR.",
-    "strict": false,
+    "description": "Get the build version for the current WAR.",
+    "strict": true,
     "response": {
         "display-name": {"description": "Display name of the service.", "required": true},
         "pom-version": {"description": "Build Version Number, e.g. '1.0.0'.", "required": true}
