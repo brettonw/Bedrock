@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.brettonw.bedrock</groupId>
         <artifactId>bedrock</artifactId>
-        <version>1.5.20</version>
+        <version>1.5.21-SNAPSHOT</version>
     </parent>
 
     <artifactId>applications</artifactId>
