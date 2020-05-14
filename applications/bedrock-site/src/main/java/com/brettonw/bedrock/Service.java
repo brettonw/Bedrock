@@ -50,20 +50,7 @@ public class Service extends Base {
     }
 
     public void handleEventIp (Event event) {
-        HttpServletRequest request = event.getRequest ();
-        String ip = request.getRemoteAddr ();
-        if (ip.startsWith ("127") || ip.startsWith ("0")) {
-            // try to get the x-forwarded header, the last one...
-            String forwarding = request.getHeader ("x-forwarded-for");
-            if (forwarding != null) {
-                String[] forwards = forwarding.split (",");
-                for (String forward : forwards) {
-                    forward = forward.trim ();
-                    ip = forward.split (":")[0];
-                }
-            }
-        }
-        event.ok (BagObject.open (IP, ip));
+        event.ok (BagObject.open (IP, getIpAddress (event)));
     }
 
     public void handleEventHeaders (Event event) {

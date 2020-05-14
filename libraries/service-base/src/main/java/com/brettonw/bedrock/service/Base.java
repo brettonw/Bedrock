@@ -71,6 +71,23 @@ public class Base extends HttpServlet {
         return Base.class.getPackage ().getImplementationVersion ();
     }
 
+    public static String getIpAddress (Event event) {
+        HttpServletRequest request = event.getRequest ();
+        String ipAddress = request.getRemoteAddr ();
+
+        // try to get the x-forwarded header, the last one...
+        String forwarding = request.getHeader ("x-forwarded-for");
+        if (forwarding != null) {
+            String[] forwards = forwarding.split (",");
+            for (String forward : forwards) {
+                forward = forward.trim ();
+                ipAddress = forward.split (":")[0];
+            }
+        }
+
+        return ipAddress;
+    }
+
     private final Map<String, Handler> handlers = new HashMap<> ();
 
     private String configurationResourcePath = "/WEB-INF/configuration.json";
