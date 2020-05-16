@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.brettonw.bedrock</groupId>
         <artifactId>libraries</artifactId>
-        <version>1.5.24</version>
+        <version>1.5.25-SNAPSHOT</version>
     </parent>
 
     <artifactId>servlet-tester</artifactId>
