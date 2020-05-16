@@ -1,6 +1,6 @@
 package com.brettonw.bedrock.bag;
 
-enum SortOrder {
+public enum SortOrder {
     ASCENDING,
     DESCENDING
 }

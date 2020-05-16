@@ -53,92 +53,98 @@ Bedrock.ServiceDescriptor = function () {
             let eventsHTML = "";
             for (let eventName of eventNames) {
                 let event = events[eventName];
-                let eventHTML = "";
 
-                // if there is an example
-                if ("example" in event) {
-                    eventHTML = block ("div", { class: "try-it", onclick: 'Bedrock.ServiceDescriptor.tryExample (&quot;' + eventName + '&quot;);' }, "[example]");
-                }
-                eventHTML = div ("event-name", eventName + eventHTML);
+                // events are assumed to be published, but if they have a p"published: false"
+                // attribute, we will skip it
+                if (! (("published" in event) && ((event.published === false) || (event.published === "false")))) {
 
-                // if there is a description
-                if ("description" in event) {
-                    eventHTML += div ("event-description", event.description);
-                }
+                    let eventHTML = "";
 
-                let odd;
-                let evenOddTitle = function (title) {
-                    odd = true;
-                    eventHTML += div ("even-odd-title", title);
-                    return odd;
-                };
+                    // if there is an example
+                    if ("example" in event) {
+                        eventHTML = block ("div", { class: "try-it", onclick: 'Bedrock.ServiceDescriptor.tryExample (&quot;' + eventName + '&quot;);' }, "[example]");
+                    }
+                    eventHTML = div ("event-name", eventName + eventHTML);
 
-                let evenOdd = function (title, object) {
-                    odd = true;
-                    let names = Object.keys (object);
-                    if (names.length > 0) {
+                    // if there is a description
+                    if ("description" in event) {
+                        eventHTML += div ("event-description", event.description);
+                    }
+
+                    let odd;
+                    let evenOddTitle = function (title) {
+                        odd = true;
                         eventHTML += div ("even-odd-title", title);
-                        for (let name of names) {
-                            let element = object[name];
-                            let required = ("required" in element) ? (element.required === "true") : false;
-                            eventHTML += div ("even-odd-div" + (odd ? " odd" : ""),
-                                div ("even-odd-name", name) +
-                                div ("even-odd-required", required ? "REQUIRED" : "OPTIONAL") +
-                                div ("even-odd-description", element.description));
-                            odd = !odd;
+                        return odd;
+                    };
+
+                    let evenOdd = function (title, object) {
+                        odd = true;
+                        let names = Object.keys (object);
+                        if (names.length > 0) {
+                            eventHTML += div ("even-odd-title", title);
+                            for (let name of names) {
+                                let element = object[name];
+                                let required = ("required" in element) ? ((element.required === true) || (element.required === "true")) : false;
+                                eventHTML += div ("even-odd-div" + (odd ? " odd" : ""),
+                                    div ("even-odd-name", name) +
+                                    div ("even-odd-required", required ? "REQUIRED" : "OPTIONAL") +
+                                    div ("even-odd-description", element.description));
+                                odd = !odd;
+                            }
                         }
-                    }
-                    return odd;
-                };
+                        return odd;
+                    };
 
-                let listParameters = function (title, object) {
-                    // parameters
-                    if ("parameters" in object) {
-                        evenOdd (title, object.parameters);
-                    }
-
-                    if (("strict" in object) && (object.strict === "false")) {
-                        if (! ("parameters" in object)) {
-                            evenOddTitle (title);
+                    let listParameters = function (title, object) {
+                        // parameters
+                        if ("parameters" in object) {
+                            evenOdd (title, object.parameters);
                         }
-                        eventHTML += div ("even-odd-div" + (odd ? " odd" : ""),
-                            div ("even-odd-name", "(any)") +
-                            div ("even-odd-required", "OPTIONAL") +
-                            div ("even-odd-description", "Event allows unspecified parameters."));
-                    }
-                };
 
-                // parameters
-                listParameters ("Parameters:", event);
-
-                // post-data
-                if (("parameters" in event) && ("post-data" in event.parameters)) {
-                    listParameters ("Post Data:", event.parameters["post-data"]);
-                }
-
-                // response
-                if ("response" in event) {
-                    let response = event.response;
-                    // return specification might be an array, indicating this event returns an
-                    // array of something
-                    if (Array.isArray(response)) {
-                        // return specification might be an empty array, or an array with a single
-                        // proto object
-                        if (response.length > 0) {
-                            evenOdd("Response (Array):", response[0]);
-                        } else {
-                            evenOddTitle ("Response (Array):");
+                        if (("strict" in object) && ((object.strict === false) || (object.strict === "false"))) {
+                            if (!("parameters" in object)) {
+                                evenOddTitle (title);
+                            }
                             eventHTML += div ("even-odd-div" + (odd ? " odd" : ""),
                                 div ("even-odd-name", "(any)") +
                                 div ("even-odd-required", "OPTIONAL") +
-                                div ("even-odd-description", "Unspecified."));
+                                div ("even-odd-description", "Event allows unspecified parameters."));
                         }
-                    } else {
-                        evenOdd("Response:", response);
-                    }
-                }
+                    };
 
-                eventsHTML += div ("event-div", eventHTML);
+                    // parameters
+                    listParameters ("Parameters:", event);
+
+                    // post-data
+                    if (("parameters" in event) && ("post-data" in event.parameters)) {
+                        listParameters ("Post Data:", event.parameters["post-data"]);
+                    }
+
+                    // response
+                    if ("response" in event) {
+                        let response = event.response;
+                        // return specification might be an array, indicating this event returns an
+                        // array of something
+                        if (Array.isArray (response)) {
+                            // return specification might be an empty array, or an array with a single
+                            // proto object
+                            if (response.length > 0) {
+                                evenOdd ("Response (Array):", response[0]);
+                            } else {
+                                evenOddTitle ("Response (Array):");
+                                eventHTML += div ("even-odd-div" + (odd ? " odd" : ""),
+                                    div ("even-odd-name", "(any)") +
+                                    div ("even-odd-required", "OPTIONAL") +
+                                    div ("even-odd-description", "Unspecified."));
+                            }
+                        } else {
+                            evenOdd ("Response:", response);
+                        }
+                    }
+
+                    eventsHTML += div ("event-div", eventHTML);
+                }
             }
             innerHTML += div("events-div", eventsHTML);
         }

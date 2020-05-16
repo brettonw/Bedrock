@@ -46,6 +46,7 @@
             },
             "fetch": {
                 "description": "Get the content response from a requested URL.",
+                "published": false,
                 "parameters": {
                     "url": { "description": "Site URL to fetch. The URL may need to be 'escaped' if it contains special characters. Use the unicode hexadecimal equivalent for certain special characters, such as '%3d' for '='.", "required":  true }
                 },
@@ -58,5 +59,4 @@
             }
         }
     }
-
 }
