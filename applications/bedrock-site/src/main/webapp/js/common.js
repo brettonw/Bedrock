@@ -39,4 +39,3 @@ let addImageIcon = function () {
 };
 
 setTimeout (addImageIcon, 0.1);
-</script>
