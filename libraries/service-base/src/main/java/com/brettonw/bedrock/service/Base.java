@@ -419,7 +419,7 @@ public class Base extends HttpServlet {
         event.ok ();
     }
 
-    public void handleEventLock (Event event) throws java.security.NoSuchAlgorithmException {
+    protected boolean checkSecret (Event event) {
         // get the post data
         BagObject query = event.getQuery ();
         String secret = event.getQuery ().getString (Key.cat (POST_DATA, SECRET));
@@ -447,17 +447,30 @@ public class Base extends HttpServlet {
         }
 
         // hash the secret
-        MessageDigest messageDigest = MessageDigest.getInstance ("SHA-512");
-        messageDigest.update (salt);
-        byte[] hashedSecret = messageDigest.digest (secret.getBytes (StandardCharsets.UTF_8));
+        byte[] hashedSecret = null;
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance ("SHA-512");
+            messageDigest.update (salt);
+            hashedSecret = messageDigest.digest (secret.getBytes (StandardCharsets.UTF_8));
+        } catch (Exception exception) {
+            log.error (exception);
+        }
 
         // check if the hashed secret and the target hash match...
-        if ((targetHash != null) && Arrays.equals(hashedSecret, targetHash)) {
+        if ((hashedSecret != null) && (targetHash != null) && Arrays.equals(hashedSecret, targetHash)) {
+            return true;
+        } else {
+            String hashedSecretEncoded = Base64.getEncoder ().encodeToString (hashedSecret);
+            log.info ("secret mismatch: (salt = '" + saltEncoded + "', hash = '" + hashedSecretEncoded + "')");
+            return false;
+        }
+    }
+
+    public void handleEventLock (Event event) {
+        if (checkSecret (event)) {
             locked = true;
             event.ok ();
         } else {
-            String hashedSecretEncoded = Base64.getEncoder ().encodeToString (hashedSecret);
-            log.error ("secret mismatch: (salt = '" + saltEncoded + "', hash = '" + hashedSecretEncoded + "')");
             event.error ("secret mismatch");
         }
     }

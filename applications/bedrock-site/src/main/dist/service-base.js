@@ -16,7 +16,7 @@ Bedrock.ServiceBase = function () {
         Bedrock.Http.get (query, function (response) {
             LOG (INFO, query + " (status: " + response.status + ")");
             if (response.status === "ok") {
-                onSuccess (response.response);
+                onSuccess (("response" in response) ? response.response : response.status);
             } else if (typeof (onFailure) !== "undefined") {
                 onFailure (response.error);
             } else {
