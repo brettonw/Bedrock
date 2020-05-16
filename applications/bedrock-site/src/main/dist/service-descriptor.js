@@ -35,6 +35,9 @@ Bedrock.ServiceDescriptor = function () {
                 // issue the example request as a get
                 Bedrock.Http.get(Bedrock.ServiceBase.getQuery (example), handleExampleResponse);
             }
+        }, function (error) {
+            document.getElementById ("bedrock-service-descriptor-hover-box").style.visibility = "visible";
+            document.getElementById ("bedrock-service-descriptor-hover-box-content").innerHTML = ("ERROR: " + error);
         });
     };
 

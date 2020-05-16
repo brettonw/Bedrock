@@ -15,7 +15,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,8 +50,12 @@ public class Base extends HttpServlet {
     public static final String STRICT = "strict";
     public static final String VERSION = "version";
     public static final String SCHEMA = "schema";
+    public static final String SECRET = "secret";
+    public static final String SALT = "salt";
+    public static final String HASH = "hash";
 
     private static ServletContext context;
+    private static boolean locked;
 
     public static ServletContext getContext () {
         return context;
@@ -219,6 +226,7 @@ public class Base extends HttpServlet {
     public void init (ServletConfig config) throws ServletException {
         super.init (config);
         context = config.getServletContext ();
+        locked = false;
         log.info ("STARTING " + getName () + " v." + getVersion () + " with Bedrock v." + getBedrockVersion ());
         setAttribute (SERVLET, this);
 
@@ -328,64 +336,68 @@ public class Base extends HttpServlet {
 
     private Event handleEvent (BagObject query, HttpServletRequest request) {
         Event event = new Event (query, request);
-        if (schema != null) {
-            // create the event object around the request parameters, and validate that it is
-            // a known event
-            String eventName = event.getEventName ();
-            if (eventName != null) {
-                BagObject eventSpecification = schema.getBagObject (Key.cat (EVENTS, eventName));
-                if (eventSpecification != null) {
-                    // validate the query parameters
-                    BagObject parameterSpecification = eventSpecification.getBagObject (PARAMETERS);
-                    boolean strict = eventSpecification.getBoolean (STRICT, () -> true);
-                    BagArray validationErrors = new BagArray ();
-                    validateParameters(query, strict, parameterSpecification, validationErrors);
+        if (! locked) {
+            if (schema != null) {
+                // create the event object around the request parameters, and validate that it is
+                // a known event
+                String eventName = event.getEventName ();
+                if (eventName != null) {
+                    BagObject eventSpecification = schema.getBagObject (Key.cat (EVENTS, eventName));
+                    if (eventSpecification != null) {
+                        // validate the query parameters
+                        BagObject parameterSpecification = eventSpecification.getBagObject (PARAMETERS);
+                        boolean strict = eventSpecification.getBoolean (STRICT, () -> true);
+                        BagArray validationErrors = new BagArray ();
+                        validateParameters (query, strict, parameterSpecification, validationErrors);
 
-                    // validate the post-data parameters (if any)
-                    if ((parameterSpecification != null) && query.has(POST_DATA)) {
-                        // check to see if there is a parameter specification for the post data
-                        BagObject postDataEventSpecification = parameterSpecification.getBagObject(POST_DATA);
-                        if (postDataEventSpecification != null) {
-                            strict = postDataEventSpecification.getBoolean(STRICT, () -> true);
-                            BagObject postDataParameterSpecification = postDataEventSpecification.getBagObject(PARAMETERS);
-                            if (postDataParameterSpecification != null) {
-                                // if post data is an array - iterate over all of them
-                                BagArray queryPostDataArray = query.getBagArray(POST_DATA);
-                                if (queryPostDataArray != null) {
-                                    for (int i = 0, end = queryPostDataArray.getCount(); i < end; ++i) {
-                                        BagObject queryPostData = queryPostDataArray.getBagObject(i);
-                                        validateParameters(queryPostData, strict, postDataParameterSpecification, validationErrors);
+                        // validate the post-data parameters (if any)
+                        if ((parameterSpecification != null) && query.has (POST_DATA)) {
+                            // check to see if there is a parameter specification for the post data
+                            BagObject postDataEventSpecification = parameterSpecification.getBagObject (POST_DATA);
+                            if (postDataEventSpecification != null) {
+                                strict = postDataEventSpecification.getBoolean (STRICT, () -> true);
+                                BagObject postDataParameterSpecification = postDataEventSpecification.getBagObject (PARAMETERS);
+                                if (postDataParameterSpecification != null) {
+                                    // if post data is an array - iterate over all of them
+                                    BagArray queryPostDataArray = query.getBagArray (POST_DATA);
+                                    if (queryPostDataArray != null) {
+                                        for (int i = 0, end = queryPostDataArray.getCount (); i < end; ++i) {
+                                            BagObject queryPostData = queryPostDataArray.getBagObject (i);
+                                            validateParameters (queryPostData, strict, postDataParameterSpecification, validationErrors);
+                                        }
+                                    } else {
+                                        BagObject queryPostData = query.getBagObject (POST_DATA);
+                                        validateParameters (queryPostData, strict, postDataParameterSpecification, validationErrors);
                                     }
-                                } else {
-                                    BagObject queryPostData = query.getBagObject(POST_DATA);
-                                    validateParameters(queryPostData, strict, postDataParameterSpecification, validationErrors);
                                 }
                             }
                         }
-                    }
 
-                    // if the validation passed
-                    if (validationErrors.getCount () == 0) {
-                        // get the handler, and try to take care of business...
-                        Handler handler = handlers.get (eventName);
-                        if (handler != null) {
-                            // finally, do your business
-                            handler.handle (event);
+                        // if the validation passed
+                        if (validationErrors.getCount () == 0) {
+                            // get the handler, and try to take care of business...
+                            Handler handler = handlers.get (eventName);
+                            if (handler != null) {
+                                // finally, do your business
+                                handler.handle (event);
+                            } else {
+                                event.error ("No handler installed for '" + EVENT + "' (" + eventName + ")");
+                            }
                         } else {
-                            event.error ("No handler installed for '" + EVENT + "' (" + eventName + ")");
+                            event.error (validationErrors);
                         }
                     } else {
-                        event.error (validationErrors);
+                        event.error ("Unknown '" + EVENT + "' (" + eventName + ")");
                     }
                 } else {
-                    event.error ("Unknown '" + EVENT + "' (" + eventName + ")");
+                    event.error ("Missing '" + EVENT + "'");
                 }
             } else {
-                event.error ("Missing '" + EVENT + "'");
+                // XXX what are the circumstances under which this happens? I ask because it shouldn't
+                event.error ("Missing API");
             }
         } else {
-            // XXX what are the circumstances under which this happens? I ask because it shouldn't
-            event.error ("Missing API");
+            event.error ("Instance locked");
         }
         return event;
     }
@@ -405,6 +417,49 @@ public class Base extends HttpServlet {
     // default handlers
     public void handleEventOk (Event event) {
         event.ok ();
+    }
+
+    public void handleEventLock (Event event) throws java.security.NoSuchAlgorithmException {
+        // get the post data
+        BagObject query = event.getQuery ();
+        String secret = event.getQuery ().getString (Key.cat (POST_DATA, SECRET));
+
+        // get the secret recipe, and either use the salt provided or make one - if we make one, it's
+        // because the server configuration doesn't have a secret, and we are going to use the error
+        // response to set it up...
+        BagObject secretRecipe = configuration.getBagObject (SECRET);
+        byte[] salt;
+        String saltEncoded = secretRecipe.getString (SALT);
+        if ((saltEncoded != null) && (saltEncoded.trim().length () > 0)) {
+            salt = Base64.getDecoder ().decode (saltEncoded);
+        } else {
+            SecureRandom random = new SecureRandom();
+            salt = new byte[16];
+            random.nextBytes(salt);
+            saltEncoded = Base64.getEncoder ().encodeToString (salt);
+        }
+
+        // extract the target hash
+        byte[] targetHash = null;
+        String targetHashEncoded = secretRecipe.getString (HASH);
+        if ((targetHashEncoded != null) && (targetHashEncoded.trim().length () > 0)) {
+            targetHash = Base64.getDecoder ().decode (targetHashEncoded);
+        }
+
+        // hash the secret
+        MessageDigest messageDigest = MessageDigest.getInstance ("SHA-512");
+        messageDigest.update (salt);
+        byte[] hashedSecret = messageDigest.digest (secret.getBytes (StandardCharsets.UTF_8));
+
+        // check if the hashed secret and the target hash match...
+        if ((targetHash != null) && Arrays.equals(hashedSecret, targetHash)) {
+            locked = true;
+            event.ok ();
+        } else {
+            String hashedSecretEncoded = Base64.getEncoder ().encodeToString (hashedSecret);
+            log.error ("secret mismatch: (salt = '" + saltEncoded + "', hash = '" + hashedSecretEncoded + "')");
+            event.error ("secret mismatch");
+        }
     }
 
     public void handleEventHelp (Event event) {

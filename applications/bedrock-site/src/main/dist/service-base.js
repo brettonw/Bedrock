@@ -12,30 +12,40 @@ Bedrock.ServiceBase = function () {
         return query;
     };
 
-    $.getFromQuery = function (query, onSuccess) {
+    $.getFromQuery = function (query, onSuccess, onFailure) {
         Bedrock.Http.get (query, function (response) {
             LOG (INFO, query + " (status: " + response.status + ")");
             if (response.status === "ok") {
                 onSuccess (response.response);
+            } else if (typeof (onFailure) !== "undefined") {
+                onFailure (response.error);
+            } else {
+                // default on failure, alert...
+                alert (JSON.stringify(response, null, 4));
             }
         });
     };
 
-    $.get = function (parameters, onSuccess) {
-        $.getFromQuery ($.getQuery (parameters), onSuccess);
+    $.get = function (parameters, onSuccess, onFailure) {
+        $.getFromQuery ($.getQuery (parameters), onSuccess, onFailure);
     };
 
-    $.postFromQuery = function (query, postData, onSuccess) {
+    $.postFromQuery = function (query, postData, onSuccess, onFailure) {
         Bedrock.Http.post (query, postData, function (response) {
             LOG (INFO, query + " (status: " + response.status + ")");
             if (response.status === "ok") {
                 onSuccess (response.response);
+            } else if (typeof (onFailure) !== "undefined") {
+                onFailure (response.error);
+            } else {
+                // default on failure, alert...
+                alert (JSON.stringify(response, null, 4));
             }
         });
     };
 
-    $.post = function (parameters, postData, onSuccess) {
-        $.postFromQuery ($.getQuery (parameters), postData, onSuccess);
+    $.post = function (parameters, postData, onSuccess, onFailure) {
+        $.postFromQuery ($.getQuery (parameters), postData, onSuccess, onFailure);
     };
 
     return $;

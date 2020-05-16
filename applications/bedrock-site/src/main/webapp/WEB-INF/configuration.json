@@ -8,6 +8,23 @@
                 "strict": false,
                 "example": {}
             },
+            "lock": {
+                "description": "Lock the server.",
+                "strict": true,
+                "parameters": {
+                    "post-data": {
+                        "description": "POST data for security.",
+                        "required": true,
+                        "strict": true,
+                        "parameters": {
+                            "secret": { "description": "The secret used to verify the lock", "required":  true }
+                        }
+                    }
+                },
+                "example": {
+                    "post-data": { "secret": "xxxx1234" }
+                }
+            },
             "ip": {
                 "description": "Get the IP address of the requestor.",
                 "response": {
@@ -58,5 +75,9 @@
                 "example": { "url": "https://bedrock.brettonw.com/api?event%3dok" }
             }
         }
+    },
+    "secret": {
+        "salt": "",
+        "hash": ""
     }
 }
