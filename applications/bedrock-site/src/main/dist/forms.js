@@ -56,28 +56,12 @@ Bedrock.Forms = function () {
             // and the input element depending on the type
             let inputElementId = formName + "-" + Bedrock.Utility.randomString (8, "0123456789ABCDEF") + INPUT + input.name;
             switch (input.type) {
-                case _.TEXT: {
-                    let value = ("value" in input) ? input.value : "";
-                    inputObject.inputElement = Html.addElement (parentDiv, "input", {
-                        id: inputElementId,
-                        type: _.TEXT,
-                        class: "form-input",
-                        placeholder: input.placeholder,
-                        value: value,
-                        onchange: function () { onUpdate (input.name); }
-                    });
-                    // this is a value stored for reset
-                    inputObject.value = value;
-                    if ("pattern" in input) {
-                        inputObject.pattern = input.pattern;
-                    }
-                    break;
-                }
+                case _.TEXT:
                 case _.SECRET: {
                     let value = ("value" in input) ? input.value : "";
                     inputObject.inputElement = Html.addElement (parentDiv, "input", {
                         id: inputElementId,
-                        type: _.SECRET,
+                        type: input.type,
                         class: "form-input",
                         placeholder: input.placeholder,
                         value: value,
@@ -164,6 +148,7 @@ Bedrock.Forms = function () {
                 let valid = true;
                 switch (input.type) {
                     case _.TEXT:
+                    case _.SECRET:
                     case _.SELECT:
                     case _.LIST: {
                         if ("pattern" in input) {
@@ -198,6 +183,7 @@ Bedrock.Forms = function () {
                     input.inputElement.checked = input.checked;
                     break;
                 case _.TEXT:
+                case _.SECRET:
                 case _.SELECT:
                 case _.LIST:
                     input.inputElement.value = input.value;
@@ -218,6 +204,7 @@ Bedrock.Forms = function () {
                     result[input.name] = input.inputElement.checked;
                     break;
                 case _.TEXT:
+                case _.SECRET:
                 case _.SELECT:
                 case _.LIST:
                     result[input.name] = input.inputElement.value;
@@ -237,6 +224,7 @@ Bedrock.Forms = function () {
                         input.inputElement.checked = values[key];
                         break;
                     case _.TEXT:
+                    case _.SECRET:
                     case _.SELECT:
                     case _.LIST:
                         input.inputElement.value = values[key];
