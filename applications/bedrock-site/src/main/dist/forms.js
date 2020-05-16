@@ -12,6 +12,7 @@ Bedrock.Forms = function () {
     _.LIST = "list";
     _.SELECT = "select";
     _.TEXT = "text";
+    _.SECRET = "password";
     _.CHECKBOX = "checkbox";
 
     _.init = function (parameters) {
@@ -60,6 +61,23 @@ Bedrock.Forms = function () {
                     inputObject.inputElement = Html.addElement (parentDiv, "input", {
                         id: inputElementId,
                         type: _.TEXT,
+                        class: "form-input",
+                        placeholder: input.placeholder,
+                        value: value,
+                        onchange: function () { onUpdate (input.name); }
+                    });
+                    // this is a value stored for reset
+                    inputObject.value = value;
+                    if ("pattern" in input) {
+                        inputObject.pattern = input.pattern;
+                    }
+                    break;
+                }
+                case _.SECRET: {
+                    let value = ("value" in input) ? input.value : "";
+                    inputObject.inputElement = Html.addElement (parentDiv, "input", {
+                        id: inputElementId,
+                        type: _.SECRET,
                         class: "form-input",
                         placeholder: input.placeholder,
                         value: value,
