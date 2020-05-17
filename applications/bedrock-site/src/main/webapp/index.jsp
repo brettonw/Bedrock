@@ -1,60 +1,57 @@
-<%@ page import="com.brettonw.bedrock.Service" %>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="img/icon.png?v=1"/>
-    <link rel="stylesheet" href="dist/<%= Service.getBedrockVersion() %>/bedrock.css"/>
-    <meta name="viewport" content="width=920,initial-scale=1,user-scalable=yes"/>
-    <title>Bedrock v.<%=Service.getBedrockVersion ()%></title>
-</head>
+<%@include file="includes/header.jsp" %>
+<h1>Bedrock</h1>
+<div class="container-div">
+    <h2>About</h2>
+    <div class="description-div">
+        <p>Bedrock is a tool for quickly building lightweight micro-services in Java, using JSON for communications.</p>
+    </div>
 
-<body>
-<div id="help">
-    <h1>Bedrock v.<%=Service.getBedrockVersion ()%></h1>
-    <div class="container-div">
-        <h2>About</h2>
-        <div class="description-div">
-            Bedrock is a tool for quickly building lightweight micro-services in Java, using JSON for communications.
-        </div>
+    <h2>Developer</h2>
+    <div class="description-div">
+        <ul>
+            <li><a href="interface.jsp">Test Interface</a> - an example of the bedrock service and the service descriptor. </li>
+            <li>Find the sources on Github @ <a href="https://github.com/brettonw/bedrock">brettonw/Bedrock</a>.</li>
+        </ul>
+    </div>
 
-        <h2>Test Interface</h2>
-        <div class="description-div">
-            This site features a <a href="interface.jsp">test interface</a> as an example of a simple Bedrock service.</p>
-        </div>
+    <h2>Documentation</h2>
+    <div class="description-div">
+        <h3>Java</h3>
+        <ul>
+            <li><a href="<%= request.getContextPath() %>/dist/<%= Service.getBedrockVersion() %>/docs/bag/">Bag</a></li>
+            <li><a href="<%= request.getContextPath() %>/dist/<%= Service.getBedrockVersion() %>/docs/secret/">Secret</a></li>
+            <li><a href="<%= request.getContextPath() %>/dist/<%= Service.getBedrockVersion() %>/docs/database/">Database</a></li>
+            <li><a href="<%= request.getContextPath() %>/dist/<%= Service.getBedrockVersion() %>/docs/service-base/">Service-Base</a></li>
+            <li><a href="<%= request.getContextPath() %>/dist/<%= Service.getBedrockVersion() %>/docs/servlet-tester/">Servlet-Tester</a></li>
+        </ul>
 
-        <h2>Documentation</h2>
-        <div class="description-div">
-            <h3>Java</h3>
-            <ul>
-                <li><a href="dist/<%= Service.getBedrockVersion() %>/docs/bag/">Bag</a></li>
-                <li><a href="dist/<%= Service.getBedrockVersion() %>/docs/database/">Database</a></li>
-                <li><a href="dist/<%= Service.getBedrockVersion() %>/docs/service-base/">Service-Base</a></li>
-                <li><a href="dist/<%= Service.getBedrockVersion() %>/docs/servlet-tester/">Servlet-Tester</a></li>
-            </ul>
+        <h3>Javascript</h3>
+        <ul>
+            <li><a href="<%= request.getContextPath() %>/dist/<%= Service.getBedrockVersion() %>/docs/bedrock/">Bedrock</a></li>
+        </ul>
 
-            <h3>Javascript</h3>
-            <ul>
-                <li><a href="dist/<%= Service.getBedrockVersion() %>/docs/bedrock/">Bedrock</a></li>
-            </ul>
-            Usage:
-            <pre style="font-size:10px;">&lt;link rel="stylesheet" href="https://bedrock.brettonw.com/dist/<%=Service.getBedrockVersion ()%>/bedrock.css"/>
+        <p style="margin: 12px 0;">USAGE:</p>
+        <pre class="code-pre">&lt;link rel="stylesheet" href="https://bedrock.brettonw.com/dist/<%=Service.getBedrockVersion ()%>/bedrock.css"/>
 &lt;script src="https://bedrock.brettonw.com/dist/<%=Service.getBedrockVersion ()%>/bedrock.js">&lt;/script></pre>
-        </div>
+    </div>
 
-        <h2>Examples</h2>
-        <div class="description-div">
-            <ul>
-                <li><a href="examples/combobox.jsp">ComboBox</a></li>
-                <li><a href="examples/database">Database</a></li>
-                <li><a href="examples/forms.jsp">Forms</a></li>
-                <li><a href="examples/html.jsp">HTML</a></li>
-                <li><a href="examples/http.jsp">HTTP</a></li>
-            </ul>
-        </div>
+    <h2>Examples</h2>
+    <div class="description-div">
+        <ul>
+            <li><a href="<%= request.getContextPath() %>/examples/combobox.jsp">ComboBox</a></li>
+            <li><a href="<%= request.getContextPath() %>/examples/database">Database</a></li>
+            <li><a href="<%= request.getContextPath() %>/examples/forms.jsp">Forms</a></li>
+            <li><a href="<%= request.getContextPath() %>/examples/html.jsp">HTML</a></li>
+            <li><a href="<%= request.getContextPath() %>/examples/http.jsp">HTTP</a></li>
+        </ul>
+    </div>
+
+    <h2>Admin</h2>
+    <div class="description-div">
+        <ul>
+            <li><a href="<%= request.getContextPath() %>/lock.jsp">Lock</a></li>
+        </ul>
     </div>
 </div>
-<div class="content-center footer">Find it at <a class="footer-link" href="https://github.com/brettonw/bedrock">brettonw/Bedrock</a></div>
-
-</body>
-</html>
+<div class="content-center footer">Built with <a class="footer-link" href="https://bedrock.brettonw.com">Bedrock</a></div>
+<%@include file="includes/footer.jsp" %>

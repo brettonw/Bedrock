@@ -9,6 +9,7 @@ html {
     -webkit-text-size-adjust: 100%;
     -moz-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    overflow-y: scroll;
 }
 
 body {
@@ -23,13 +24,22 @@ body {
 }
 
 h1 {
-    margin: 10px 0px;
-    padding: 0px 0px;
+    margin: 10px 0;
+    padding: 0;
 }
 
 h2 {
-    margin: 8px 0px;
-    padding: 0px 0px;
+    margin: 15px 0 8px 0;
+    padding: 0;
+}
+
+h3 {
+    margin: 12px 0 8px 0;
+}
+
+hr {
+    border-top: 1px solid #ccc;
+    border-bottom: none;
 }
 
 ul {
@@ -547,4 +557,39 @@ div[id="bedrock-service-descriptor-hover-box-buffer"] {
 }
 
 pre[id="bedrock-service-descriptor-hover-box-content"] {
+}
+
+.header-image {
+    display: flex;
+    text-decoration: none;
+    color: #bbbbbb;
+    float: right;
+    line-height: 48px;
+    margin-right: 5px;
+}
+
+.header-image-img {
+    height: 48px;
+}
+
+.header-version {
+    margin-right: 5px;
+}
+
+.header-wrapper {
+    width: 100%;
+}
+
+.header-title {
+    display: inline-block;
+}
+
+.code-pre {
+    background-color: #ddffff;
+    padding: 8px;
+    font-size: 14px;
+    line-height: 18px;
+    border-color: #688;
+    border-style: solid;
+    border-width: 1px;
 }

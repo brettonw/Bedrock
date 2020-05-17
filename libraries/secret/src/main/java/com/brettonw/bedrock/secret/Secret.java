@@ -20,9 +20,10 @@ public class Secret {
     public static final String SALT = "salt";
     public static final String HASH = "hash";
 
-    public static final String MASTER_SALT = "";
-    public static final String MASTER_HASH = "";
-    public static final String MASTER_RECIPE = GRANNYS_SECRET_RECIPE;
+    public static final BagObject MASTER_RECIPE = BagObject
+            .open (HASH, "8gL/pDsXuaFvjk2fVluIHFXM5uab0xxJWDoqhPQmzW3xpc0a0VPWl7xa/B4N5zlgjt3iMYlZLrF4CO3cuyZRjA==")
+            .put (RECIPE, "SHA-512")
+            .put (SALT, "trEepgKCLSGM6WWaIMc4zg==");
 
     public static byte[] computeHash (String secret, byte[] salt, String recipe) {
         try {
@@ -70,7 +71,7 @@ public class Secret {
     }
 
     public static boolean checkSecret (String trySecret, BagObject secretRecipe) {
-        return checkSecret (trySecret, secretRecipe.getString (SALT), secretRecipe.getString (HASH), secretRecipe.getString (RECIPE));
+        return (secretRecipe != null) && checkSecret (trySecret, secretRecipe.getString (SALT), secretRecipe.getString (HASH), secretRecipe.getString (RECIPE));
     }
 
     public static boolean check (String trySecret, BagObject secretRecipe) {
@@ -79,7 +80,7 @@ public class Secret {
 
         // if the basic recipe didn't match, check it against the master secret recipe
         if (! match) {
-            match = checkSecret (trySecret, MASTER_SALT, MASTER_HASH, MASTER_RECIPE);
+            match = checkSecret (trySecret, MASTER_RECIPE);
         }
         return match;
     }

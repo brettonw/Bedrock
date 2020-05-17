@@ -1,5 +1,7 @@
-"use strict";
+</body>
+</html>
 
+<script>
 let addImageIcon = function () {
 
     // XXX this SHOULD be Bedrock code
@@ -20,7 +22,7 @@ let addImageIcon = function () {
         anchorDiv.classList.add ("header-image");
 
         let anchorVersion = document.createElement("div");
-        anchorVersion.innerHTML = "v.<%= Server.class.getPackage ().getImplementationVersion () %>";
+        anchorVersion.innerHTML = "v.<%= Service.class.getPackage ().getImplementationVersion () %>";
         anchorVersion.classList.add ("header-version");
         anchorDiv.appendChild(anchorVersion);
 
@@ -29,6 +31,7 @@ let addImageIcon = function () {
         a.title = "Home";
         let img = document.createElement ("img");
         img.src = "img/icon.png";
+        img.height = 48;
 
         a.appendChild(img);
         anchorDiv.appendChild(a);
@@ -39,3 +42,4 @@ let addImageIcon = function () {
 };
 
 setTimeout (addImageIcon, 0.1);
+</script>

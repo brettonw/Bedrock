@@ -192,10 +192,11 @@ Bedrock.Forms = function () {
         }
     };
 
-    _.getValues = function () {
-        let result = {
-            event: this.name
-        };
+    _.getValues = function (addEvent) {
+        let result = {};
+        if ((typeof (addEvent) !== "undefined") && (addEvent === true)) {
+            result.event = this.name;
+        }
         let keys = Object.keys (this.inputs);
         for (let key of keys) {
             let input = this.inputs[key];
