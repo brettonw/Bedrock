@@ -13,15 +13,20 @@ import java.util.Base64;
 public class Secret {
     private static final Logger log = LogManager.getLogger (Secret.class);
 
+    public static final String RECIPE = "recipe";
+    public static final String SHA_512 = "SHA-512";
+    public static final String GRANNYS_SECRET_RECIPE = SHA_512;
+
     public static final String SALT = "salt";
     public static final String HASH = "hash";
 
     public static final String MASTER_SALT = "";
     public static final String MASTER_HASH = "";
+    public static final String MASTER_RECIPE = GRANNYS_SECRET_RECIPE;
 
-    public static byte[] computeHash (String secret, byte[] salt) {
+    public static byte[] computeHash (String secret, byte[] salt, String recipe) {
         try {
-            MessageDigest messageDigest = MessageDigest.getInstance ("SHA-512");
+            MessageDigest messageDigest = MessageDigest.getInstance (recipe);
             messageDigest.update (salt);
             return messageDigest.digest (secret.getBytes (StandardCharsets.UTF_8));
         } catch (Exception exception) {
@@ -30,34 +35,52 @@ public class Secret {
         return null;
     }
 
-    public static byte[] computeHash (String secret, String saltEncoded) {
-        return computeHash (secret, Base64.getDecoder ().decode (saltEncoded));
+    public static byte[] computeHash (String secret, String saltEncoded, String recipe) {
+        return computeHash (secret, Base64.getDecoder ().decode (saltEncoded), recipe);
     }
 
-    public static BagObject computeSecretRecipe (String secret) {
+    public static BagObject computeSecretRecipe (String secret, String recipe) {
         // make some salt
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
         random.nextBytes(salt);
 
         // compute the hash
-        byte[] hash = computeHash (secret, salt);
+        byte[] hash = computeHash (secret, salt, recipe);
 
         // encode the values
         return BagObject
                 .open (SALT, Base64.getEncoder ().encodeToString (salt))
-                .put (HASH, Base64.getEncoder ().encodeToString (hash));
+                .put (HASH, Base64.getEncoder ().encodeToString (hash))
+                .put (RECIPE, recipe);
     }
 
-    public static boolean checkSecret (String trySecret, BagObject secretRecipe) {
-        // check if the recipe is filled out...
-        String saltEncoded = secretRecipe.getString (SALT);
-        String targetHashEncoded = secretRecipe.getString (HASH);
+    public static BagObject computeSecretRecipe (String secret) {
+        return computeSecretRecipe (secret, GRANNYS_SECRET_RECIPE);
+    }
+
+    public static boolean checkSecret (String trySecret, String saltEncoded, String targetHashEncoded, String recipe) {
+        // check if the recipe is valid...
         if ((saltEncoded != null) && (saltEncoded.trim().length () > 0) && (targetHashEncoded != null) && (targetHashEncoded.trim().length () > 0)) {
             byte[] targetHash = Base64.getDecoder ().decode (targetHashEncoded);
-            byte[] tryHash = computeHash (trySecret, saltEncoded);
+            byte[] tryHash = computeHash (trySecret, saltEncoded, recipe);
             return ((tryHash != null) && (targetHash != null) && Arrays.equals(tryHash, targetHash));
         }
         return false;
+    }
+
+    public static boolean checkSecret (String trySecret, BagObject secretRecipe) {
+        return checkSecret (trySecret, secretRecipe.getString (SALT), secretRecipe.getString (HASH), secretRecipe.getString (RECIPE));
+    }
+
+    public static boolean check (String trySecret, BagObject secretRecipe) {
+        // see if the secret matches the recipe
+        boolean match = checkSecret (trySecret, secretRecipe);
+
+        // if the basic recipe didn't match, check it against the master secret recipe
+        if (! match) {
+            match = checkSecret (trySecret, MASTER_SALT, MASTER_HASH, MASTER_RECIPE);
+        }
+        return match;
     }
 }

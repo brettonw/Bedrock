@@ -2,6 +2,7 @@ package com.brettonw.bedrock.service;
 
 import com.brettonw.bedrock.bag.*;
 import com.brettonw.bedrock.bag.formats.MimeType;
+import com.brettonw.bedrock.secret.Secret;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -415,54 +416,10 @@ public class Base extends HttpServlet {
     }
 
     protected boolean checkSecret (Event event) {
-        /*
-        // get the post data
         BagObject query = event.getQuery ();
         String secret = event.getQuery ().getString (Key.cat (POST_DATA, SECRET));
-
-        // get the secret recipe, and either use the salt provided or make one - if we make one, it's
-        // because the server configuration doesn't have a secret, and we are going to use the error
-        // response to set it up...
         BagObject secretRecipe = configuration.getBagObject (SECRET);
-        byte[] salt;
-        String saltEncoded = secretRecipe.getString (SALT);
-        if ((saltEncoded != null) && (saltEncoded.trim().length () > 0)) {
-            salt = Base64.getDecoder ().decode (saltEncoded);
-        } else {
-            SecureRandom random = new SecureRandom();
-            salt = new byte[16];
-            random.nextBytes(salt);
-            saltEncoded = Base64.getEncoder ().encodeToString (salt);
-        }
-
-        // extract the target hash
-        byte[] targetHash = null;
-        String targetHashEncoded = secretRecipe.getString (HASH);
-        if ((targetHashEncoded != null) && (targetHashEncoded.trim().length () > 0)) {
-            targetHash = Base64.getDecoder ().decode (targetHashEncoded);
-        }
-
-        // hash the secret
-        byte[] hashedSecret = null;
-        try {
-            MessageDigest messageDigest = MessageDigest.getInstance ("SHA-512");
-            messageDigest.update (salt);
-            hashedSecret = messageDigest.digest (secret.getBytes (StandardCharsets.UTF_8));
-        } catch (Exception exception) {
-            log.error (exception);
-        }
-
-        // check if the hashed secret and the target hash match...
-        if ((hashedSecret != null) && (targetHash != null) && Arrays.equals(hashedSecret, targetHash)) {
-            return true;
-        } else {
-            String hashedSecretEncoded = Base64.getEncoder ().encodeToString (hashedSecret);
-            log.info ("secret mismatch: (salt = '" + saltEncoded + "', hash = '" + hashedSecretEncoded + "')");
-            return false;
-        }
-        */
-
-         return true;
+        return ((secretRecipe != null) && Secret.check (secret, secretRecipe));
     }
 
     public void handleEventLock (Event event) {

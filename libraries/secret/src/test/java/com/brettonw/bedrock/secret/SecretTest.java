@@ -1,12 +1,9 @@
-package com.brettonw.bedrock.service;
+package com.brettonw.bedrock.secret;
 
-import com.brettonw.bedrock.bag.*;
-import com.brettonw.bedrock.servlet.Tester;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
-import java.io.IOException;
-
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class SecretTest {
@@ -14,6 +11,12 @@ public class SecretTest {
 
     @Test
     public void testSecret () {
+        assertTrue (true);
+        assertTrue (true == true);
+    }
+
+    @Test
+    public void testRoundTrip () {
         assertTrue (true);
         assertTrue (true == true);
     }
