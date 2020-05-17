@@ -1,3 +1,8 @@
+// XXX TODO
+// - need a show/hide solution
+// setValues should call onUpdate
+
+
 Bedrock.Forms = function () {
     let _ = Object.create (Bedrock.Base);
 

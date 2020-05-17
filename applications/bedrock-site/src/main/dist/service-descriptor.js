@@ -20,20 +20,46 @@ Bedrock.ServiceDescriptor = function () {
             let example = response.events[exampleName].example;
             example.event = exampleName;
 
+            let url;
+            let postData = null;
+
             let handleExampleResponse = function (exampleResponse) {
+                let Html = Bedrock.Html;
                 document.getElementById ("bedrock-service-descriptor-hover-box").style.visibility = "visible";
-                document.getElementById ("bedrock-service-descriptor-hover-box-content").innerHTML = JSON.stringify (exampleResponse, null, 4);
+
+                let element = document.getElementById ("bedrock-service-descriptor-hover-box-buffer");
+                Html.removeAllChildren(element);
+
+                let innerHTML = Html.Builder.begin ("div");
+                innerHTML.add("h2", { style: { margin: 0 }, innerHTML: "Example for " + exampleName });
+                innerHTML
+                    .begin ("div", { style: { margin: "16px 0" }})
+                    .add ("div", { style:  { fontWeight: "bold", display: "inline-block", width: "80px" }, innerHTML: "URL: " })
+                    .add ("div", { style:  { display: "inline-block" }, innerHTML: url.replace (/&/g, "&amp;") })
+                    .end ();
+                if (postData != null) {
+                    innerHTML
+                        .add ("div", { style: { margin: "16px 0 8px 0", fontWeight: "bold" }, innerHTML: "Post JSON: " })
+                        .add ("pre", { class: "code-pre", innerHTML: postData })
+                }
+                innerHTML
+                    .add ("div", { style:  { margin: "16px 0 8px 0", fontWeight: "bold" }, innerHTML: "Response JSON: " })
+                    .add ("pre", { class: "code-pre", innerHTML: JSON.stringify (exampleResponse, null, 4) })
+
+                element.appendChild(innerHTML.end ());
             };
 
             // if the example includes post data...
             if ("post-data" in example) {
                 // separate the post data and issue the example request as a post
-                let postData = JSON.stringify (example["post-data"]);
+                postData = JSON.stringify (example["post-data"], null, 4);
                 delete example["post-data"];
-                Bedrock.Http.post (Bedrock.ServiceBase.getQuery (example), postData, handleExampleResponse);
+                url = Bedrock.ServiceBase.getQuery (example);
+                Bedrock.Http.post (url, postData, handleExampleResponse);
             } else {
                 // issue the example request as a get
-                Bedrock.Http.get(Bedrock.ServiceBase.getQuery (example), handleExampleResponse);
+                url = Bedrock.ServiceBase.getQuery (example);
+                Bedrock.Http.get(url, handleExampleResponse);
             }
         }, function (error) {
             document.getElementById ("bedrock-service-descriptor-hover-box").style.visibility = "visible";
@@ -161,9 +187,7 @@ Bedrock.ServiceDescriptor = function () {
         // now add a floating pane that is invisible and install the click handler to hide it
         innerHTML +=
             block ("div", { id: "bedrock-service-descriptor-hover-box" },
-                block ("div", {id: "bedrock-service-descriptor-hover-box-buffer"},
-                    block("pre", {id: "bedrock-service-descriptor-hover-box-content"},"")
-                )
+                block ("div", {id: "bedrock-service-descriptor-hover-box-buffer"},"")
             );
         document.addEventListener('click', function(event) {
             let hoverBoxElement = document.getElementById ("bedrock-service-descriptor-hover-box");
