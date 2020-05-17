@@ -15,10 +15,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.SecureRandom;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,8 +48,6 @@ public class Base extends HttpServlet {
     public static final String VERSION = "version";
     public static final String SCHEMA = "schema";
     public static final String SECRET = "secret";
-    public static final String SALT = "salt";
-    public static final String HASH = "hash";
 
     private static ServletContext context;
     private static boolean locked;
@@ -420,6 +415,7 @@ public class Base extends HttpServlet {
     }
 
     protected boolean checkSecret (Event event) {
+        /*
         // get the post data
         BagObject query = event.getQuery ();
         String secret = event.getQuery ().getString (Key.cat (POST_DATA, SECRET));
@@ -464,6 +460,9 @@ public class Base extends HttpServlet {
             log.info ("secret mismatch: (salt = '" + saltEncoded + "', hash = '" + hashedSecretEncoded + "')");
             return false;
         }
+        */
+
+         return true;
     }
 
     public void handleEventLock (Event event) {

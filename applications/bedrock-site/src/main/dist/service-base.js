@@ -21,7 +21,7 @@ Bedrock.ServiceBase = function () {
                 onFailure (response.error);
             } else {
                 // default on failure, alert...
-                alert (JSON.stringify(response, null, 4));
+                alert (response.error);
             }
         });
     };
@@ -39,7 +39,7 @@ Bedrock.ServiceBase = function () {
                 onFailure (response.error);
             } else {
                 // default on failure, alert...
-                alert (JSON.stringify(response, null, 4));
+                alert (response.error);
             }
         });
     };

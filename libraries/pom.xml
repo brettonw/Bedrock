@@ -34,6 +34,7 @@
     <modules>
         <module>base</module>
         <module>bag</module>
+        <module>secret</module>
         <module>servlet-tester</module>
         <module>service-base</module>
         <module>database</module>

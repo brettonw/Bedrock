@@ -26,6 +26,11 @@
         </dependency>
         <dependency>
             <groupId>com.brettonw.bedrock</groupId>
+            <artifactId>secret</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.brettonw.bedrock</groupId>
             <artifactId>servlet-tester</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
