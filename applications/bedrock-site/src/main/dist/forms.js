@@ -1,8 +1,3 @@
-// XXX TODO
-// - need a show/hide solution, and a way to combine required/not with hidden/shown
-// setValues should call onUpdate
-
-
 Bedrock.Forms = function () {
     let _ = Object.create (Bedrock.Base);
 
