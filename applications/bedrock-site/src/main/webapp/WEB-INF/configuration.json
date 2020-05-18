@@ -78,6 +78,7 @@
     },
     "secret": {
         "salt": "",
-        "hash": ""
+        "hash": "",
+        "recipe": "SHA-512"
     }
 }

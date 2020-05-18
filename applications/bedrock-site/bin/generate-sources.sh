@@ -26,6 +26,7 @@ cat                                 \
     base.js                         \
     utility.js                      \
     http.js                         \
+    cookie.js                       \
     service-base.js                 \
     service-descriptor.js           \
     html.js                         \

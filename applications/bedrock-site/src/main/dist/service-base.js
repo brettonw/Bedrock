@@ -2,7 +2,8 @@ Bedrock.ServiceBase = function () {
     let $ = Object.create (null);
 
     $.getQuery = function (parameters) {
-        let query = "api";
+        let contextPath = Bedrock.Cookie.get ("full-context-path");
+        let query = contextPath + "api";
         let divider = "?";
         for (let name of Object.keys (parameters)) {
             let parameter = parameters[name];

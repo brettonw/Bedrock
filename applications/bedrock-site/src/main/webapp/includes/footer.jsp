@@ -2,6 +2,9 @@
 </html>
 
 <script>
+    Bedrock.Cookie.set ("context-path", "<%= request.getContextPath() %>/");
+    Bedrock.Cookie.set ("full-context-path", location.origin + "<%= request.getContextPath() %>/");
+
 let addImageIcon = function () {
 
     // XXX this SHOULD be Bedrock code
@@ -27,10 +30,10 @@ let addImageIcon = function () {
         anchorDiv.appendChild(anchorVersion);
 
         let a = document.createElement ("a");
-        a.href = "<%= request.getContextPath() %>/";
+        a.href = Bedrock.Cookie.get ("context-path");
         a.title = "Home";
         let img = document.createElement ("img");
-        img.src = "img/icon.png";
+        img.src = Bedrock.Cookie.get ("context-path") + "img/icon.png";
         img.height = 48;
 
         a.appendChild(img);

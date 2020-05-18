@@ -32,15 +32,20 @@ Bedrock.ServiceDescriptor = function () {
 
                 let innerHTML = Html.Builder.begin ("div");
                 innerHTML.add("h2", { style: { margin: 0 }, innerHTML: "Example for " + exampleName });
-                innerHTML
-                    .begin ("div", { style: { margin: "16px 0" }})
-                    .add ("div", { style:  { fontWeight: "bold", display: "inline-block", width: "80px" }, innerHTML: "URL: " })
-                    .add ("div", { style:  { display: "inline-block" }, innerHTML: url.replace (/&/g, "&amp;") })
-                    .end ();
                 if (postData != null) {
                     innerHTML
+                        .begin ("div", { style: { margin: "16px 0" }})
+                        .add ("div", { style:  { fontWeight: "bold", display: "inline-block", width: "80px" }, innerHTML: "URL: " })
+                        .add ("div", { style:  { display: "inline-block" }, innerHTML: url.replace (/&/g, "&amp;")  })
+                        .end ()
                         .add ("div", { style: { margin: "16px 0 8px 0", fontWeight: "bold" }, innerHTML: "Post JSON: " })
                         .add ("pre", { class: "code-pre", innerHTML: postData })
+                } else {
+                    innerHTML
+                        .begin ("div", { style: { margin: "16px 0" }})
+                        .add ("div", { style:  { fontWeight: "bold", display: "inline-block", width: "80px" }, innerHTML: "URL: " })
+                        .add ("a", { style:  { display: "inline-block", textDecoration: "none" }, innerHTML: url.replace (/&/g, "&amp;"), href: url, target: "_blank"  })
+                        .end ();
                 }
                 innerHTML
                     .add ("div", { style:  { margin: "16px 0 8px 0", fontWeight: "bold" }, innerHTML: "Response JSON: " })
