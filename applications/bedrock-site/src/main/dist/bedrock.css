@@ -546,7 +546,7 @@ div[id="bedrock-service-descriptor-hover-box"] {
 
 div[id="bedrock-service-descriptor-hover-box-buffer"] {
     width: calc(100% - 60px);
-    max-height: 80%;
+    max-height: calc(95% - 50px);
     margin: auto;
     background-color: #fffcfa;
     padding: 15px;

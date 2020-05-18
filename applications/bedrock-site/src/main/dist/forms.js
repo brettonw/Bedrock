@@ -1,5 +1,5 @@
 // XXX TODO
-// - need a show/hide solution
+// - need a show/hide solution, and a way to combine required/not with hidden/shown
 // setValues should call onUpdate
 
 
@@ -56,6 +56,7 @@ Bedrock.Forms = function () {
                 name: input.name,
                 type: input.type,
                 required: ("required" in input) ? input.required : false,
+                visible: true
             };
 
             // and the input element depending on the type
@@ -138,6 +139,9 @@ Bedrock.Forms = function () {
         let formDivElement = Html.addElement (divElement, "div", { classes: ["form-div", "form-button-wrapper"] });
         Html.addElement (formDivElement, "input", { type: "button", value: "SUBMIT", class: "form-submit-button", onclick: function () { scope.handleClickSubmit (); }  });
 
+        // and call the onUpdate the first time through
+        onUpdate ("*");
+
         return this;
     };
 
@@ -149,7 +153,7 @@ Bedrock.Forms = function () {
         let inputNames = Object.keys(this.inputs);
         for (let inputName of inputNames) {
             let input = this.inputs[inputName];
-            if (input.required) {
+            if (input.required && input.visible) {
                 let valid = true;
                 switch (input.type) {
                     case _.TEXT:
@@ -194,10 +198,14 @@ Bedrock.Forms = function () {
                     input.inputElement.value = input.value;
                     break;
             }
+
+            // call the update on the changed value
+            input.inputElement.onchange ();
         }
+        return this;
     };
 
-    _.getValues = function (addEvent) {
+    _.getValues = function (addEvent, includeInvisible) {
         let result = {};
         if ((typeof (addEvent) !== "undefined") && (addEvent === true)) {
             result.event = this.name;
@@ -205,16 +213,18 @@ Bedrock.Forms = function () {
         let keys = Object.keys (this.inputs);
         for (let key of keys) {
             let input = this.inputs[key];
-            switch (input.type) {
-                case _.CHECKBOX:
-                    result[input.name] = input.inputElement.checked;
-                    break;
-                case _.TEXT:
-                case _.SECRET:
-                case _.SELECT:
-                case _.LIST:
-                    result[input.name] = input.inputElement.value;
-                    break;
+            if (input.visible || ((typeof(includeInvisible) !== "undefined") && (includeInvisible === true))) {
+                switch (input.type) {
+                    case _.CHECKBOX:
+                        result[input.name] = input.inputElement.checked;
+                        break;
+                    case _.TEXT:
+                    case _.SECRET:
+                    case _.SELECT:
+                    case _.LIST:
+                        result[input.name] = input.inputElement.value;
+                        break;
+                }
             }
         }
         return result;
@@ -236,10 +246,41 @@ Bedrock.Forms = function () {
                         input.inputElement.value = values[key];
                         break;
                 }
+
+                // call the update on the changed value
+                input.inputElement.onchange ();
             }
         }
+        return this;
     };
 
+    _.showInput = function (key, show) {
+        let input = this.inputs[key];
+        let elementStyle = input.inputElement.parentElement.parentElement.style;
+
+        // all elements are visible when created, so this should happen the first time through
+        if ((!("display" in input)) && (elementStyle.display !== "none")) {
+            input.display = elementStyle.display;
+        }
+
+        // set the state
+        input.visible = show;
+        elementStyle.display = show ? input.display : "none";
+        return this;
+    };
+
+    _.showOnlyInputs = function (keys, show) {
+        // make an object out of the keys array
+        let showHide = {};
+        for (let key of keys) {
+            showHide[key] = 0;
+        }
+
+        // loop over all the inputs to show or hide them as requested
+        for (let key in this.inputs) {
+            this.showInput(key,  (key in showHide) ? show : !show);
+        }
+    };
 
     return _;
 } ();

@@ -24,6 +24,12 @@
         purposes.
     </div>
     <div id="bedrock-form-container-B"></div>
+
+    <h2>Form C</h2>
+    <div class="section-content-div">
+        A simple form, C, to demonstrate show/hide and required flags for hidden inputs.
+    </div>
+    <div id="bedrock-form-container-C"></div>
 </div>
 </body>
 </html>
@@ -64,5 +70,36 @@
             { name: "d", type: Forms.SELECT, label: "Select One:", value: "y", options: [{ value: "w", label: "W" }, "X", "y", "z"] }
         ],
         completion: testResponse
+    });
+
+    Forms.new ({
+        name: "testC",
+        div: "bedrock-form-container-C",
+        inputs: [
+            { name: "which", type: Forms.SELECT, label: "Select One:", options: [ "", "a", "b", "c" ] },
+            { name: "a", type: Forms.TEXT, label: "A", required: true, placeholder: "YYYY" },
+            { name: "b", type: Forms.TEXT, label: "B", required: true, placeholder: "YYYY" },
+            { name: "c", type: Forms.TEXT, label: "C", required: true, placeholder: "YYYY" }
+        ],
+        completion: testResponse,
+        onUpdate: function (updatedName, form) {
+            if ((updatedName === "which") || (updatedName === "*")) {
+                let values = form.getValues();
+                switch (values["which"]) {
+                    case "":
+                        form.showOnlyInputs (["which"], true);
+                        break;
+                    case "a":
+                        form.showOnlyInputs (["which", "a"], true);
+                        break;
+                    case "b":
+                        form.showOnlyInputs (["which", "b"], true);
+                        break;
+                    case "c":
+                        form.showOnlyInputs (["which", "c"], true);
+                        break;
+                }
+            }
+        }
     });
 </script>
