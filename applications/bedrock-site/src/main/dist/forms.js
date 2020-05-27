@@ -1,3 +1,5 @@
+// XXX form fieldss don't validate unless they are required...
+
 Bedrock.Forms = function () {
     let _ = Object.create (Bedrock.Base);
 
@@ -217,7 +219,9 @@ Bedrock.Forms = function () {
                     case _.SECRET:
                     case _.SELECT:
                     case _.LIST:
-                        result[input.name] = input.inputElement.value;
+                        if (input.inputElement.value.length > 0) {
+                            result[input.name] = input.inputElement.value;
+                        }
                         break;
                 }
             }
