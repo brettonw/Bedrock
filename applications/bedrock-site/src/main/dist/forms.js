@@ -219,7 +219,7 @@ Bedrock.Forms = function () {
                     case _.SECRET:
                     case _.SELECT:
                     case _.LIST:
-                        if (input.inputElement.value.length > 0) {
+                        if (input.inputElement.value.trim().length > 0) {
                             result[input.name] = input.inputElement.value;
                         }
                         break;
