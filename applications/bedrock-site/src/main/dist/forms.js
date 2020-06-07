@@ -25,9 +25,13 @@ Bedrock.Forms = function () {
         // parameters.name - name of the form (and the event to use when submitting)
         let formName = this.name = parameters.name;
 
-        // parameters.completion - function to call when the user clicks submit and all the
-        //                     input values pass validation
-        this.completion = parameters.completion;
+        // parameters.onEnter - function to call when the user hits the enter key on an input
+        // the default behavior is to call onClickSubmit if the callback returns true
+        this.onEnter = ("onEnter" in parameters) ? parameters.onEnter : function () { return true; }
+
+        // parameters.onCompletion - function to call when the user clicks submit and all the
+        // input values pass validation
+        this.onCompletion = parameters.onCompletion;
 
         // parameters.onupdate - function to call when any value changes in the form
         let onUpdate = function (updatedName) {
@@ -66,8 +70,10 @@ Bedrock.Forms = function () {
                     style: (typeof (style) !== "undefined") ? style : {},
                     placeholder: input.placeholder,
                     value: value,
-                    onchange: function () { onUpdate (input.name); },
-                    onkeyup: function (event) { if (event.keyCode === 13) scope.handleClickSubmit (); }
+                    events: {
+                        change: function () { onUpdate (input.name); },
+                        keyup: function (event) { if (event.keyCode === 13) scope.handleEnterKey (); }
+                    }
                 });
                 // this is a value stored for reset
                 inputObject.value = value;
@@ -95,8 +101,10 @@ Bedrock.Forms = function () {
                         type: _.CHECKBOX,
                         class: "form-input",
                         checked: checked,
-                        onchange: function () { onUpdate (input.name); },
-                        onkeyup: function (event) { if (event.keyCode === 13) scope.handleClickSubmit (); }
+                        events: {
+                            change: function () { onUpdate (input.name); },
+                            keyup: function (event) { if (event.keyCode === 13) scope.handleEnterKey (); }
+                        }
                     });
                     // this is a value stored for reset
                     inputObject.checked = checked;
@@ -106,8 +114,10 @@ Bedrock.Forms = function () {
                     let inputElement = inputObject.inputElement = Html.addElement (parentDiv, _.SELECT, {
                         id: inputElementId,
                         class: "form-input",
-                        onchange: function () { onUpdate (input.name); },
-                        onkeyup: function (event) { if (event.keyCode === 13) scope.handleClickSubmit (); }
+                        events: {
+                            change: function () { onUpdate (input.name); },
+                            keyup: function (event) { if (event.keyCode === 13) scope.handleEnterKey (); }
+                        }
                     });
                     for (let option of input.options) {
                         let value = (option === Object (option)) ? option.value : option;
@@ -128,8 +138,10 @@ Bedrock.Forms = function () {
                         inputElementId: inputElementId,
                         options: input.options,
                         value: value,
-                        onchange: function () { onUpdate (input.name); },
-                        onkeyup: function (event) { if (event.keyCode === 13) scope.handleClickSubmit (); }
+                        events: {
+                            change: function () { onUpdate (input.name); },
+                            keyup: function (event) { if (event.keyCode === 13) scope.handleEnterKey (); }
+                        }
                     });
 
                     // this is a value stored for reset
@@ -155,6 +167,13 @@ Bedrock.Forms = function () {
         onUpdate ("*");
 
         return this;
+    };
+
+    _.handleEnterKey = function () {
+        // call the onEnter handler, and if it returns true, call the click submit handler
+        if (this.onEnter ()) {
+            this.handleClickSubmit ();
+        }
     };
 
     _.handleClickSubmit = function () {
@@ -189,9 +208,9 @@ Bedrock.Forms = function () {
             }
         }
 
-        // call completion if everything passes
+        // call onCompletion if everything passes
         if (allValid === true) {
-            this.completion (this);
+            this.onCompletion (this);
         }
     };
 
@@ -212,7 +231,7 @@ Bedrock.Forms = function () {
             }
 
             // call the update on the changed value
-            input.inputElement.onchange ();
+            input.inputElement.dispatchEvent(new Event("change"));
         }
         return this;
     };
@@ -262,7 +281,7 @@ Bedrock.Forms = function () {
                 }
 
                 // call the update on the changed value
-                input.inputElement.onchange ();
+                input.inputElement.dispatchEvent(new Event("change"));
             }
         }
         return this;

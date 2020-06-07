@@ -85,6 +85,8 @@ Bedrock.ComboBox = function () {
                         Utility.copyIf ("placeholder", parameters, inputElementParameters);
                         Utility.copyIf ("style", parameters, inputElementParameters);
                         Utility.copyIf ("onchange", parameters, inputElementParameters);
+                        Utility.copyIf ("event", parameters, inputElementParameters);
+                        Utility.copyIf ("events", parameters, inputElementParameters);
 
                         // now create the input element
                         inputElement = Html.addElement (parentElement, "input", inputElementParameters);
@@ -202,6 +204,8 @@ Bedrock.ComboBox = function () {
     _.callOnChange = function () {
         if (("onchange" in this.inputElement) && (typeof this.inputElement.onchange === "function")) {
             this.inputElement.onchange ();
+        } else {
+            this.inputElement.dispatchEvent (new Event ("change"));
         }
     };
 
@@ -294,11 +298,18 @@ Bedrock.ComboBox = function () {
         }
     });
 
+    // onchange...
     Object.defineProperty (_, "onchange", {
         set: function (onchange) {
             this.inputElement.onchange = onchange;
         }
     });
+
+    // dispatchEvent
+    // XXX this probably needs a little more thought
+    _.dispatchEvent = function (event) {
+        this.inputElement.dispatchEvent(event);
+    };
 
     return _;
 } ();

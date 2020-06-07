@@ -57,7 +57,7 @@
             let values = scope.getValues();
             console.log ("updated: " + updatedName + ", " + values);
         },
-        completion: testResponse
+        onCompletion: testResponse
     });
 
     Forms.new ({
@@ -69,7 +69,7 @@
             { name: "c", type: Forms.CHECKBOX, label: "C", checked: true },
             { name: "d", type: Forms.SELECT, label: "Select One:", value: "y", options: [{ value: "w", label: "W" }, "X", "y", "z"] }
         ],
-        completion: testResponse
+        onCompletion: testResponse
     });
 
     Forms.new ({
@@ -77,18 +77,18 @@
         div: "bedrock-form-container-C",
         submitButtonValue: "DONE",
         inputs: [
-            { name: "which", type: Forms.SELECT, label: "Choice:", options: [ "(Select One)", "a", "b", "c", "d" ] },
+            { name: "which", type: Forms.SELECT, label: "Choice:", required: true, options: [ "(Select One)", "a", "b", "c", "d" ] },
             { name: "a", type: Forms.TEXT, label: "A", required: true, placeholder: "YYYY" },
             { name: "b", type: Forms.TEXT, label: "B", required: true, placeholder: "YYYY" },
             { name: "c", type: Forms.TEXT, label: "C", required: true, placeholder: "YYYY" },
             { name: "d", type: Forms.SECRET, label: "Secret", required: true, placeholder: "YYYY" }
         ],
-        completion: testResponse,
+        onCompletion: testResponse,
         onUpdate: function (updatedName, form) {
             if ((updatedName === "which") || (updatedName === "*")) {
                 let values = form.getValues();
                 switch (values["which"]) {
-                    case "":
+                    case "(Select One)":
                         form.showOnlyInputs (["which"], true);
                         break;
                     case "a":
