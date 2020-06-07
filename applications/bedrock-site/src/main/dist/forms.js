@@ -12,7 +12,8 @@ Bedrock.Forms = function () {
     _.LIST = "list";
     _.SELECT = "select";
     _.TEXT = "text";
-    _.SECRET = "password";
+    _.PASSWORD = "password";
+    _.SECRET = "secret";
     _.CHECKBOX = "checkbox";
 
     _.init = function (parameters) {
@@ -54,25 +55,35 @@ Bedrock.Forms = function () {
                 visible: true
             };
 
+            let makeTextField = function(textType, style) {
+                let value = ("value" in input) ? input.value : "";
+                inputObject.inputElement = Html.addElement (parentDiv, "input", {
+                    id: inputElementId,
+                    type: textType,
+                    class: "form-input",
+                    style: (typeof (style) !== "undefined") ? style : {},
+                    placeholder: input.placeholder,
+                    value: value,
+                    onchange: function () { onUpdate (input.name); },
+                    onkeyup: function (event) { if (event.keyCode === 13) scope.handleClickSubmit (); }
+                });
+                // this is a value stored for reset
+                inputObject.value = value;
+                if ("pattern" in input) {
+                    inputObject.pattern = input.pattern;
+                }
+            };
+
             // and the input element depending on the type
             let inputElementId = formName + "-" + Bedrock.Utility.randomString (8, "0123456789ABCDEF") + INPUT + input.name;
             switch (input.type) {
                 case _.TEXT:
+                case _.PASSWORD: {
+                    makeTextField(input.type);
+                    break;
+                }
                 case _.SECRET: {
-                    let value = ("value" in input) ? input.value : "";
-                    inputObject.inputElement = Html.addElement (parentDiv, "input", {
-                        id: inputElementId,
-                        type: input.type,
-                        class: "form-input",
-                        placeholder: input.placeholder,
-                        value: value,
-                        onchange: function () { onUpdate (input.name); }
-                    });
-                    // this is a value stored for reset
-                    inputObject.value = value;
-                    if ("pattern" in input) {
-                        inputObject.pattern = input.pattern;
-                    }
+                    makeTextField(_.TEXT, { "-webkit-text-security" : "disc"});
                     break;
                 }
                 case _.CHECKBOX: {
@@ -82,7 +93,8 @@ Bedrock.Forms = function () {
                         type: _.CHECKBOX,
                         class: "form-input",
                         checked: checked,
-                        onchange: function () { onUpdate (input.name); }
+                        onchange: function () { onUpdate (input.name); },
+                        onkeyup: function (event) { if (event.keyCode === 13) scope.handleClickSubmit (); }
                     });
                     // this is a value stored for reset
                     inputObject.checked = checked;
@@ -92,7 +104,8 @@ Bedrock.Forms = function () {
                     let inputElement = inputObject.inputElement = Html.addElement (parentDiv, _.SELECT, {
                         id: inputElementId,
                         class: "form-input",
-                        onchange: function () { onUpdate (input.name); }
+                        onchange: function () { onUpdate (input.name); },
+                        onkeyup: function (event) { if (event.keyCode === 13) scope.handleClickSubmit (); }
                     });
                     for (let option of input.options) {
                         let value = (option === Object (option)) ? option.value : option;
@@ -113,7 +126,8 @@ Bedrock.Forms = function () {
                         inputElementId: inputElementId,
                         options: input.options,
                         value: value,
-                        onchange: function () { onUpdate (input.name); }
+                        onchange: function () { onUpdate (input.name); },
+                        onkeyup: function (event) { if (event.keyCode === 13) scope.handleClickSubmit (); }
                     });
 
                     // this is a value stored for reset
@@ -132,7 +146,8 @@ Bedrock.Forms = function () {
 
         // now add the submit button
         let formDivElement = Html.addElement (divElement, "div", { classes: ["form-div", "form-button-wrapper"] });
-        Html.addElement (formDivElement, "input", { type: "button", value: "SUBMIT", class: "form-submit-button", onclick: function () { scope.handleClickSubmit (); }  });
+        let submitButtonTitle = ("submitButtonValue" in parameters) ? parameters.submitButtonValue : "SUBMIT";
+        Html.addElement (formDivElement, "input", { type: "button", value: submitButtonTitle, class: "form-submit-button", onclick: function () { scope.handleClickSubmit (); }  });
 
         // and call the onUpdate the first time through
         onUpdate ("*");

@@ -75,11 +75,13 @@
     Forms.new ({
         name: "testC",
         div: "bedrock-form-container-C",
+        submitButtonValue: "DONE",
         inputs: [
-            { name: "which", type: Forms.SELECT, label: "Select One:", options: [ "", "a", "b", "c" ] },
+            { name: "which", type: Forms.SELECT, label: "Choice:", options: [ "(Select One)", "a", "b", "c", "d" ] },
             { name: "a", type: Forms.TEXT, label: "A", required: true, placeholder: "YYYY" },
             { name: "b", type: Forms.TEXT, label: "B", required: true, placeholder: "YYYY" },
-            { name: "c", type: Forms.TEXT, label: "C", required: true, placeholder: "YYYY" }
+            { name: "c", type: Forms.TEXT, label: "C", required: true, placeholder: "YYYY" },
+            { name: "d", type: Forms.SECRET, label: "Secret", required: true, placeholder: "YYYY" }
         ],
         completion: testResponse,
         onUpdate: function (updatedName, form) {
@@ -97,6 +99,9 @@
                         break;
                     case "c":
                         form.showOnlyInputs (["which", "c"], true);
+                        break;
+                    case "d":
+                        form.showOnlyInputs (["which", "d"], true);
                         break;
                 }
             }
