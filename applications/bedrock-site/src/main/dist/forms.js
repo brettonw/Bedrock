@@ -17,6 +17,7 @@ Bedrock.Forms = function () {
     _.PASSWORD = "password";
     _.SECRET = "secret";
     _.CHECKBOX = "checkbox";
+    _.WILDCARD = "*";
 
     _.init = function (parameters) {
         // scope "this" as self so I can use it in closures
@@ -162,7 +163,7 @@ Bedrock.Forms = function () {
         Html.addElement (formDivElement, "input", { type: "button", value: submitButtonTitle, class: "form-submit-button", onclick: function () { scope.handleClickSubmit (); }  });
 
         // and call the onUpdate the first time through
-        scope.handleOnUpdate ("*");
+        this.handleOnUpdate (_.WILDCARD);
 
         return this;
     };
@@ -223,7 +224,7 @@ Bedrock.Forms = function () {
         for (let inputName of Object.keys (this.inputs)) {
             this.setValue (inputName, this.inputs[inputName].originalValue, false);
         }
-        return this.handleOnUpdate("*");
+        return this.handleOnUpdate(_.WILDCARD);
     };
 
     _.getValues = function (addEvent, includeInvisible) {
@@ -271,13 +272,15 @@ Bedrock.Forms = function () {
                 this.handleOnUpdate (key);
             }
         }
+        return this;
     };
 
-    _.setValues = function (values) {
+    _.setValues = function (values, callHandleOnUpdate) {
         for (let key of Object.keys (values)) {
             this.setValue(key, values[key], false);
         }
-        return this.handleOnUpdate ("*");
+        return ((typeof (callHandleOnUpdate) !== "undefined") && (callHandleOnUpdate === true)) ?
+            this.handleOnUpdate (_.WILDCARD) : this;
     };
 
     _.showInput = function (key, show) {
