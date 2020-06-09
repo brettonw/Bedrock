@@ -33,12 +33,10 @@ Bedrock.Forms = function () {
         // input values pass validation
         this.onCompletion = parameters.onCompletion;
 
-        // parameters.onupdate - function to call when any value changes in the form
-        let onUpdate = function (updatedName) {
-            if ("onUpdate" in parameters) {
-                parameters.onUpdate (updatedName, scope);
-            }
-        };
+        // parameters.onUpdate - function to call when any value changes in the form
+        if ("onUpdate" in parameters) {
+            this.onUpdate = parameters.onUpdate;
+        }
 
         // parameters.div - where to put the form
         let divElement = document.getElementById(parameters.div);
@@ -71,12 +69,12 @@ Bedrock.Forms = function () {
                     placeholder: input.placeholder,
                     value: value,
                     events: {
-                        change: function () { onUpdate (input.name); },
+                        change: function () { scope.handleOnUpdate (input.name); },
                         keyup: function (event) { if (event.keyCode === 13) scope.handleEnterKey (); }
                     }
                 });
                 // this is a value stored for reset
-                inputObject.value = value;
+                inputObject.originalValue = value;
                 if ("pattern" in input) {
                     inputObject.pattern = input.pattern;
                 }
@@ -102,12 +100,12 @@ Bedrock.Forms = function () {
                         class: "form-input",
                         checked: checked,
                         events: {
-                            change: function () { onUpdate (input.name); },
+                            change: function () { scope.handleOnUpdate (input.name); },
                             keyup: function (event) { if (event.keyCode === 13) scope.handleEnterKey (); }
                         }
                     });
                     // this is a value stored for reset
-                    inputObject.checked = checked;
+                    inputObject.originalValue = checked;
                     break;
                 }
                 case _.SELECT: {
@@ -115,7 +113,7 @@ Bedrock.Forms = function () {
                         id: inputElementId,
                         class: "form-input",
                         events: {
-                            change: function () { onUpdate (input.name); },
+                            change: function () { scope.handleOnUpdate (input.name); },
                             keyup: function (event) { if (event.keyCode === 13) scope.handleEnterKey (); }
                         }
                     });
@@ -125,7 +123,7 @@ Bedrock.Forms = function () {
                         Html.addElement (inputElement, "option", { value: value, innerHTML: label });
                     }
                     let value = ("value" in input) ? input.value : inputObject.inputElement.value;
-                    inputObject.inputElement.value = inputObject.value = value;
+                    inputObject.inputElement.value = inputObject.originalValue = value;
                     break;
                 }
                 case _.LIST: {
@@ -139,13 +137,13 @@ Bedrock.Forms = function () {
                         options: input.options,
                         value: value,
                         events: {
-                            change: function () { onUpdate (input.name); },
+                            change: function () { scope.handleOnUpdate (input.name); },
                             keyup: function (event) { if (event.keyCode === 13) scope.handleEnterKey (); }
                         }
                     });
 
                     // this is a value stored for reset
-                    inputObject.value = value;
+                    inputObject.originalValue = value;
 
                     if ("pattern" in input) {
                         inputObject.pattern = input.pattern;
@@ -164,8 +162,15 @@ Bedrock.Forms = function () {
         Html.addElement (formDivElement, "input", { type: "button", value: submitButtonTitle, class: "form-submit-button", onclick: function () { scope.handleClickSubmit (); }  });
 
         // and call the onUpdate the first time through
-        onUpdate ("*");
+        scope.handleOnUpdate ("*");
 
+        return this;
+    };
+
+    _.handleOnUpdate = function (updatedName) {
+        if ("onUpdate" in this) {
+            this.onUpdate (updatedName, this);
+        }
         return this;
     };
 
@@ -215,25 +220,10 @@ Bedrock.Forms = function () {
     };
 
     _.reset = function () {
-        let inputNames = Object.keys (this.inputs);
-        for (let inputName of inputNames) {
-            let input = this.inputs[inputName];
-            switch (input.type) {
-                case _.CHECKBOX:
-                    input.inputElement.checked = input.checked;
-                    break;
-                case _.TEXT:
-                case _.SECRET:
-                case _.SELECT:
-                case _.LIST:
-                    input.inputElement.value = input.value;
-                    break;
-            }
-
-            // call the update on the changed value
-            input.inputElement.dispatchEvent(new Event("change"));
+        for (let inputName of Object.keys (this.inputs)) {
+            this.setValue (inputName, this.inputs[inputName].originalValue, false);
         }
-        return this;
+        return this.handleOnUpdate("*");
     };
 
     _.getValues = function (addEvent, includeInvisible) {
@@ -263,28 +253,31 @@ Bedrock.Forms = function () {
         return result;
     };
 
-    _.setValues = function (values) {
-        let keys = Object.keys (this.inputs);
-        for (let key of keys) {
-            if (key in values) {
-                let input = this.inputs[key];
-                switch (input.type) {
-                    case _.CHECKBOX:
-                        input.inputElement.checked = values[key];
-                        break;
-                    case _.TEXT:
-                    case _.SECRET:
-                    case _.SELECT:
-                    case _.LIST:
-                        input.inputElement.value = values[key];
-                        break;
-                }
-
-                // call the update on the changed value
-                input.inputElement.dispatchEvent(new Event("change"));
+    _.setValue = function (key, value, callHandleOnUpdate) {
+        if (key in this.inputs) {
+            let input = this.inputs[key];
+            switch (input.type) {
+                case _.CHECKBOX:
+                    input.inputElement.checked = value;
+                    break;
+                case _.TEXT:
+                case _.SECRET:
+                case _.SELECT:
+                case _.LIST:
+                    input.inputElement.value = value;
+                    break;
+            }
+            if ((typeof (callHandleOnUpdate) !== "undefined") && (callHandleOnUpdate === true)) {
+                this.handleOnUpdate (key);
             }
         }
-        return this;
+    };
+
+    _.setValues = function (values) {
+        for (let key of Object.keys (values)) {
+            this.setValue(key, values[key], false);
+        }
+        return this.handleOnUpdate ("*");
     };
 
     _.showInput = function (key, show) {
