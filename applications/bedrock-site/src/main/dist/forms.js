@@ -268,7 +268,8 @@ Bedrock.Forms = function () {
                     input.inputElement.value = value;
                     break;
             }
-            if ((typeof (callHandleOnUpdate) !== "undefined") && (callHandleOnUpdate === true)) {
+            // call on update defaults to true
+            if ((typeof (callHandleOnUpdate) === "undefined") || (callHandleOnUpdate === true)) {
                 this.handleOnUpdate (key);
             }
         }
@@ -279,7 +280,8 @@ Bedrock.Forms = function () {
         for (let key of Object.keys (values)) {
             this.setValue(key, values[key], false);
         }
-        return ((typeof (callHandleOnUpdate) !== "undefined") && (callHandleOnUpdate === true)) ?
+        // call on update defaults to true
+        return ((typeof (callHandleOnUpdate) === "undefined") || (callHandleOnUpdate === true)) ?
             this.handleOnUpdate (_.WILDCARD) : this;
     };
 

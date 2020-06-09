@@ -77,7 +77,7 @@
         div: "bedrock-form-container-C",
         submitButtonValue: "DONE",
         inputs: [
-            { name: "which", type: Forms.SELECT, label: "Choice:", required: true, options: [ { value: "*", label: "(Select One)" }, "a", "b", "c", "d" ] },
+            { name: "which", type: Forms.SELECT, label: "Choice:", required: true, options: [ { value: "", label: "(Select One)" }, "a", "b", "c", "d" ] },
             { name: "a", type: Forms.TEXT, label: "A", required: true, placeholder: "YYYY" },
             { name: "b", type: Forms.TEXT, label: "B", required: true, placeholder: "YYYY" },
             { name: "c", type: Forms.TEXT, label: "C", required: true, placeholder: "YYYY" },
@@ -87,8 +87,8 @@
         onUpdate: function (updatedName, form) {
             if ((updatedName === "which") || (updatedName === Forms.WILDCARD)) {
                 let values = form.getValues();
-                switch (values["which"]) {
-                    case "*":
+                switch (("which" in values) ? values.which : Forms.WILDCARD) {
+                    case Forms.WILDCARD:
                         form.showOnlyInputs (["which"], true);
                         break;
                     case "a":
