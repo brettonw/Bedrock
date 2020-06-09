@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.brettonw.bedrock</groupId>
         <artifactId>libraries</artifactId>
-        <version>1.5.35-SNAPSHOT</version>
+        <version>1.5.35</version>
     </parent>
 
     <artifactId>database</artifactId>
