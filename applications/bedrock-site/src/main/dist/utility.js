@@ -1,13 +1,13 @@
 Bedrock.Utility = function () {
-    let $ = Object.create (null);
+    let _ = Object.create (null);
 
-    $.copyIf = function (key, leftObject, rightObject) {
+    _.copyIf = function (key, leftObject, rightObject) {
         if (key in leftObject) {
             rightObject[key] = leftObject[key];
         }
     };
 
-    $.randomString = function (length, chars) {
+    _.randomString = function (length, chars) {
         let result = "";
         for (let i = 0; i < length; ++i) {
             result += chars[Math.floor (Math.random () * chars.length)];
@@ -15,5 +15,13 @@ Bedrock.Utility = function () {
         return result;
     };
 
-    return $;
+    _.defaultTrue = function (value) {
+        return ((typeof (value) === "undefined") || (value !== false));
+    };
+
+    _.defaultFalse = function (value) {
+        return ((typeof (value) !== "undefined") && (value !== false));
+    };
+
+    return _;
 } ();

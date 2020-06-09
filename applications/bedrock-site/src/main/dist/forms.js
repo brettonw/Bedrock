@@ -1,5 +1,3 @@
-// XXX form fieldss don't validate unless they are required...
-
 Bedrock.Forms = function () {
     let _ = Object.create (Bedrock.Base);
 
@@ -220,13 +218,6 @@ Bedrock.Forms = function () {
         }
     };
 
-    _.reset = function () {
-        for (let inputName of Object.keys (this.inputs)) {
-            this.setValue (inputName, this.inputs[inputName].originalValue, false);
-        }
-        return this.handleOnUpdate(_.WILDCARD);
-    };
-
     _.getValues = function (addEvent, includeInvisible) {
         let result = {};
         if ((typeof (addEvent) !== "undefined") && (addEvent === true)) {
@@ -254,35 +245,51 @@ Bedrock.Forms = function () {
         return result;
     };
 
+    _.privateSetValue = function (key, value, callHandleOnUpdate) {
+        let input = this.inputs[key];
+        switch (input.type) {
+            case _.CHECKBOX:
+                input.inputElement.checked = value;
+                break;
+            case _.TEXT:
+            case _.SECRET:
+            case _.SELECT:
+            case _.LIST:
+                input.inputElement.value = value;
+                break;
+        }
+        // call on update defaults to true
+        return Bedrock.Utility.defaultTrue (callHandleOnUpdate) ? this.handleOnUpdate (key) : this;
+    };
+
     _.setValue = function (key, value, callHandleOnUpdate) {
         if (key in this.inputs) {
-            let input = this.inputs[key];
-            switch (input.type) {
-                case _.CHECKBOX:
-                    input.inputElement.checked = value;
-                    break;
-                case _.TEXT:
-                case _.SECRET:
-                case _.SELECT:
-                case _.LIST:
-                    input.inputElement.value = value;
-                    break;
-            }
-            // call on update defaults to true
-            if ((typeof (callHandleOnUpdate) === "undefined") || (callHandleOnUpdate === true)) {
-                this.handleOnUpdate (key);
-            }
+            this.privateSetValue (key, value, callHandleOnUpdate);
         }
         return this;
     };
 
-    _.setValues = function (values, callHandleOnUpdate) {
-        for (let key of Object.keys (values)) {
-            this.setValue(key, values[key], false);
+    _.setValues = function (values, callHandleOnUpdate, strictSet) {
+        // strictSet defaults to true
+        strictSet = Bedrock.Utility.defaultTrue (strictSet);
+        let keys = Object.keys (this.inputs);
+        for (let key of Object.keys (this.inputs)) {
+            if (key in values) {
+                this.privateSetValue(key, values[key], false);
+            } else if (strictSet) {
+                this.privateSetValue(key, this.inputs[key].originalValue, false);
+            }
         }
+
         // call on update defaults to true
-        return ((typeof (callHandleOnUpdate) === "undefined") || (callHandleOnUpdate === true)) ?
-            this.handleOnUpdate (_.WILDCARD) : this;
+        return Bedrock.Utility.defaultTrue (callHandleOnUpdate) ? this.handleOnUpdate (_.WILDCARD) : this;
+    };
+
+    _.reset = function () {
+        for (let inputName of Object.keys (this.inputs)) {
+            this.privateSetValue(inputName, this.inputs[inputName].originalValue, false);
+        }
+        return this.handleOnUpdate(_.WILDCARD);
     };
 
     _.showInput = function (key, show) {
@@ -295,9 +302,14 @@ Bedrock.Forms = function () {
         }
 
         // set the state
+        show = Bedrock.Utility.defaultTrue (show);
         input.visible = show;
         elementStyle.display = show ? input.display : "none";
         return this;
+    };
+
+    _.hideInput = function (key) {
+        return this.showInput(key, false);
     };
 
     _.showOnlyInputs = function (keys, show) {
@@ -311,6 +323,10 @@ Bedrock.Forms = function () {
         for (let key in this.inputs) {
             this.showInput(key,  (key in showHide) ? show : !show);
         }
+    };
+
+    _.hideOnlyInputs = function (keys) {
+        return this.showOnlyInputs(keys, false);
     };
 
     return _;
