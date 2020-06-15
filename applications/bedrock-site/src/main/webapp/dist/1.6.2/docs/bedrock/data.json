@@ -1,0 +1,155 @@
+{
+    "project": {
+        "name": "Bedrock",
+        "url": "bedrock.brettonw.com",
+        "version": "1.6.2"
+    },
+    "files": {
+        "/Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/html.js": {
+            "name": "/Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/html.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "/Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/simple-database.js": {
+            "name": "/Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/simple-database.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {},
+    "classes": {},
+    "elements": {},
+    "classitems": [
+        {
+            "file": "/Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/html.js",
+            "line": 108,
+            "description": "Utility function to tell if an element is in view in the scrolling region of a container",
+            "params": [
+                {
+                    "name": "element",
+                    "description": ""
+                },
+                {
+                    "name": "view",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Boolean"
+            },
+            "class": ""
+        },
+        {
+            "file": "/Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/html.js",
+            "line": 122,
+            "description": "Utility function to retrieve a style value from the stylesheets collection.\nNote: this only works if the stylesheet was loaded locally or securely",
+            "params": [
+                {
+                    "name": "selector",
+                    "description": "the name of the class to fetch a style value from"
+                },
+                {
+                    "name": "style",
+                    "description": "the name of the style to fetch"
+                }
+            ],
+            "return": {
+                "description": "the found style value, or undefined",
+                "type": "String"
+            },
+            "class": ""
+        },
+        {
+            "file": "/Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/simple-database.js",
+            "line": 5,
+            "description": "load all of the requested sub-databases into one object",
+            "params": [
+                {
+                    "name": "databaseNames",
+                    "description": "names of the sub-databases to load",
+                    "type": "Array"
+                },
+                {
+                    "name": "onReady",
+                    "description": "what to do when all of the databases are loaded",
+                    "type": "Function"
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "/Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/simple-database.js",
+            "line": 39,
+            "description": "match parameters or a wildcard",
+            "params": [
+                {
+                    "name": "records",
+                    "description": ""
+                },
+                {
+                    "name": "match",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Array"
+            },
+            "class": ""
+        },
+        {
+            "file": "/Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/simple-database.js",
+            "line": 107,
+            "params": [
+                {
+                    "name": "records",
+                    "description": ""
+                },
+                {
+                    "name": "sortFieldArray",
+                    "description": ""
+                }
+            ],
+            "class": ""
+        }
+    ],
+    "warnings": [
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " /Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/html.js:108"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " /Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/html.js:122"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " /Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/simple-database.js:39"
+        },
+        {
+            "message": "Missing item type\nUtility function to tell if an element is in view in the scrolling region of a container",
+            "line": " /Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/html.js:108"
+        },
+        {
+            "message": "Missing item type\nUtility function to retrieve a style value from the stylesheets collection.\nNote: this only works if the stylesheet was loaded locally or securely",
+            "line": " /Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/html.js:122"
+        },
+        {
+            "message": "Missing item type\nload all of the requested sub-databases into one object",
+            "line": " /Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/simple-database.js:5"
+        },
+        {
+            "message": "Missing item type\nmatch parameters or a wildcard",
+            "line": " /Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/simple-database.js:39"
+        },
+        {
+            "message": "Missing item type",
+            "line": " /Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/simple-database.js:107"
+        }
+    ]
+}
