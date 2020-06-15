@@ -120,7 +120,7 @@ public class EventFilter implements EventFilterHandler {
                     EventFilterResult eventFilterResult = filterEvent (event, allItem);
                     if (eventFilterResult != EventFilterResult.ALLOW) {
                         // one of the child filters didn't match, we can early out on that
-                        return eventFilterResult;
+                        return EventFilterResult.DENY;
                     }
                 }
             }
