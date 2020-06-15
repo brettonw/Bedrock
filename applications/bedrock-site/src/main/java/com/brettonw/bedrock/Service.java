@@ -23,9 +23,7 @@ public class Service extends Base {
     public static final String FETCH_ESCAPE_TYPE = "escape-type";
     public static final String IP_ADDRESS = "ip-address";
 
-    public Service () {
-        eventFilterHandler = new EventFilter();
-    }
+    public Service () { }
 
     public void handleEventEcho (Event event) {
         event.respond (event.getQuery ());

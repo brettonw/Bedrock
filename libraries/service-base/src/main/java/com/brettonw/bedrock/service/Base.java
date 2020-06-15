@@ -225,6 +225,11 @@ public class Base extends HttpServlet {
 
         // configure the application
         getConfiguration ();
+
+        // if there is a filter setup in the configuration, add a filter handler
+        if (configuration.has(EVENT_FILTER)) {
+            eventFilterHandler = new EventFilter();
+        }
     }
 
     @Override
