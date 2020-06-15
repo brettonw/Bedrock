@@ -49,6 +49,7 @@ public class Base extends HttpServlet {
     public static final String VERSION = "version";
     public static final String SCHEMA = "schema";
     public static final String SECRET = "secret";
+    public static final String EVENT_FILTER = "event-filter";
 
     private static ServletContext context;
     private static boolean locked;
@@ -96,6 +97,7 @@ public class Base extends HttpServlet {
     private String configurationResourcePath = "/WEB-INF/configuration.json";
     private BagObject configuration;
     private BagObject schema;
+    private EventFilterHandler eventFilterHandler;
 
     protected BagObject getSchema () {
         // return a deep copy so the user can't accidentally modify it
@@ -371,13 +373,18 @@ public class Base extends HttpServlet {
 
                         // if the validation passed
                         if (validationErrors.getCount () == 0) {
-                            // get the handler, and try to take care of business...
-                            Handler handler = handlers.get (eventName);
-                            if (handler != null) {
-                                // finally, do your business
-                                handler.handle (event);
+                            // give an opportunity to filter the event before it happens
+                            if ((eventFilterHandler == null) || (eventFilterHandler.isAllowedEvent (event, configuration.getBagObject (EVENT_FILTER)))) {
+                                // get the handler, and try to take care of business...
+                                Handler handler = handlers.get (eventName);
+                                if (handler != null) {
+                                    // finally, do your business
+                                    handler.handle (event);
+                                } else {
+                                    event.error ("No handler installed for '" + EVENT + "' (" + eventName + ")");
+                                }
                             } else {
-                                event.error ("No handler installed for '" + EVENT + "' (" + eventName + ")");
+                                event.error ("'" + EVENT + "' is not allowed");
                             }
                         } else {
                             event.error (validationErrors);
