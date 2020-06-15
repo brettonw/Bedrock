@@ -2,12 +2,12 @@ package com.brettonw.bedrock.service;
 
 import com.brettonw.bedrock.bag.*;
 import com.brettonw.bedrock.servlet.Tester;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Base_Test extends Base {
     Tester tester;

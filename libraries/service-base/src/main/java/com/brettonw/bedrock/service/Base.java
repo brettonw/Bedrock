@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
@@ -20,6 +21,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.input.ReversedLinesFileReader;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.joining;
 
 public class Base extends HttpServlet {
@@ -48,8 +52,14 @@ public class Base extends HttpServlet {
     public static final String STRICT = "strict";
     public static final String VERSION = "version";
     public static final String SCHEMA = "schema";
-    public static final String SECRET = "secret";
     public static final String EVENT_FILTER = "event-filter";
+    public static final String LOG_FILE = "log-file";
+    public static final String TIMESTAMP = "timestamp";
+    public static final String LEVEL = "level";
+    public static final String METHOD = "method";
+    public static final String MESSAGE = "message";
+    public static final String LINE_COUNT = "line-count";
+    public static final String LOCK = "lock";
 
     private static ServletContext context;
     private static boolean locked;
@@ -75,29 +85,12 @@ public class Base extends HttpServlet {
         return Base.class.getPackage ().getImplementationVersion ();
     }
 
-    public static String getIpAddress (Event event) {
-        HttpServletRequest request = event.getRequest ();
-        String ipAddress = request.getRemoteAddr ();
-
-        // try to get the x-forwarded header, the last one...
-        String forwarding = request.getHeader ("x-forwarded-for");
-        if (forwarding != null) {
-            String[] forwards = forwarding.split (",");
-            for (String forward : forwards) {
-                forward = forward.trim ();
-                ipAddress = forward.split (":")[0];
-            }
-        }
-
-        return ipAddress;
-    }
-
     private final Map<String, Handler> handlers = new HashMap<> ();
 
     private String configurationResourcePath = "/WEB-INF/configuration.json";
     private BagObject configuration;
     private BagObject schema;
-    private EventFilterHandler eventFilterHandler;
+    protected EventFilterHandler eventFilterHandler;
 
     protected BagObject getSchema () {
         // return a deep copy so the user can't accidentally modify it
@@ -125,6 +118,8 @@ public class Base extends HttpServlet {
             if ((schema = configuration.getBagObject (SCHEMA)) != null) {
                 // remove the schema object from the configuration so it is protected
                 configuration.remove (SCHEMA);
+
+                // add the default events
 
                 // add a 'help' event if one isn't supplied
                 if (! schema.has (help)) {
@@ -384,7 +379,7 @@ public class Base extends HttpServlet {
                                     event.error ("No handler installed for '" + EVENT + "' (" + eventName + ")");
                                 }
                             } else {
-                                event.error ("'" + EVENT + "' is not allowed");
+                                event.error ("'" + EVENT + "' (" + eventName + ") is not allowed");
                             }
                         } else {
                             event.error (validationErrors);
@@ -422,20 +417,9 @@ public class Base extends HttpServlet {
         event.ok ();
     }
 
-    protected boolean checkSecret (Event event) {
-        BagObject query = event.getQuery ();
-        String secret = event.getQuery ().getString (Key.cat (POST_DATA, SECRET));
-        BagObject secretRecipe = configuration.getBagObject (SECRET);
-        return ((secretRecipe != null) && Secret.check (secret, secretRecipe));
-    }
-
     public void handleEventLock (Event event) {
-        if (checkSecret (event)) {
-            locked = true;
-            event.ok ();
-        } else {
-            event.error ("secret mismatch");
-        }
+        locked = true;
+        event.ok ();
     }
 
     public void handleEventHelp (Event event) {
@@ -447,6 +431,46 @@ public class Base extends HttpServlet {
                 .open (POM_VERSION, getVersion ())
                 .put (DISPLAY_NAME, getName ())
         );
+    }
+
+    private String escapeLine (String line) {
+        return line
+                .replace ("\\", "\\\\")
+                .replace ("\n", "\\n")
+                .replace ("\r", "\\r")
+                .replace ("\f", "\\f")
+                .replace ("\t", "\\t")
+                .replace ("\b", "\\b")
+                .replace ("\"", "\\\"");
+    }
+
+    public void handleEventLogFile (Event event) throws IOException {
+        int nLines = event.getQuery().getInteger(LINE_COUNT, () -> 100);
+        BagArray result = new BagArray(nLines);
+        String logFile = configuration.getString(LOG_FILE, () -> "/usr/local/tomcat/logs/catalina.out");
+        ReversedLinesFileReader reader = new ReversedLinesFileReader(new File(logFile), UTF_8);
+        for (int counter = 0; counter < nLines; ++counter) {
+            String line = reader.readLine();
+            if (line != null) {
+                // log 1234567890123 I com.brettonw.bedrock.class (method) message",
+                String[] array = line.split(" ", 6);
+                if ((array.length == 6) && (array[0].equals("log"))) {
+                    String method = String.join (".", array[3], array[4]).trim ();
+                    result.add(BagObject
+                            .open(TIMESTAMP, array[1])
+                            .put(LEVEL, array[2])
+                            .put(METHOD, method)
+                            .put(MESSAGE, escapeLine (array[5]))
+                    );
+
+                    // stop after the servlet initialization...
+                    if (method.equals ("com.brettonw.bedrock.service.Base.init")) {
+                        counter = nLines;
+                    }
+                }
+            }
+        }
+        event.ok (result);
     }
 
     public void handleEventMultiple (Event event) {

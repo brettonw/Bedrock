@@ -3,7 +3,7 @@ package com.brettonw.bedrock.bag.entry;
 import com.brettonw.bedrock.bag.BagTest;
 import com.brettonw.bedrock.bag.BagArray;
 import com.brettonw.bedrock.bag.BagObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class HandlerTest {
     @Test

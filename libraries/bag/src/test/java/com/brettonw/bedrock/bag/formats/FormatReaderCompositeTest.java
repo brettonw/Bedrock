@@ -6,9 +6,9 @@ import com.brettonw.bedrock.bag.BagObjectFrom;
 import com.brettonw.bedrock.bag.BagTest;
 import com.brettonw.bedrock.bag.entry.HandlerArrayFromDelimited;
 import com.brettonw.bedrock.bag.entry.HandlerObjectFromPairsArray;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FormatReaderCompositeTest {
     @Test

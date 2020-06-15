@@ -3,9 +3,9 @@ package com.brettonw.bedrock.secret;
 import com.brettonw.bedrock.bag.BagObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SecretTest extends Secret {
     private static final Logger log = LogManager.getLogger (SecretTest.class);

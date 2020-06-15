@@ -1,4 +1,5 @@
 {
+    "log-file": "/usr/local/tomcat/logs/catalina.out",
     "schema": {
         "name": "Bedrock Service",
         "description": "Bedrock Service is a simple JSON repeater designed to demonstrate a simple API and be used in test suites requiring JSON responses from a remote host, such as com.brettonw.bedrock.",
@@ -25,7 +26,7 @@
                     "post-data": { "secret": "xxxx1234" }
                 }
             },
-            "ip": {
+            "ip-address": {
                 "description": "Get the IP address of the requestor.",
                 "response": {
                     "ip": { "description": "IP (v4) address of the requestor.", "required": true }
@@ -76,9 +77,18 @@
             }
         }
     },
-    "secret": {
-        "salt": "",
-        "hash": "",
-        "recipe": "SHA-512"
+    "event-filter": {
+        "filter-type": "any-list",
+        "any-list": [
+            {
+                "event-list": [ "lock" ],
+                "filter-type": "secret-list",
+                "secret-list": [ { "salt": "", "hash": "", "recipe": "SHA-512" } ]
+            },
+            {
+                "event-list": [ "*" ],
+                "filter-type": "allow"
+            }
+        ]
     }
 }

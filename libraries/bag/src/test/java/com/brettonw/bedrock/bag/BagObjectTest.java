@@ -5,14 +5,14 @@ import com.brettonw.bedrock.bag.test.TestClassA;
 import com.brettonw.bedrock.bag.test.TestEnumXYZ;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class BagObjectTest {
     private static final Logger log = LogManager.getLogger (BagObject.class);
@@ -31,7 +31,7 @@ public class BagObjectTest {
         BagTest.report(bagObject.getCount (), 6, "BagObject simple count");
 
         String keys[] = bagObject.keys ();
-        assertArrayEquals("Check keys", new String[]{"address", "city", "name", "phone", "state", "zip"}, keys);
+        assertArrayEquals(new String[]{"address", "city", "name", "phone", "state", "zip"}, keys, "Check keys");
         String state = bagObject.getString ("state");
         BagTest.report (state, "md", "Check state");
 

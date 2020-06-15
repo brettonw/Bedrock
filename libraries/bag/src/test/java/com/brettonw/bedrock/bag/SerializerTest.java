@@ -3,7 +3,7 @@ package com.brettonw.bedrock.bag;
 import com.brettonw.bedrock.bag.test.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class SerializerTest {
     private static final Logger log = LogManager.getLogger (SerializerTest.class);
@@ -62,19 +62,19 @@ public class SerializerTest {
         BagObject bagObject = Serializer.toBagObject (testArray);
         log.info (bagObject.toString ());
         Integer reconArray[] = Serializer.fromBagObject (bagObject);
-        assertArrayEquals("Check array reconstitution", testArray, reconArray);
+        assertArrayEquals(testArray, reconArray, "Check array reconstitution");
 
         int testArray2[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         bagObject = Serializer.toBagObject (testArray2);
         log.info (bagObject.toString ());
         int reconArray2[] = Serializer.fromBagObject (bagObject);
-        assertArrayEquals("Check array reconstitution", testArray2, reconArray2);
+        assertArrayEquals(testArray2, reconArray2, "Check array reconstitution");
 
         int testArray3[][] = { {0,0}, {1,1}, {2,2} };
         bagObject = Serializer.toBagObject (testArray3);
         log.info (bagObject.toString ());
         int reconArray3[][] = Serializer.fromBagObject (bagObject);
-        assertArrayEquals("Check array reconstitution", testArray3, reconArray3);
+        assertArrayEquals(testArray3, reconArray3, "Check array reconstitution");
     }
 
     @Test
@@ -86,7 +86,7 @@ public class SerializerTest {
         BagObject bagObject = Serializer.toBagObject (arrayList);
         log.info (bagObject.toString ());
         ArrayList<Integer> reconArrayList = Serializer.fromBagObject (bagObject);
-        assertArrayEquals ("Check array list reconstitution", arrayList.toArray (), reconArrayList.toArray ());
+        assertArrayEquals (arrayList.toArray (), reconArrayList.toArray (), "Check array list reconstitution");
     }
 
     @Test
@@ -98,8 +98,8 @@ public class SerializerTest {
         BagObject bagObject = Serializer.toBagObject (hashMap);
         log.info (bagObject.toString ());
         HashMap<String, Integer> reconHashMap = Serializer.fromBagObject (bagObject);
-        assertArrayEquals ("Check hash map reconstitution - keys", hashMap.keySet ().toArray (), reconHashMap.keySet ().toArray ());
-        assertArrayEquals ("Check hash map reconstitution - values", hashMap.values ().toArray (), reconHashMap.values ().toArray ());
+        assertArrayEquals (hashMap.keySet ().toArray (), reconHashMap.keySet ().toArray (), "Check hash map reconstitution - keys");
+        assertArrayEquals (hashMap.values ().toArray (), reconHashMap.values ().toArray (), "Check hash map reconstitution - values");
 
         // add a few other simple serializations...
         BagObject anotherBagObject = Serializer.toBagObject (bagObject);

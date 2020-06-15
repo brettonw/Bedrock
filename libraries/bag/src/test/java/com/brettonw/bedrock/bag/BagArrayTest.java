@@ -5,13 +5,13 @@ import com.brettonw.bedrock.bag.expr.Exprs;
 import com.brettonw.bedrock.bag.formats.MimeType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BagArrayTest {
     private static final Logger log = LogManager.getLogger (BagArrayTest.class);
@@ -27,11 +27,11 @@ public class BagArrayTest {
         bagArray.insert (1, 234567);
         bagArray.replace (2, 345678);
 
-        assertEquals ("Check get double", 123.456, bagArray.getDouble (3), 1.0e-9);
-        assertEquals ("Check size", 5, bagArray.getCount ());
+        assertEquals (123.456, bagArray.getDouble (3), 1.0e-9, "Check get double");
+        assertEquals (5, bagArray.getCount (), "Check size");
 
         bagArray.insert (10, 456789);
-        assertEquals ("Check size", 11, bagArray.getCount ());
+        assertEquals (11, bagArray.getCount (), "Check size");
 
         // convert that bedrock to a string
         String bagArrayAsString = bagArray.toString ();

@@ -15,6 +15,14 @@ Bedrock.ServiceDescriptor = function () {
     };
 
     $.tryExample = function (exampleName) {
+        // show the result
+        let hoverBoxRoot = document.getElementById ("bedrock-service-descriptor-hover-box");
+        let hoverBoxBufferElement = document.getElementById ("bedrock-service-descriptor-hover-box-buffer");
+        let Html = Bedrock.Html;
+        Html.removeAllChildren(hoverBoxBufferElement);
+        hoverBoxRoot.style.visibility = "visible";
+        event.stopPropagation();
+
         Bedrock.ServiceBase.get ({ event : "help" }, function (response) {
             // get the example and explicitly set the event in it (it's typically omitted for simplicity in the configurations)
             let example = response.events[exampleName].example;
@@ -24,12 +32,6 @@ Bedrock.ServiceDescriptor = function () {
             let postData = null;
 
             let handleExampleResponse = function (exampleResponse) {
-                let Html = Bedrock.Html;
-                document.getElementById ("bedrock-service-descriptor-hover-box").style.visibility = "visible";
-
-                let element = document.getElementById ("bedrock-service-descriptor-hover-box-buffer");
-                Html.removeAllChildren(element);
-
                 let innerHTML = Html.Builder.begin ("div");
                 innerHTML.add("h2", { style: { margin: 0 }, innerHTML: "Example for " + exampleName });
                 if (postData != null) {
@@ -51,7 +53,7 @@ Bedrock.ServiceDescriptor = function () {
                     .add ("div", { style:  { margin: "16px 0 8px 0", fontWeight: "bold" }, innerHTML: "Response JSON: " })
                     .add ("pre", { class: "code-pre", innerHTML: JSON.stringify (exampleResponse, null, 4) })
 
-                element.appendChild(innerHTML.end ());
+                hoverBoxBufferElement.appendChild(innerHTML.end ());
             };
 
             // if the example includes post data...
@@ -67,8 +69,7 @@ Bedrock.ServiceDescriptor = function () {
                 Bedrock.Http.get(url, handleExampleResponse);
             }
         }, function (error) {
-            document.getElementById ("bedrock-service-descriptor-hover-box").style.visibility = "visible";
-            document.getElementById ("bedrock-service-descriptor-hover-box-content").innerHTML = ("ERROR: " + error);
+            hoverBoxBufferElement.appendChild (Html.Builder.begin ("div", { innerHTML: "ERROR: " + error}).end ());
         });
     };
 

@@ -6,11 +6,11 @@ import com.brettonw.bedrock.bag.BagObjectFrom;
 import com.brettonw.bedrock.servlet.Tester;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Service_Test extends Service {
     private static final Logger log = LogManager.getLogger (Service_Test.class);
@@ -29,12 +29,12 @@ public class Service_Test extends Service {
 
     @Test
     public void testGetIP () throws IOException {
-        BagObject query = BagObject.open (EVENT, IP);
+        BagObject query = BagObject.open (EVENT, IP_ADDRESS);
         BagObject response = tester.bagObjectFromGet (query);
         assertTrue (response.getString (STATUS).equals (OK));
-        String ip = response.getBagObject (RESPONSE).getString (IP);
-        assertTrue (ip != null);
-        log.info (IP + ": " + ip);
+        String ipAddress = response.getBagObject (RESPONSE).getString (IP_ADDRESS);
+        assertTrue (ipAddress != null);
+        log.info (IP_ADDRESS + ": " + ipAddress);
     }
 
     @Test

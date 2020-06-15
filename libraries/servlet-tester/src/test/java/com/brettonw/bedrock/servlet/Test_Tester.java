@@ -7,7 +7,7 @@ import com.brettonw.bedrock.bag.SourceAdapterReader;
 import com.brettonw.bedrock.bag.formats.MimeType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,7 +18,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Test_Tester extends HttpServlet {
     private static final Logger log = LogManager.getLogger (Test_Tester.class);

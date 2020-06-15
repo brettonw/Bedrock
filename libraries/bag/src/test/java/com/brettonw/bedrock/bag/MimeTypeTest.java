@@ -1,7 +1,7 @@
 package com.brettonw.bedrock.bag;
 
 import com.brettonw.bedrock.bag.formats.MimeType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MimeTypeTest {
     @Test

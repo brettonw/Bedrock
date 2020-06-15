@@ -4,7 +4,7 @@ import com.brettonw.bedrock.bag.BagTest;
 import com.brettonw.bedrock.bag.BagArray;
 import com.brettonw.bedrock.bag.BagObject;
 import com.brettonw.bedrock.bag.BagObjectFrom;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FormatWriterTest {
 

@@ -38,6 +38,23 @@ public class Event {
         return query.getString (EVENT);
     }
 
+    public String getIpAddress () {
+        String ipAddress = request.getRemoteAddr ();
+
+        // try to get the x-forwarded header, the last one...
+        String forwarding = request.getHeader ("x-forwarded-for");
+        if (forwarding != null) {
+            String[] forwards = forwarding.split (",");
+            for (String forward : forwards) {
+                forward = forward.trim ();
+                ipAddress = forward.split (":")[0];
+            }
+        }
+
+        return ipAddress;
+    }
+
+
     public Event respond (Bag bag) {
         response = bag;
         return this;

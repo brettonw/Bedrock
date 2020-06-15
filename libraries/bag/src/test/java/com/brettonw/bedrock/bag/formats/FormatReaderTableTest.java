@@ -4,7 +4,7 @@ import com.brettonw.bedrock.bag.BagArray;
 import com.brettonw.bedrock.bag.BagArrayFrom;
 import com.brettonw.bedrock.bag.BagTest;
 import com.brettonw.bedrock.bag.entry.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
