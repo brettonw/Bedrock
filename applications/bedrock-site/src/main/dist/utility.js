@@ -23,5 +23,9 @@ Bedrock.Utility = function () {
         return ((typeof (value) !== "undefined") && (value !== false));
     };
 
+    _.ucFirst = function (str) {
+        return ((typeof (str) !== "undefined") && (str.length > 0)) ? (str.charAt(0).toUpperCase() + str.slice(1)) : "";
+    };
+
     return _;
 } ();

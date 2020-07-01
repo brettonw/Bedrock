@@ -5,7 +5,7 @@ Bedrock.Cookie = function () {
         let date = new Date ();
         date.setTime (date.getTime () + (expireDays * 24 * 60 * 60 * 1000));
         let expires = "expires=" + date.toUTCString ();
-        document.cookie = name + "=" + value + ";" + expires + ";path=/";
+        document.cookie = name + "=" + value + "; " + expires + "; SameSite=strict; path=/";
     };
 
     $.get = function (name) {
@@ -13,6 +13,7 @@ Bedrock.Cookie = function () {
         let decodedCookie = decodeURIComponent (document.cookie);
         let cookieArray = decodedCookie.split (";");
         for (let cookie of cookieArray) {
+            cookie = cookie.trim();
             let index = cookie.indexOf (find);
             if (index >= 0) {
                 return cookie.substring (index + find.length);

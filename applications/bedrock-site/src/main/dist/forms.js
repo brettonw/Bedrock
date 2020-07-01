@@ -220,13 +220,13 @@ Bedrock.Forms = function () {
 
     _.getValues = function (addEvent, includeInvisible) {
         let result = {};
-        if ((typeof (addEvent) !== "undefined") && (addEvent === true)) {
+        if (Bedrock.Utility.defaultFalse(addEvent)) {
             result.event = this.name;
         }
         let keys = Object.keys (this.inputs);
         for (let key of keys) {
             let input = this.inputs[key];
-            if (input.visible || ((typeof(includeInvisible) !== "undefined") && (includeInvisible === true))) {
+            if (input.visible || Bedrock.Utility.defaultFalse (includeInvisible)) {
                 switch (input.type) {
                     case _.CHECKBOX:
                         result[input.name] = input.inputElement.checked;
