@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>/Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/html.js - Bedrock</title>
+    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="stylesheet" href="../assets/css/custom.css">
+    <link rel="stylesheet" href="../assets/css/lucid.css">
+    <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.css">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+</head>
+<body class="yui3-skin-sam">
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <h1 class="brand" style="padding: 10px 16px 10px; height: 20px; line-height: 20px; margin-left: 0;">
+            Bedrock
+        </h1>
+	<div class="nav">
+            <li class="divider-vertical"></li>
+            <li>
+                <p class="navbar-text">
+                    API Docs for Version: <b>1.6.4</b>
+                </p>
+            </li>
+        </div>
+        <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='[]'>
+        </form>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="span3">
+<div>
+    <div id="sidebar">
+    <div id="classes">
+        <ul id="api-classes" class="nav nav-list">
+        </ul>
+    </div>
+    </div>
+</div>
+        </div>
+        <div class="span9">
+    <form id="options-form" class="form-inline pull-right">
+        Show:
+        <label for="api-show-inherited" class="checkbox">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected" class="checkbox">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private" class="checkbox">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated" class="checkbox">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </form>
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<div class="page-header">
+    <h1>/Users/brettonw/Work/Bedrock/applications/bedrock-site/src/main/dist/html.js <small>File</small></h1>
+</div>
+
+<div class="file">
+    <pre class="prettyprint linenums">
+// Helper functions for emitting HTML from Javascript
+let valid = function (value = null) {
+    return (value !== null);
+};
+
+let block = function (block, attributes, content) {
+    let result = &quot;&lt;&quot; + block;
+    if (valid (attributes)) {
+        let attributeNames = Object.keys (attributes);
+        for (let attributeName of attributeNames) {
+            if (valid (attributes[attributeName])) {
+                result += &quot; &quot; + attributeName + &quot;=\&quot;&quot; + attributes[attributeName] + &quot;\&quot;&quot;;
+            }
+        }
+    }
+    return result + (valid (content) ? (&quot;&gt;&quot; + content + &quot;&lt;/&quot; + block + &quot;&gt;&quot;) : (&quot;/&gt;&quot;));
+};
+
+let div = function (cssClass, content) {
+    return block (&quot;div&quot;, { &quot;class&quot;: cssClass }, content);
+};
+
+let a = function (cssClass, href, content) {
+    return block (&quot;a&quot;, { &quot;class&quot;: cssClass, &quot;href&quot;: href, &quot;target&quot;: &quot;_top&quot; }, content);
+};
+
+Bedrock.Html = function () {
+    let $ = Object.create (null);
+
+    $.removeAllChildren = function (element) {
+        while (element.firstChild) {
+            element.removeChild (element.firstChild);
+        }
+    };
+
+    $.makeElement = function (tag, options) {
+        // check to see if tag includes a namespace url, we allow separation by semicolon
+        let tagSplit = tag.split(&quot;;&quot;, 2);
+        let uri = &quot;&quot;;
+        if (tagSplit.length == 2) {
+            // figure out which one has a &quot;:&quot; in it - that&#x27;s the namespace
+            if (tagSplit[0].indexOf(&quot;:&quot;) &gt; 0) {
+                uri = tagSplit[0];
+                tag = tagSplit[1];
+            } else if (tagSplit[1].indexOf(&quot;:&quot;) &gt; 0) {
+                uri = tagSplit[1];
+                tag = tagSplit[0];
+            }
+        }
+
+        // create the tag and add the options, appropriately
+        let element = (uri.length &gt; 0) ? document.createElementNS(uri, tag) : document.createElement (tag);
+        let optionNames = Object.keys (options);
+        for (let optionName of optionNames) {
+            switch (optionName) {
+                case &quot;class&quot;:
+                case &quot;classes&quot;: {
+                    let cssClasses = options[optionName];
+                    if (! Array.isArray (cssClasses)) {
+                        cssClasses = cssClasses.split (&quot;,&quot;);
+                    }
+                    for (let cssClass of cssClasses) {
+                        element.classList.add (cssClass);
+                    }
+                    break;
+                }
+                case &quot;style&quot;: {
+                    for (let styleName of Object.keys (options.style)) {
+                        element.style[styleName] = options.style[styleName];
+                    }
+                    break;
+                }
+                case &quot;attribute&quot;:
+                case &quot;attributes&quot;:{
+                    // the .attribute form of access is preferred, but for non-standard elements, as
+                    // in SVG node attributes, this is the supported method
+                    let attributes = options[optionName];
+                    for (let attributeName of Object.keys (attributes)) {
+                        element.setAttribute (attributeName, attributes[attributeName]);
+                    }
+                    break;
+                }
+                case &quot;event&quot;:
+                case &quot;events&quot;:{
+                    // firefox and chrome handle these things differently, so this is an
+                    // effort to provide common handling
+                    let events = options[optionName];
+                    for (let eventName of Object.keys (events)) {
+                        element.addEventListener(eventName, events[eventName], false);
+                    }
+                    break;
+                }
+                default: {
+                    element[optionName] = options[optionName];
+                    break;
+                }
+            }
+        }
+        return element;
+    };
+
+    $.addElement = function (parent, tag, options, before = null) {
+        let element = $.makeElement(tag, options);
+        parent.insertBefore (element, before);
+        return element;
+    };
+
+    /**
+     * Utility function to tell if an element is in view in the scrolling region of a container
+     * @param element
+     * @param view
+     * @returns {boolean}
+     */
+    $.elementIsInView = function (element, view) {
+        let viewTop = view.scrollTop;
+        let viewBottom = view.offsetHeight + viewTop;
+        let elementTop = element.offsetTop;
+        let elementBottom = elementTop + element.offsetHeight;
+        return ((elementBottom &lt;= viewBottom) &amp;&amp; (elementTop &gt;= viewTop));
+    };
+
+    /**
+     * Utility function to retrieve a style value from the stylesheets collection.
+     * Note: this only works if the stylesheet was loaded locally or securely
+     * @param selector the name of the class to fetch a style value from
+     * @param style the name of the style to fetch
+     * @returns {string} the found style value, or undefined
+     */
+    $.getCssSelectorStyle = function (selector, style) {
+        for (let styleSheet of document.styleSheets) {
+            try {
+                if (styleSheet.cssRules !== null) {
+                    for (let cssRule of styleSheet.cssRules) {
+                        if (cssRule.selectorText &amp;&amp; (cssRule.selectorText === selector)) {
+                            return cssRule.style[style];
+                        }
+                    }
+                }
+            }
+            catch (exception) {
+                // really, just trap this since it&#x27;s a security problem that chrome fixed by
+                // throwing an exception
+            }
+        }
+        return undefined;
+    };
+
+    $.Builder = function () {
+        let _ = Object.create (Bedrock.Base);
+
+        _.init = function (parameters) {
+            this.parentBuilder = (&quot;parentBuilder&quot; in parameters) ? parameters.parentBuilder : null;
+            this.elementType = parameters.elementType;
+            this.elementParameters = (parameters.elementParameters !== undefined) ? parameters.elementParameters : {};
+            this.builders = [];
+            return this;
+        };
+
+        _.addBuilder = function (builder) {
+            this.builders.push (builder);
+            return this;
+        };
+
+        _.add = function (elementType, elementParameters) {
+            // if this method is called as a static, this is creating a new builder
+            return (Object.is (this, _)) ?
+                _.new ({ elementType: elementType, elementParameters: elementParameters }).build () :
+                this.addBuilder (_.new ( { parentBuilder: this, elementType: elementType, elementParameters: elementParameters }));
+        };
+
+        _.beginBuilder = function (builder) {
+            this.builders.push (builder);
+            return builder;
+        };
+
+        _.begin = function (elementType, elementParameters) {
+            // if this method is called as a static, this is creating a new builder
+            return (Object.is (this, _)) ?
+                _.new ({ elementType: elementType, elementParameters: elementParameters }) :
+                this.beginBuilder (_.new ({ parentBuilder: this, elementType: elementType, elementParameters: elementParameters }));
+        };
+
+        _.end = function () {
+            return (this.parentBuilder !== null) ? this.parentBuilder : this.build ();
+        };
+
+        _.build = function () {
+            // create my element
+            let element = $.makeElement (this.elementType, this.elementParameters);
+
+            // walk down the builders, building in turn
+            for (let builder of this.builders) {
+                element.appendChild(builder.build ());
+            }
+
+            return element;
+        };
+
+        return _;
+    } ();
+
+    return $;
+} ();
+
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/jquery/jquery-1.8.2.min.js"></script>
+<script src="../assets/vendor/bootstrap/js/bootstrap.js"></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script src="../assets/js/yuidoc-bootstrap.js"></script>
+<script>prettyPrint();</script>
+</body>
+</html>
