@@ -47,6 +47,7 @@ public class Base extends HttpServlet {
     public static final String QUERY = "query";
     public static final String REQUIRED = "required";
     public static final String RESPONSE = "response";
+    public static final String RESPONSE_TIME_NS = "response-time-ns";
     public static final String SERVLET = "servlet";
     public static final String STATUS = "status";
     public static final String STRICT = "strict";
