@@ -6,6 +6,7 @@ import com.brettonw.bedrock.bag.BagObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.lang.System;
 import javax.servlet.http.HttpServletRequest;
 
 import static com.brettonw.bedrock.service.Base.*;
@@ -13,6 +14,7 @@ import static com.brettonw.bedrock.service.Base.*;
 public class Event {
     private static final Logger log = LogManager.getLogger (Event.class);
 
+    private final long startTimeNano;
     private final BagObject query;
     private final HttpServletRequest request;
     private Bag response;
@@ -20,6 +22,7 @@ public class Event {
     public Event (BagObject query, HttpServletRequest request) {
         this.query = query;
         this.request = request;
+        startTimeNano = System.nanoTime();
     }
 
     public BagObject getQuery () {
@@ -60,8 +63,17 @@ public class Event {
         return this;
     }
 
+    private Event respond (String status, String responseKey, Bag responseValue) {
+        return respond (BagObject
+                .open (QUERY, query)
+                .put (STATUS, status)
+                .put (responseKey, responseValue)
+                .put (RESPONSE_TIME_NS, System.nanoTime() - startTimeNano)
+        );
+    }
+
     public Event ok (Bag bag) {
-        return respond (BagObject.open (QUERY, query).put (STATUS, OK).put (RESPONSE, bag));
+        return respond (OK, RESPONSE, bag);
     }
 
     public Event ok () {
@@ -75,7 +87,7 @@ public class Event {
         }
 
         // and respond to the end user...
-        return respond (BagObject.open (QUERY, query).put (STATUS, ERROR).put (ERROR, errors));
+        return respond (ERROR, ERROR, errors);
     }
 
     public Event error (String error) {
