@@ -17,7 +17,7 @@ fi
 DOCKER_COUNT=$(docker-machine ls | grep default | grep -i running | wc -l | xargs);
 if [ "$DOCKER_COUNT" -eq "1" ]; then
   eval $(docker-machine env)
-  echo "Install: building docker tag $PROJECT_NAME:$PROJECT_VERSION using machine ($DOCKER_MACHINE_NAME)";
+  echo "Install: building docker tag $PROJECT_NAME:${PROJECT_VERSION,,} using machine ($DOCKER_MACHINE_NAME)";
 
   cp -r $PROJECT_DIR/src/main/docker $TARGET_DIR/docker
   cp $TARGET_DIR/bedrock.war $TARGET_DIR/docker/ROOT.war
