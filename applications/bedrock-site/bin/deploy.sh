@@ -9,7 +9,7 @@ set -e
 DOCKER_COUNT=$(docker system info | grep -i images | awk '{print $2}');
 set +e
 
-echo "Deploy: pushing docker tag $PROJECT_NAME:$PROJECT_VERSION from machine ($DOCKER_MACHINE_NAME) to AWS";
+echo "Deploy: pushing docker tag $PROJECT_NAME:$PROJECT_VERSION to AWS";
 
 # get a few user params (AWS_ACCOUNT_ID, AWS_REGION, AWS_PROFILE)
 . ~/.aws/bedrock.sh;
