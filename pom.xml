@@ -29,7 +29,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mongodb.version>3.12.3</mongodb.version>
         <log4j.version>2.15.0</log4j.version>
-        <junit-jupiter.version>5.6.2</junit-jupiter.version>
+        <junit-jupiter.version>5.8.2</junit-jupiter.version>
         <!-- Tomcat 9.0 v. 4.0.0 -->
         <servlet.version>4.0.0</servlet.version>
         <java.version>11</java.version>

@@ -9,9 +9,7 @@ set -e
 TARGET_DIR="$PROJECT_DIR/target";
 
 # docker setup
-set -e
 DOCKER_COUNT=$(docker system info | grep -i images | awk '{print $2}');
-set +e
 
 echo "Install: building docker tag $PROJECT_NAME:${PROJECT_VERSION,,} using machine ($DOCKER_MACHINE_NAME)";
 
