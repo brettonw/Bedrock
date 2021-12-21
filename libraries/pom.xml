@@ -32,6 +32,7 @@
     </dependencies>
 
     <modules>
+        <module>logger</module>
         <module>base</module>
         <module>bag</module>
         <module>secret</module>
