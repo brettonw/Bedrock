@@ -5,8 +5,8 @@ import com.brettonw.bedrock.bag.formats.MimeType;
 import com.brettonw.bedrock.service.Base;
 import com.brettonw.bedrock.service.Event;
 import com.brettonw.bedrock.service.EventFilter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.brettonw.bedrock.logger.LogManager;
+import com.brettonw.bedrock.logger.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;

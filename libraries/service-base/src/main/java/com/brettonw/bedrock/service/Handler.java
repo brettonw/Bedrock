@@ -1,7 +1,7 @@
 package com.brettonw.bedrock.service;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.brettonw.bedrock.logger.LogManager;
+import com.brettonw.bedrock.logger.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

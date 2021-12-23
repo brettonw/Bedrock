@@ -3,8 +3,8 @@ package com.brettonw.bedrock.bag;
 import com.brettonw.bedrock.bag.formats.FormatReader;
 import com.brettonw.bedrock.bag.formats.FormatWriter;
 import com.brettonw.bedrock.bag.formats.MimeType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.brettonw.bedrock.logger.LogManager;
+import com.brettonw.bedrock.logger.Logger;
 
 /**
  * A collection of text-based values store in key/value pairs (maintained in a sorted array).

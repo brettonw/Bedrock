@@ -5,8 +5,8 @@ import com.brettonw.bedrock.bag.BagObjectFrom;
 import com.brettonw.bedrock.bag.SourceAdapter;
 import com.brettonw.bedrock.bag.SourceAdapterReader;
 import com.brettonw.bedrock.bag.formats.MimeType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.brettonw.bedrock.logger.LogManager;
+import com.brettonw.bedrock.logger.Logger;
 import org.junit.jupiter.api.Test;
 
 import javax.servlet.ServletException;

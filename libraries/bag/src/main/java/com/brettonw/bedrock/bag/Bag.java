@@ -2,8 +2,8 @@ package com.brettonw.bedrock.bag;
 
 import com.brettonw.bedrock.bag.expr.BooleanExpr;
 import com.brettonw.bedrock.bag.formats.MimeType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.brettonw.bedrock.logger.LogManager;
+import com.brettonw.bedrock.logger.Logger;
 
 import java.util.function.Function;
 import java.util.function.Supplier;

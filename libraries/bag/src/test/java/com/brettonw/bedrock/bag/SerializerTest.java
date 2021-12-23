@@ -1,8 +1,8 @@
 package com.brettonw.bedrock.bag;
 
 import com.brettonw.bedrock.bag.test.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.brettonw.bedrock.logger.LogManager;
+import com.brettonw.bedrock.logger.Logger;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
@@ -266,24 +266,23 @@ public class SerializerTest {
     }
 
     @Test
-    public void testOffsetDateTime () {
+    public void testTypeWithNoDefaultConstructor () {
         // deal with a type that has a no default constructor?
-        OffsetDateTime  odt = OffsetDateTime.now ();
-        BagObject bagObject = Serializer.toBagObject (odt);
+        TestClassD  tcd = new TestClassD ("x");
+        BagObject bagObject = Serializer.toBagObject (tcd);
         log.info (bagObject.toString ());
-        OffsetDateTime  reconOdt = Serializer.fromBagObject (bagObject);
-        BagTest.report (odt, reconOdt, "Reconstructed OffsetDateTime should match the original");
+        TestClassD  reconTcd = Serializer.fromBagObject (bagObject);
+        BagTest.report (tcd, reconTcd, "Reconstructed TestClassD should match the original");
     }
 
     @Test
     public void testBogusType () {
-        // deal with a type that has a no default constructor?
-        OffsetDateTime  odt = OffsetDateTime.now ();
-        BagObject bagObject = Serializer.toBagObject (odt);
+        TestClassD  tcd = new TestClassD ("x");
+        BagObject bagObject = Serializer.toBagObject (tcd);
         log.info (bagObject.toString ());
         try {
-            LocalTime localTime = Serializer.fromBagObject (bagObject);
-            BagTest.report  (odt, localTime, "This should fail");
+            TestClassE reconE = Serializer.fromBagObject (bagObject);
+            BagTest.report  (tcd, reconE, "This should fail");
         } catch (ClassCastException exception) {
             BagTest.report (false, false, "Properly throw an exception if we can't cast the value");
         }

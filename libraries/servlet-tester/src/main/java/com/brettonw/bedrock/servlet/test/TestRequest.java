@@ -2,8 +2,8 @@ package com.brettonw.bedrock.servlet.test;
 
 import com.brettonw.bedrock.bag.Bag;
 import com.brettonw.bedrock.bag.formats.MimeType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.brettonw.bedrock.logger.LogManager;
+import com.brettonw.bedrock.logger.Logger;
 
 import javax.servlet.*;
 import javax.servlet.http.*;

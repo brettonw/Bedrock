@@ -5,8 +5,8 @@ import com.brettonw.bedrock.bag.formats.MimeType;
 import com.brettonw.bedrock.servlet.test.TestRequest;
 import com.brettonw.bedrock.servlet.test.TestResponse;
 import com.brettonw.bedrock.servlet.test.TestServletConfig;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.brettonw.bedrock.logger.LogManager;
+import com.brettonw.bedrock.logger.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

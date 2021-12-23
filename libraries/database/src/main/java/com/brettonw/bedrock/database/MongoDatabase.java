@@ -2,20 +2,21 @@ package com.brettonw.bedrock.database;
 
 import com.brettonw.bedrock.bag.*;
 import com.brettonw.bedrock.bag.formats.MimeType;
-import com.mongodb.Block;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.Filters;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import com.mongodb.client.*;
+import com.mongodb.client.model.*;
+import com.mongodb.*;
+
+import com.brettonw.bedrock.logger.*;
+
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
+// http://mongodb.github.io/mongo-java-driver/
 public class MongoDatabase implements Interface, AutoCloseable {
     private static final Logger log = LogManager.getLogger (MongoDatabase.class);
 
@@ -27,11 +28,11 @@ public class MongoDatabase implements Interface, AutoCloseable {
     public static final String COLLECTION_NAME = "collection-name";
     public static final String COLLECTION_NAMES = "collection-names";
 
-    private static final Map<MongoClientURI, MongoClient> MONGO_CLIENTS = new HashMap<> ();
+    private static final Map<ConnectionString, MongoClient> MONGO_CLIENTS = new HashMap<> ();
 
-    private String databaseName;
-    private String collectionName;
-    private MongoCollection<Document> collection;
+    private final String databaseName;
+    private final String collectionName;
+    private final MongoCollection<Document> collection;
 
     private MongoDatabase (String databaseName, String collectionName, MongoCollection<Document> collection) {
         this.databaseName = databaseName;
@@ -40,44 +41,53 @@ public class MongoDatabase implements Interface, AutoCloseable {
         log.info ("Connected to '" + getName () + "'");
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDatabaseName () {
         return databaseName;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getCollectionName () {
         return collectionName;
     }
 
     /**
      *
-     * @param clientUri
+     * @param connectionString
      * @param databaseName
      * @param collectionNames
      * @return
      */
-    public static Map<String, MongoDatabase> connect (MongoClientURI clientUri, String databaseName, String... collectionNames) {
+    public static Map<String, MongoDatabase> connect (ConnectionString connectionString, String databaseName, String... collectionNames) {
         // check that everything is valid...
         if (databaseName != null) {
             if ((collectionNames != null) && (collectionNames.length > 0)) {
                 // the first step is to get the clients, BUT... clients are retained in a hash for
                 // pooling purposes, so the actual first step is to see if we've already connected
                 // to this client.
-                MongoClient mongoClient = MONGO_CLIENTS.get (clientUri);
+                var mongoClient = MONGO_CLIENTS.get (connectionString);
                 if (mongoClient == null) {
+                    // this is our first connection to the given client, so create the
+                    // connection, and then check that we can actually reach it by trying to do
+                    // something that requires a live connection, like get the first database name
+                    // from the database server. if that fails, we punt and return null...
                     try {
-                        // this is our first connection to the given client, so create the connection,
-                        // and then check that we can actually reach it by trying to get its address.
-                        // if that fails, we punt and return null...
-                        mongoClient = new MongoClient (clientUri);
-                        mongoClient.getAddress ();
+                        mongoClient = MongoClients.create(connectionString);
+                        mongoClient.listDatabaseNames ().first ();
                     } catch (Exception exception) {
-                        log.error ("Failed to connect to '" + clientUri + "'", exception);
+                        log.error ("Failed to connect to '" + databaseName + "'", exception);
                         return null;
                     }
 
                     // we successfully connected to a valid mongo client, so retain this client
                     // for future use...
-                    MONGO_CLIENTS.put (clientUri, mongoClient);
+                    MONGO_CLIENTS.put (connectionString, mongoClient);
                 }
 
                 // the next step is to get the database, and then the individual collections.
@@ -87,11 +97,11 @@ public class MongoDatabase implements Interface, AutoCloseable {
                 // point there doesn't seem to be an actual failure case.
                 // XXX I have found that the first operation will fail if the name is the same as
                 // XXX another database or collection, differing only in case.
-                com.mongodb.client.MongoDatabase database = mongoClient.getDatabase (databaseName);
-                Map<String, MongoDatabase> collections = new HashMap<> (collectionNames.length);
-                for (String collectionName : collectionNames) {
-                    MongoCollection<Document> collection = database.getCollection (collectionName);
-                    MongoDatabase mongoDatabase = new MongoDatabase (databaseName, collectionName, collection);
+                var database = mongoClient.getDatabase (databaseName);
+                var collections = new HashMap<String, MongoDatabase> (collectionNames.length);
+                for (var collectionName : collectionNames) {
+                    var collection = database.getCollection (collectionName);
+                    var mongoDatabase = new MongoDatabase (databaseName, collectionName, collection);
                     collections.put (collectionName, mongoDatabase);
                 }
                 return collections;
@@ -113,15 +123,12 @@ public class MongoDatabase implements Interface, AutoCloseable {
      * @return
      */
     public static Map<String, MongoDatabase> connect (String connectionString, String databaseName, String... collectionNames) {
-        MongoClientURI mongoClientUri = null;
         try {
-            mongoClientUri = new MongoClientURI (connectionString);
-        } catch (Exception exception) {
-            log.error ("Failed to connect to '" + connectionString + "'", exception);
+            return connect (new ConnectionString (connectionString), databaseName, collectionNames);
+        } catch (IllegalArgumentException exception) {
+            log.error (exception);
             return null;
         }
-
-        return connect (mongoClientUri, databaseName, collectionNames);
     }
 
     /**
@@ -140,7 +147,7 @@ public class MongoDatabase implements Interface, AutoCloseable {
      * @return
      */
     public static MongoDatabase connectLocal (String collectionName) {
-        Map<String, MongoDatabase>  collections = connectLocal (collectionName, collectionName);
+        var collections = connectLocal (collectionName, collectionName);
         if (collections != null) {
             for (MongoDatabase mongoDatabase : collections.values ()) {
                 return mongoDatabase;
@@ -156,10 +163,10 @@ public class MongoDatabase implements Interface, AutoCloseable {
      */
     public static Map<String, MongoDatabase> connect (BagObject configuration) {
         // get the database name and collection names
-        String databaseName = configuration.getString (DATABASE_NAME);
-        String[] collectionNames = null;
+        var databaseName = configuration.getString (DATABASE_NAME);
+        var collectionNames = (String[]) null;
         if (configuration.has (COLLECTION_NAMES)) {
-            BagArray collectionNamesBagArray = configuration.getBagArray (COLLECTION_NAMES);
+            var collectionNamesBagArray = configuration.getBagArray (COLLECTION_NAMES);
             if (collectionNamesBagArray != null) {
                 collectionNames = collectionNamesBagArray.toArray (String.class);
             }
@@ -181,7 +188,7 @@ public class MongoDatabase implements Interface, AutoCloseable {
             }
 
             // and finally, get the connection string, or use localhost as the default
-            String connectionString = configuration.has (CONNECTION_STRING) ? configuration.getString (CONNECTION_STRING) : LOCALHOST_DEFAULT;
+            var connectionString = configuration.has (CONNECTION_STRING) ? configuration.getString (CONNECTION_STRING) : LOCALHOST_DEFAULT;
             return connect (connectionString, databaseName, collectionNames);
         } else {
             log.error ("Invalid configuration (missing '" + DATABASE_NAME + "')");
@@ -189,12 +196,22 @@ public class MongoDatabase implements Interface, AutoCloseable {
         return null;
     }
 
+    /**
+     *
+     * @param bagObject
+     * @return
+     */
     public Interface put (BagObject bagObject) {
-        Document document = Document.parse (bagObject.toString (MimeType.JSON));
+        var document = Document.parse (bagObject.toString (MimeType.JSON));
         collection.insertOne (document);
         return this;
     }
 
+    /**
+     *
+     * @param bagArray
+     * @return
+     */
     public Interface putMany (BagArray bagArray) {
         for (int i = 0, end = bagArray.getCount (); i < end; ++i) {
             put (bagArray.getBagObject (i));
@@ -204,12 +221,12 @@ public class MongoDatabase implements Interface, AutoCloseable {
 
     private Bson buildQuery (String queryJson) {
         if (queryJson != null) {
-            BagObject queryBagObject = BagObjectFrom.string (queryJson, MimeType.JSON);
+            var queryBagObject = BagObjectFrom.string (queryJson, MimeType.JSON);
             if (queryBagObject != null) {
-                int count = queryBagObject.getCount ();
-                String[] keys = queryBagObject.keys ();
+                var count = queryBagObject.getCount ();
+                var keys = queryBagObject.keys ();
                 if (count > 1) {
-                    Bson[] bsons = new Bson[count];
+                    var bsons = new Bson[count];
                     for (int i = 0; i < count; ++i) {
                         bsons[i] = Filters.eq (keys[i], queryBagObject.getString (keys[i]));
                     }
@@ -224,8 +241,9 @@ public class MongoDatabase implements Interface, AutoCloseable {
 
     private static BagObject extract (Document document) {
         if (document != null) {
-            String json = document.toJson ();
-            BagObject bagObject = BagObjectFrom.string (json, MimeType.JSON);
+            // XXX if only there was a better way to do this... it will make Mongo a challenge at any kind of scale
+            var json = document.toJson ();
+            var bagObject = BagObjectFrom.string (json, MimeType.JSON);
 
             // Mongo adds "_id" if the posting object doesn't include it. we decide to allow
             // this, but to otherwise mask it from the user as it would lock us into the
@@ -236,54 +254,87 @@ public class MongoDatabase implements Interface, AutoCloseable {
         return null;
     }
 
+    /**
+     *
+     * @param queryJson
+     * @return
+     */
     public BagObject get (String queryJson) {
-        Bson filter = buildQuery (queryJson);
-        FindIterable<Document> queryResult = collection.find (filter);
-        Document got = queryResult.first ();
-        BagObject bagObject = extract (got);
-        return bagObject;
+        var filter = buildQuery (queryJson);
+        var queryResult = collection.find (filter);
+        var got = queryResult.first ();
+        return extract (got);
     }
 
+    /**
+     *
+     * @param queryJson
+     * @return
+     */
     public BagArray getMany (String queryJson) {
-        final BagArray bagArray = new BagArray ();
-        Bson filter = buildQuery (queryJson);
-        collection.find (filter).forEach (
-                (Block<Document>) document -> bagArray.add (extract (document))
-        );
+        final var bagArray = new BagArray ();
+        var filter = buildQuery (queryJson);
+        Consumer<Document> consumer = document -> bagArray.add (extract (document));
+        collection.find (filter).forEach (consumer);
         return bagArray;
     }
 
+    /**
+     *
+     * @return
+     */
     public BagArray getAll () {
-        final BagArray bagArray = new BagArray ();
-        collection.find (new Document ()).forEach (
-                (Block<Document>) document -> bagArray.add (extract (document))
-        );
+        final var bagArray = new BagArray ();
+        Consumer<Document> consumer = document -> bagArray.add (extract (document));
+        collection.find (new Document ()).forEach (consumer);
         return bagArray;
     }
 
+    /**
+     *
+     * @param queryJson
+     * @return
+     */
     public Interface delete (String queryJson) {
-        Bson filter = buildQuery (queryJson);
+        var filter = buildQuery (queryJson);
         collection.deleteOne (filter);
         return this;
     }
 
+    /**
+     *
+     * @param queryJson
+     * @return
+     */
     public Interface deleteMany (String queryJson) {
-        Bson filter = buildQuery (queryJson);
+        var filter = buildQuery (queryJson);
         collection.deleteMany (filter);
         return this;
     }
 
+    /**
+     *
+     * @return
+     */
     public Interface deleteAll () {
         collection.deleteMany (new Document ());
         return this;
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     public void drop () throws Exception {
         close ();
         collection.drop ();
         log.info ("Dropped '" + getName () + "'" );
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @Override
     public void close () throws Exception {
         // XXX what should happen here?
@@ -295,9 +346,13 @@ public class MongoDatabase implements Interface, AutoCloseable {
      * @return
      */
     public long getCount () {
-        return collection.count ();
+        return collection.countDocuments();
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName () {
         return databaseName + "." + collectionName;
     }
