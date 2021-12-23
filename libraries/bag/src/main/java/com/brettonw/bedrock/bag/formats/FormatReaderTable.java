@@ -3,8 +3,8 @@ package com.brettonw.bedrock.bag.formats;
 import com.brettonw.bedrock.bag.BagArray;
 import com.brettonw.bedrock.bag.BagObject;
 import com.brettonw.bedrock.bag.entry.Handler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.brettonw.bedrock.logger.LogManager;
+import com.brettonw.bedrock.logger.Logger;
 
 public class FormatReaderTable extends FormatReader implements ArrayFormatReader {
     private static final Logger log = LogManager.getLogger (FormatReaderTable.class);

@@ -3,8 +3,8 @@ package com.brettonw.bedrock.database;
 import com.brettonw.bedrock.bag.BagArray;
 import com.brettonw.bedrock.bag.BagObject;
 import com.brettonw.bedrock.bag.formats.MimeType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.brettonw.bedrock.logger.LogManager;
+import com.brettonw.bedrock.logger.Logger;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;

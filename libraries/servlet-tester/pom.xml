@@ -21,13 +21,18 @@
         </dependency>
         <dependency>
             <groupId>com.brettonw.bedrock</groupId>
+            <artifactId>logger</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.brettonw.bedrock</groupId>
             <artifactId>bag</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>${servlet.version}</version>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-servlet-api</artifactId>
+            <version>${tomcat.version}</version>
         </dependency>
     </dependencies>
 </project>

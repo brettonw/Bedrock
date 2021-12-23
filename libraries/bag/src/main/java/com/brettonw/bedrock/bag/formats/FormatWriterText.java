@@ -2,8 +2,8 @@ package com.brettonw.bedrock.bag.formats;
 
 import com.brettonw.bedrock.bag.BagArray;
 import com.brettonw.bedrock.bag.BagObject;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.brettonw.bedrock.logger.LogManager;
+import com.brettonw.bedrock.logger.Logger;
 
 /**
  * The FormatWriterText is a configurable text format writer for any format that uses a divider

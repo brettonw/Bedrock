@@ -4,8 +4,8 @@ import com.brettonw.bedrock.bag.BagArray;
 import com.brettonw.bedrock.bag.BagObject;
 import com.brettonw.bedrock.bag.Key;
 import com.brettonw.bedrock.secret.Secret;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.brettonw.bedrock.logger.LogManager;
+import com.brettonw.bedrock.logger.Logger;
 
 import java.util.regex.Pattern;
 
